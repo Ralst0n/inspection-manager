@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>INVOICE CREATION</title>
+    <style>
+        a, href{
+            text-decoration: none;
+        }
+        .button{
+            border: 1px solid black;
+            padding: 4px 6px;
+            margin-right: 3%;
+            background-color: #e0e0e0;
+            font-size: 2em;
+            color: #000;
+            border-radius: 5%;        
+        }
+        .reject{
+            background-color: red;
+        }
+        .submit{
+            background-color: rgb(82, 151, 68);
+            color: #fff;
+        } 
+    </style>
+</head>
+<body>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for errone in field.errors %}
+            <div><strong>{{ errone|escape }}</strong></div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    {% if edit %}
+        <h1>Edit Invoice</h1>
+    {% else %}
+        <h1>Create New Invoice</h1>
+    {% endif %}
+    <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p> Invoice name: {{ invoice_form.name }}</p>
+        <p> Invoice File: {{ invoice_form.invoice_file }}</p>
+        {% if comment_form.body %}
+            <h2>Add Comment</h2>
+            <p>{{ comment_form.body }}</p>
+        {% endif %}
+        {% if invoice %}
+            <input class="button submit" type="submit" value="Save" />
+            <a class="button reject" href="{% url 'invoices:details' pk=invoice.id %}">Cancel</a>
+        {% else %}
+            <input class="button submit" type="submit" value="Save" />
+            <a class="button reject" href="{% url 'invoices:invoices' %}">Cancel</a>
+        {% endif %}
+    </form>
+</body>
+</html>

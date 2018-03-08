@@ -1,0 +1,25 @@
+{% extends 'dashboard_base.html' %}
+
+{% block content %}
+<center>
+<h1>{% block page_name %}{% endblock %}</h1>
+</center>
+<div class="table-responsive">
+
+  <div  class="table-responsive inspector-table">
+  <table id="table" class="{%block table-properties %} {%endblock %}">
+    {% block table %}
+
+    {% endblock %}
+  </table>
+  </div>
+</div>
+
+{% endblock %}
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#table').DataTable();
+} );
+</script>
+{% endblock %}

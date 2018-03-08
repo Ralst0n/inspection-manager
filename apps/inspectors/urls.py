@@ -1,0 +1,11 @@
+from django.conf.urls import url
+from . import views
+
+urlpatterns = [
+    url(r'^$', views.InspectorListView.as_view(), name='inspectors'),
+    url(r'dashboard$', views.index, name='index'),
+    url(r'^search', views.InspectorSearchView.as_view(), name='search-inspectors'),
+    url(r'^(?P<pk>\d+)$', views.InspectorDetailView.as_view(), name='inspector-detail'),
+    url(r'^create$', views.InspectorCreateView.as_view(), name='inspector-create'),
+    url(r'^update/(?P<pk>\d+)$', views.InspectorUpdateView.as_view(), name='inspector-update'),
+]

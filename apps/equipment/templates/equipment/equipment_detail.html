@@ -1,0 +1,59 @@
+{% extends 'dashboard_base.html' %}
+
+{% block title %}{{equipment.name}}{% endblock %}
+
+{% block equipment-nav %}active{% endblock %}
+
+{% block content %}
+<h2>{{ equipment.name }} ({{equipment.device}})</h2>
+<hr>
+<br>
+<div class="">
+    <h4>Device Information</h4>
+
+<table class="table-sm table-responsive table-bordered">
+  <tr >
+    <td>Type:</td>
+    <td>{{equipment.device }}</td>
+  </tr>
+  <tr>
+    <td>Serial #:</td>
+    <td>{{ equipment.serial_number }}:</td>
+  </tr>
+  <tr>
+    <td>Phone #:</td>
+    <td>{{ equipment.phone_number }}:</td>
+  </tr>
+</table>
+
+</div>
+<br>
+{% if equipment.checkout_set.all %}
+<div class="responsive-table">
+
+  <h2 class="text-center">User History</h2>
+  <table class="table table-striped">
+    <thead>
+      <th>User</th>
+      <th>Checkout Date</th>
+      <th>Return Date</th>
+    </thead>
+{% for checkout in equipment.checkout_set.all %}
+    <tr>
+      <td><a href="{{checkout.user.get_absolute_url}}">{{checkout.user.first_name}} {{checkout.user.last_name}}</a></td>
+      <td>{{checkout.checkout_date}}</td>
+      <td>{{checkout.return_date}}</td>
+
+    </tr>
+{% endfor %}
+
+  </table>
+{% else %}
+<center>
+  <h2>This device has no User History Available</h2>
+</center>
+{% endif %}
+</div>
+
+
+{% endblock %}

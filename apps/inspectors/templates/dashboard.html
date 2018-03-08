@@ -1,0 +1,166 @@
+{% extends 'dashboard_base.html' %}
+{% load staticfiles %}
+{% load humanize %}
+{% load app_filters %}
+{% block title %}{{ user.first_name }}-dashboard {% endblock %}
+
+{% block overview-nav %}active{% endblock %}
+{% block header %}{% endblock %}
+{% block content %}
+<!-- <center>
+  <h1>Dashboard</h1>
+
+</center> -->
+
+  <section class="row text-center">
+    <div class="col-6 col-sm-4">
+      <center>
+        <div style="width:200px; height:200px; border-radius:50%; background-color:orange"></div>
+        <h4 id="inspector-stats">{{ num_prudent_inspectors }} of {{num_inspectors }} inspectors employed</h4>
+      </center>
+    </div>
+
+    <div class="col-6 col-sm-4">
+      <center>
+        <div style="width:200px; height:200px; border-radius:50%; background-color:blue"></div>
+        <h4 id="project-stats">{{num_projects_filled}} of your {{num_projects}} projects are filled</h4>
+      </center>
+    </div>
+<!--Third chart-->
+    <div class="col-6 col-sm-4">
+      <center>
+        <!-- <img src="{% static "images/pennoni-associates-logo.png" %}" alt="pennoni associates logo" width="200" height="200"
+        class="img-fluid rounded-circle"> -->
+        <div style="width:200px; height:200px; border-radius:50%; background-color:green; color:white;"><h3 style="padding-top:88px;">{{ percentageofgoal }}</h3></div>
+        <h4 id="invoice-stats">Revenue: ${% if fytd  > ytd %}{{ fytd|intcomma }}{% else %}{{ ytd|intcomma }}{% endif %}</h4>
+      </center>
+    </div>
+  </section>
+  <!--End Third Chart-->
+<br>
+<!--Inspector Table-->
+  <h2 class="inspector-table">Recently Added Inspectors</h2>
+  <div id="inspectors" class="table-responsive inspector-table">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Inspector Name</th>
+          <th>Classification</th>
+          <th>Location</th>
+        </tr>
+      {% for inspector in inspectors %}
+        <tr>
+          <td><a href="{{ inspector.get_absolute_url }}">{{inspector.first_name}} {{inspector.last_name}}</a></td>
+          <td>{{inspector.classification}}</td>
+          <td>{{inspector.location}}</td>
+        </tr>
+      {% endfor %}
+    </table>
+
+  </div>
+<!--End Inspector Table-->
+
+<!--Projects Table-->
+  <h2 class="project-table">Recently Updated Projects</h2>
+  <div id="projects" class="table-responsive project-table">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>PennDot #</th>
+          <th>Prudent Job #</th>
+          <th>Amount to Date </th>
+          <th>Maximum Budget</th>
+        </tr>
+      {% for project in projects %}
+        <tr>
+          <td><a href="{{ project.get_absolute_url }}">{{project.penndot_number}}</a></td>
+          <td>{{project.prudent_number}}</td>
+          <td>${{ project.get_current_amount|intcomma }}</td>
+          <td>${{ project.maximum_budget|intcomma }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+
+  </div>
+<!--End Projects Table-->
+
+<!--Invoice Table-->
+  <h2 class="invoice-table">Latest Invoices</h2>
+  <div id="invoices" class="table-responsive invoice-table">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Prudent Job #</th>
+          <th>Invoice Number</th>
+          <th>Begin</th>
+          <th>End</th>
+          <th>Total</th>
+        </tr>
+      {% for invoice in invoices %}
+        <tr>
+          <td><a href="{{ invoice.project.get_absolute_url }}">{{invoice.project.prudent_number}}</a></td>
+          <td>{{ invoice.invoice_number}}</td>
+          <td>{{ invoice.start_date}}</td>
+          <td>{{ invoice.end_date}}</td>
+          <td>${{ invoice.total_cost|intcomma }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+
+  </div>
+<!--End Invoice Table-->
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+  $('.project-table').css('display', 'none')
+  $('.invoice-table').css('display','none');
+
+  //if project header is clicked
+  $('#project-stats').click(function(){
+    $('.inspector-table').css('display','none');
+    $('.invoice-table').css('display','none');
+    $('.project-table').css('display', 'inline');
+  })
+  //if inspector header is clicked
+  $('#inspector-stats').click(function(){
+    $('.inspector-table').css('display','inline');
+    $('.invoice-table').css('display','none');
+    $('.project-table').css('display', 'none');
+  })
+  //if invoice header is clicked
+  $('#invoice-stats').click(function(){
+    $('.inspector-table').css('display','none');
+    $('.invoice-table').css('display','inline');
+    $('.project-table').css('display', 'none');
+  })
+
+//   $(function () {
+//     var data = [
+//     {
+//         value: 300,
+//         color:"#F7464A",
+//         highlight: "#FF5A5E",
+//         label: "Red"
+//     },
+//     {
+//         value: 50,
+//         color: "#46BFBD",
+//         highlight: "#5AD3D1",
+//         label: "Green"
+//     },
+//     {
+//         value: 100,
+//         color: "#FDB45C",
+//         highlight: "#FFC870",
+//         label: "Yellow"
+//     }
+// ]
+//     var option = {
+//       responsive: true,
+//     };
+//     //Get the context of the canvas element we want to select
+//     var ctx = document.getElementById('revenue-chart').getContext('2d');
+//     var myDoughnutChart = new Chart(ctx).Doughnut(data, option); //'Line' defines type of chart
+//   });
+</script>
+{% endblock %}

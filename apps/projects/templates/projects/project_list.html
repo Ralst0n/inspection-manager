@@ -1,0 +1,40 @@
+{% extends 'table_page.html' %}
+{% load humanize %}
+{% block title %}Projects List{% endblock %}
+
+{% block projects-nav %}active{% endblock %}
+
+{% block page_name %}Current Projects{% endblock %}
+{%block table-properties %}table table-striped {%endblock %}
+{% block table %}
+  <thead>
+  <tr>
+    <th>PennDot #</th>
+    <th>Prudent #</th>
+    <th>Max Budget</th>
+    <th>Total Invoiced</th>
+    <th>Invoiced Through</th>
+  </tr>
+    </thead>
+  {% for project in project_list %}
+  <tr>
+    <td><a href="{{ project.get_absolute_url }}">{{project.penndot_number}}</a></td>
+    <td>{{ project.prudent_number }}</td>
+    <td>${{ project.maximum_budget|intcomma }}</td>
+    {% if project.get_current_amount == "None" %}
+    <td>{{ project.get_current_amount|intcomma }}</td>
+    {% else %}
+    <td>${{ project.get_current_amount|intcomma }}</td>
+    {% endif %}
+    <td>{{ project.get_last_invoiced }}</td>
+  </tr>
+  {% endfor %}
+
+{% endblock %}
+{% block script %}
+<script>
+$(document).ready(function() {
+    $('#table').DataTable();
+} );
+</script>
+{% endblock %}

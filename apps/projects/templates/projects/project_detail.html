@@ -1,0 +1,67 @@
+{% extends "dashboard_base.html" %}
+{% load humanize %}
+{% block title %}{{project.name}}{% endblock %}
+
+{% block projects-nav %} active {% endblock %}
+
+{% block content %}
+<center>
+<h2>{{project.penndot_number}}: {{project.name}}</h2>
+<h5 style="color:#aaa">({{project.start_date}} - {{project.end_date}})</h5>
+<h6>{{project.prudent_number }}</h6>
+</center>
+<hr>
+<div class="row">
+
+
+<div id="collapse" class="col-sm-6 collapsible">
+<h4>Description</h4>
+<p>{{project.description}}</p>
+</div>
+<div id="" class="col-sm-6 collapsible">
+<h4>Inspectors</h4>
+{% if project.inspector %}
+<p>
+{% for inspector in project.inspector.all %}
+  <a href="{{ inspector.get_absolute_url }}">{{ inspector.first_name }} {{ inspector.last_name }}</a> <br />
+{% endfor %}
+</p>
+{% else %}
+<p class="danger">None</p>
+{% endif %}
+</div>
+</div>
+<br>
+<div class="responsive-table">
+  <center><h2>Invoices</h2></center>
+  <table class="table table-striped">
+    <thead>
+      <th>Invoice #</th>
+      <th>Start Date</th>
+      <th>End Date</th>
+      <th>Prudent Invoice #</th>
+      <th>Total Cost</th>
+    </thead>
+
+{% for invoice in invoices %}
+    <tr>
+      <td>{{ invoice.invoice_number }}</td>
+      <td>{{ invoice.start_date }}</td>
+      <td>{{ invoice.end_date }}</td>
+      <td>{{ invoice.prudent_invoice_number }}</td>
+      <td>${{ invoice.total_cost|intcomma }}</td>
+    </tr>
+{% endfor %}
+
+  </table>
+</div>
+{% endblock %}
+{% block script %}
+<script type="text/javascript">
+  $(".collapsible").accordion({
+    active:false,
+    collapsible:true,
+  })
+  $(".table").DataTable();
+</script>
+{% endblock %}

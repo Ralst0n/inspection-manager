@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>INVOICE CREATION</title>
+    <style>
+        a, href{
+            text-decoration: none;
+        }
+        .button{
+            border: 1px solid black;
+            padding: 4px 6px;
+            margin-right: 3%;
+            background-color: #e0e0e0;
+            font-size: 2em;
+            color: #000;
+            border-radius: 5%;        
+        }
+        .reject{
+            background-color: red;
+        }
+        .submit{
+            background-color: rgb(82, 151, 68);
+            color: #fff;
+        } 
+    </style>
+</head>
+<body>
+    {% if form.errors %}
+        {% for field in form %}
+            {% for errone in field.errors %}
+                <div><strong>{{ errone|escape }}</strong></div>
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        <h2>Enter rejection reason</h2>
+        <p>{{ comment_form.body }}</p>
+
+        <input class="button reject" type="submit" value="Reject" />
+        <a class="button submit" href="{% url 'invoices:details' pk=invoice.id %}">Cancel</a>
+    </form>
+</body>
+</html>

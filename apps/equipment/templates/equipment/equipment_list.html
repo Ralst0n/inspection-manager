@@ -1,0 +1,26 @@
+{% extends 'table_page.html' %}
+{% load humanize %}
+{% block title %}Device Inventory{% endblock %}
+
+{% block equipment-nav %}active{% endblock %}
+
+{% block page_name %}Device Inventory{% endblock %}
+{%block table-properties %}table table-striped {%endblock %}
+{% block table %}
+    <thead>
+      <th>Name</th>
+      <th>Device Type</th>
+      <th>Serial #</th>
+      <th>Most Recent User</th>
+    </thead>
+    {% for device in equipment_list %}
+    <tr>
+      <td><a href="{{ device.get_absolute_url }}">{{device.name }}</a></td>
+      <td>{{ device.device }}</td>
+      <td>{{ device.serial_number }}</td>
+      <td>{{ device.get_current_user|default:"None" }}</td>
+      {% endfor %}
+  </table>
+
+</div>
+{% endblock %}

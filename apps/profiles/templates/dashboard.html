@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        a, href {
+            text-decoration: none;
+            
+        }
+    </style>
+</head>
+<body>
+    {{ request.user.profile.display_name }} {{ request.user.profile.role}}
+
+    {% if request.user.profile.role == 'Preparer' %}
+        <h2>Active Status</h2>
+    {% else %}
+        <h2>Approval Queue</h2>
+    {% endif %}
+    <div>
+        <ul> 
+            {% for invoice in object_list %}
+            <li><a href="{{ invoice.get_absolute_url }}">{{ invoice.name }}</a></li>
+            {% empty %}
+            <li> Your queue is empty </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
+        <table>
+            <th>Recent Activity</th>
+            {% for invoice in recent %}
+                <tr><td>{{ invoice.name}} has moved to {{ invoice.readable_status }}</td></tr>
+                {% empty %}
+                    <tr><td>None</td></tr>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+
+</body>
+</html>

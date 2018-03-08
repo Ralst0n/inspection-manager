@@ -1,0 +1,36 @@
+.sidebar{
+  background-color: #F37224;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  padding: 20px;
+  overflow-x: hidden;
+  overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+  border-right: 1px solid #eee;
+}
+
+.login-button{
+  color: white;
+  text-shadow: 1px black;
+  padding: 3px 10px;
+  border: 1px solid black;
+}
+
+.login-button:hover, .login-button:active {
+  text-decoration: none;
+  color: white;
+}
+#welcome-text, .nav-link{
+  color: #EFEFEF;
+}
+
+.sidebar-header{
+  color: ##545455;
+  font-size: 12px;
+}
+
+ul{
+  list-style: none;
+}

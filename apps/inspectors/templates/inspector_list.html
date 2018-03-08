@@ -1,0 +1,21 @@
+{% extends 'table_page.html' %}
+
+{% block title %}Inspector List{% endblock %}
+
+{% block inspectors-nav %}active{% endblock %}
+
+{% block page_name %}My Inspectors{% endblock %}
+{%block table-properties %}table table-border {%endblock %}
+{% block table %}
+<thead>
+  <th>Name</th>
+  <th>classification</th>
+</thead>
+  {% for inspector in inspector_list %}
+  <tr>
+    <td><a href="{{ inspector.get_absolute_url }}"> {{ inspector.first_name }} {{ inspector.last_name }}</a></td>
+    <td>{{ inspector.classification }}</td>
+  </tr>
+  {% endfor %}
+
+{% endblock %}

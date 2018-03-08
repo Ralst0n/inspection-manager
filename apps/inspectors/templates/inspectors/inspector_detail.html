@@ -1,0 +1,103 @@
+{% extends 'dashboard_base.html' %}
+{% load static from staticfiles %}
+{% static '' as staticURL %}
+
+{% block title %} {{ inspector.first_name }} {{ inspector.last_name }} {% endblock %}
+{% block inspectors-nav %}active{% endblock %}
+
+{% block content %}
+<h2 class="text-center"> {{ inspector.first_name }} {{inspector.last_name}} ({{inspector.classification}})</h2>
+<hr><br>
+<div class="row">
+
+
+<div class="offset-sm-3 col-sm-4">
+  <h5>Contact Information</h5>
+  <hr>
+  <p><strong>Email: </strong>{{ inspector.email }}</p>
+  <p><strong>Phone: </strong>
+    {% if inspector.phone_number %}
+        ({{ inspector.phone_number|slice:":3"  }}) {{ inspector.phone_number|slice:"3:6"}}-{{ inspector.phone_number|slice:"6:"}}
+    {% else %}
+        Unlisted
+    {% endif %}
+  </p>
+  <p><strong>Address: </strong>{{ inspector.address }} {{ inspector.location }}</p>
+
+</div>
+<div class="col-sm-4">
+  <h5>Project information</h5>
+  <hr>
+  <p><strong>Current Project: </strong>
+    {% if inspector.get_current_project %}
+    {% for project in inspector.get_current_project %}<a href="{{project.get_absolute_url}}">{{project.penndot_number}}</a> ({{project.prudent_number}}) {% endfor %}
+    {% elif inspector.is_employee %}
+    <span class="text-danger">Unemployed</span>
+    {% else %}
+      N/A
+    {% endif %}
+  </p>
+  <p><strong>Name:</strong>
+    {% if inspector.get_current_project %}
+    {% for project in inspector.get_current_project %}<a href="{{project.get_absolute_url}}">{{project.name}}</a>{% endfor %}
+    {% elif inspector.is_employee %}
+    <span class="text-danger">None</span>
+    {% else %}
+    N/A
+    {% endif %}
+  </p>
+  <p><strong>Devices: </strong>
+    {% if inspector.get_equipment_list %}
+      {% for device in inspector.get_equipment_list %}<a href="{{ device.item.get_absolute_url }}"> {{device.item.name}} ({{device.item.device}})</a></span> {% if not forloop.last %} | {% endif %} {% endfor %}</p>
+    {% else %}
+      None
+    {% endif %}
+</div>
+</div>
+<br>
+
+
+
+{% if inspector.is_employee %}
+
+<p class="text-success">
+  {{ inspector.first_name }} {{inspector.last_name }} is a member of the {{inspector.office}} Engineering team and has been contributing to
+  the success and growth of the company.
+</p>
+
+<h2>Cert Expiration Dates</h2>
+<p><a href="{{ STATIC_URL }}/static/resumes/{{inspector.first_name}}_{{inspector.last_name}}.pdf">View ECMS Resume</a></p>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <th>NICET</th>
+      <th>PennDot Bituminous</th>
+      <th>NECEPT Bituminous</th>
+      <th>PennDot Concrete</th>
+      <th>ACI Concrete</th>
+    </thead>
+    <tr>
+      <td>{{inspector.nicet_expiration}}</td>
+      <td>{{inspector.penndot_bituminous}}</td>
+      <td>{{inspector.necept_bituminous}}</td>
+      <td>{{inspector.penndot_concrete}}</td>
+      <td>{{inspector.aci_concrete}}</td>
+    </tr>
+  </table>
+
+</div>
+{% else %}
+<h2> Notes on {{ inspector.first_name }}: </h2>
+<div class="table-responsive">
+  <table class="table">
+    <thead>
+      <th>Author</th>
+      <th>Note</th>
+  {% for note in notes %}
+    <tr>
+      <td>[{{note.created_at}}] {{note.creator.first_name}}:</td>
+      <td><strong>{{note.body}}</strong><td>
+    <tr>
+  {% endfor %}
+{% endif %}
+{% endblock %}
