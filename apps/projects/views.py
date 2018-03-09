@@ -5,7 +5,8 @@ from django.db.models import Sum
 from django.shortcuts import render
 from django.views import generic
 
-from .models import Project, Invoice
+from .models import Project
+from apps.invoices.models import Invoice
 
 # Create your views here.
 

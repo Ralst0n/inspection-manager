@@ -26,9 +26,11 @@ class LetProject(models.Model):
                                 related_name='wins',
                                 null = True)
     second_place = models.ForeignKey('partners.BusinessPartner',
-                                    related_name='seconds', null=True)
+                                    related_name='seconds', null=True,
+                                    on_delete=models.CASCADE)
     third_place = models.ForeignKey('partners.BusinessPartner',
-                                    related_name='thirds', null=True)
+                                    related_name='thirds', null=True,
+                                    on_delete=models.CASCADE)
 
     def __str__(self):
         return self.agreement_number

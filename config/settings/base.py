@@ -51,8 +51,12 @@ DJANGO_APPS = (
     'django.contrib.staticfiles',
     )
 LOCAL_APPS = (
-    'apps.profiles',
+    'apps.equipment',
+    'apps.inspectors',
     'apps.invoices',
+    'apps.partners',
+    'apps.profiles',
+    'apps.projects',
     )
 
 THIRD_PARTY_APPS = (
@@ -77,7 +81,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['apps/invoices','apps/profiles'],
+        'DIRS': ['apps/projects','apps/profiles','apps/invoices'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

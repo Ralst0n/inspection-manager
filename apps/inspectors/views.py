@@ -9,7 +9,8 @@ from django.views import generic
 from datetime import datetime
 
 from .models import Inspector, Notes
-from manager.projects.models import Project, Invoice
+from apps.projects.models import Project
+from apps.invoices.models import Invoice
 # Create your views here.
 
 @login_required

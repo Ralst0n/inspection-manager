@@ -6,7 +6,7 @@ class InvoiceCreationForm(forms.ModelForm):
 
     class Meta:
         model = Invoice
-        fields = ('name', 'invoice_file',)
+        fields = '__all__'
 
 
 class CommentCreationForm(forms.ModelForm):

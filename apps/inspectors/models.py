@@ -127,15 +127,16 @@ class Notes(models.Model):
 
 class History(models.Model):
     inspector = models.ForeignKey('inspector', on_delete=models.CASCADE)
-    job = models.ForeignKey('project', on_delete=models.CASCADE)
+    job = models.ForeignKey('projects.Project', on_delete=models.CASCADE, null=True)
     start_date = models.DateField()
-    stop_date = models.DateField()
+    stop_date = models.DateField(null=True)
 
     def __str__(self):
         person = f"{self.inspector.first_name} {self.inspector.last_name}"
         job = self.job.name
         return f"{person}: {job}"
     
+    @property 
     def duration(self):
         return self.stop_date - self.start_date
     

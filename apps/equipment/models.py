@@ -16,7 +16,8 @@ class Equipment(models.Model):
     )
 
     name = models.CharField(max_length=60, help_text="i.e. kopfield1")
-    office = models.CharField(max_length=30, choices=OFFICE, default="King of Prussia")
+    office = models.CharField(max_length=30,
+        choices=OFFICE, default="King of Prussia")
     device = models.CharField(max_length= 35, choices=DEVICE_TYPE)
     serial_number = models.CharField(max_length=40)
     phone_number = models.CharField(max_length=18, blank=True)
@@ -32,19 +33,24 @@ class Equipment(models.Model):
         get the most recent user of the object
         """
         #to get just the user append the field name to end of search
-        if Checkout.objects.filter(item=self).order_by('-checkout_date').exists():
-            first_name = Checkout.objects.filter(item=self).order_by('-checkout_date').first().user.first_name
-            last_name = Checkout.objects.filter(item=self).order_by('-checkout_date').first().user.last_name
+        if Checkout.objects.filter(item=self).order_by(
+                '-checkout_date').exists():
+            first_name = Checkout.objects.filter(
+                item=self).order_by('-checkout_date').first().user.first_name
+            last_name = Checkout.objects.filter(
+                item=self).order_by('-checkout_date').first().user.last_name
             return "{} {}".format(first_name, last_name)
 
 class Checkout(models.Model):
     item = models.ForeignKey(Equipment, on_delete=models.CASCADE)
-    user = models.ForeignKey('inspectors.Inspector', on_delete=models.CASCADE)
+    user = models.ForeignKey('inspectors.Inspector', on_delete=models.CASCADE, null=True)
     checkout_date = models.DateField()
-    return_date = models.DateField(blank=True, null=True, help_text="leave blank if item is still out")
+    return_date = models.DateField(blank=True, null=True,
+    help_text="leave blank if item is still out")
 
     class Meta:
         ordering = ["-checkout_date"]
 
     def __str__(self):
-        return "{} - {} {} - {}".format( self.item.name,  self.user.first_name, self.user.last_name,self.item.device)
+        return "{} - {} {} - {}".format( self.item.name,  self.user.first_name,
+        self.user.last_name,self.item.device)

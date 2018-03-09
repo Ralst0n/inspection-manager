@@ -3,76 +3,10 @@
   <head>
     <meta charset="utf-8">
     <title>{% block title %}{% endblock %}</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap4.min.css">
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'dashboard_base.css' %}">
-    <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
   </head>
   <body>
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-2 hidden-xs-down sidebar">
-          <div class="col-sm-2">
-            {% if user.is_authenticated %}
-              <center>
-              <h2 id="welcome-text">{{ user.get_full_name }}</h2>
-              <span><a class="login-button" href="{% url 'logout'%}">Logout</a></span>
-            </center>
-            {% else %}
-              <span><a class="login-button" href="{% url 'login'%}?next={{request.path}}">Login</a></span>
-            {% endif %}
-          </div>
-
-            <hr><br>
-            <ul class="nav nav-pills flex-column">
-              <p class="sidebar-header">Main</p>
-
-              <li class="nav-item">
-                <a class="nav-link {% block admin-nav %}{% endblock %}" href="{% url 'admin:index' %}">Admin</a>
-              </li>
-              <hr>
-              <p class="sidebar-header">Management</p>
-              <li class="nav-item">
-                <a class="nav-link {% block inspectors-nav %}{% endblock %}" href="{% url 'inspectors' %}">My Inspectors</a>
-                <ul>
-                  <li class="nav-item">
-                    <a class="nav-link {% block all-inspectors-nav %}{% endblock %}" href="{% url 'search-inspectors' %}">Search</a>
-                  </li>
-                  </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% block projects-nav %}{% endblock %}" href="{% url 'projects' %}">Current Projects</a>
-                <ul>
-                  <li class="nav-item">
-                    <a class="nav-link {% block all-projects-nav %}{% endblock %}" href="{% url 'search-projects' %}">All Projects</a>
-                  </li>
-                  </ul>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link disabled {% block partners-nav %}{% endblock %}" href="#">Partners</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link {% block equipment-nav %}{% endblock %}" href="{% url 'equipment' %}">My Equipment</a>
-              </li>
-
-            </ul>
-        </div>
-        </div>
-        <div class="row">
-
-
-        <main class="offset-sm-2 col-sm-10 ">
-          {% block content %}{% endblock %}
-        </main>
+      {% block content %}{% endblock %}
+        
 
 </div>
     </div>

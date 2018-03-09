@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models import Sum
 from django.urls import reverse
 from datetime import datetime, date
+
+
 # Create your models here.
 class Project(models.Model):
     """
@@ -21,7 +23,6 @@ class Project(models.Model):
     business_partner = models.ForeignKey('partners.BusinessPartner',
         on_delete=models.CASCADE, null=True)
     start_date = models.DateField()
-    inspector = models.ManyToManyField('inspectors.Inspector', blank=True)
     payroll_budget = models.DecimalField(max_digits=9, decimal_places=2, default=30000.00)
     other_cost_budget = models.DecimalField(max_digits=9, decimal_places=2, default=30000.00)
     straight_hours_budget = models.DecimalField(max_digits=9, decimal_places=1, default=2000.0)
@@ -90,35 +91,11 @@ class Project(models.Model):
             return "unknown"
         latest_invoice = self.invoice_set.latest('end_date')
 
-    def get_last_invoiced(self):
-        """
-        find the last date the job was invoiced up to
-        """
-        if (not Invoice.objects.filter(project__exact=self)):
-            return self.start_date
-        last_date = Invoice.objects.filter(project__exact=self).order_by('-end_date').first().end_date
-        return last_date
-
-
-
-class Invoice(models.Model):
-    """
-    Represents an Invoice
-    """
-    project = models.ForeignKey('Project', on_delete=models.CASCADE)
-    start_date = models.DateField()
-    end_date = models.DateField()
-    estimate_number = models.DecimalField(max_digits=3, decimal_places=0)
-    labor_cost = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
-    other_cost = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
-    straight_hours = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
-    overtime_hours = models.DecimalField(max_digits=9, decimal_places=2, blank=True, null=True)
-    invoice_number = models.DecimalField(
-        max_digits=5, decimal_places=0, blank=True, null=True
-    )
-
-    class Meta:
-        ordering = ['-end_date']
-
-    def __str__(self):
-        return f"{self.project.prudent_number} #{self.estimate_number}"
+    # def get_last_invoiced(self):
+    #     """
+    #     find the last date the job was invoiced up to
+    #     """
+    #     if (not Invoice.objects.filter(project__exact=self)):
+    #         return self.start_date
+    #     last_date = Invoice.objects.filter(project__exact=self).order_by('-end_date').first().end_date
+    #     return last_date

@@ -6,9 +6,10 @@ from apps.invoices.models import Invoice
 
 class DashboardView(ListView):
     template_name = "dashboard.html"
-
-    if self.request.user.profile.role == "Observer":
-        redirect('/invoicing/list')
+    
+    def idk(self):
+        if self.request.user.profile.role == "Observer":
+            redirect('/invoices/list')
     def get_queryset(self):
         # If the user is a creator, the data wil be invoices they created that aren't finalized
         # if the user is a manager or reviewer, the data will be their queue of invoices to chcek
