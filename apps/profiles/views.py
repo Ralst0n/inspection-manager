@@ -1,10 +1,11 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.views.generic.list import ListView
 # Create your views here.
 
 from apps.invoices.models import Invoice
 
-class DashboardView(ListView):
+class DashboardView(LoginRequiredMixin, ListView):
     template_name = "dashboard.html"
     
     def idk(self):

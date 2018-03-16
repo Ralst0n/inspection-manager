@@ -1,4 +1,4 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User, Group
 from django.db.models import Q, Sum
@@ -11,6 +11,7 @@ from datetime import datetime
 from .models import Inspector, Notes
 from apps.projects.models import Project
 from apps.invoices.models import Invoice
+from .tasks import email_news_letter, scrape_let_projects
 # Create your views here.
 
 @login_required
@@ -93,6 +94,7 @@ class InspectorSearchView(generic.ListView):
 
 class InspectorListView(LoginRequiredMixin, generic.ListView):
     template_name='inspector_list.html'
+    model = Inspector
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return []
@@ -119,3 +121,11 @@ class InspectorDetailView(
         # self.object gives you access to the object the detail page is for.
         context['notes'] = Notes.objects.filter(inspector=self.object).order_by('-created_at')
         return context
+
+@user_passes_test(lambda u: u.is_superuser)
+def ScrapeProjects(request):
+    return scrape_let_projects();
+
+@user_passes_test(lambda u: u.is_superuser)
+def newsletter(request):
+    return email_news_letter();

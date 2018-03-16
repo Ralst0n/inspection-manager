@@ -1,0 +1,57 @@
+{% extends 'base_nav.html' %}
+
+{% block headers %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+{% endblock %}
+
+{% block styles %}
+    .table-container{
+        display: flex;
+        width: 100%;
+        margin: 35px;
+    }
+    #table_wrapper{
+        margin-left: auto;
+        margin-right: auto;
+        font-weight: bolder;
+        width: 80%;
+        font-size: 20px;
+    }
+    #table{
+        margin-top: 50px;
+        text-align: left;
+    }
+    td{
+        font-size: 24px;
+    }
+    {% block morestyles %}
+    {% endblock %}
+
+{% endblock %}
+
+{% block content %}
+<h1>{% block page_name %}{% endblock %}</h1>
+<div class="table-container">
+<table id="table">
+<thead>
+    {% block table_head %}{% endblock %}
+</thead>
+<tbody>
+    {% block table_body %}{% endblock %}
+</tbody>
+</table>
+</div>
+{% block create %} {% endblock %}
+{% endblock %}
+{% block script %}
+$(document).ready(function() {
+    $('#table').DataTable({});
+} );
+if( document.documentElement.clientWidth < 680){
+    $('#table').DataTable( {
+        "scrollX": true
+    });
+}
+{% endblock %}

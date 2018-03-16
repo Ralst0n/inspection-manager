@@ -25,8 +25,8 @@ class Project(models.Model):
     start_date = models.DateField()
     payroll_budget = models.DecimalField(max_digits=9, decimal_places=2, default=30000.00)
     other_cost_budget = models.DecimalField(max_digits=9, decimal_places=2, default=30000.00)
-    straight_hours_budget = models.DecimalField(max_digits=9, decimal_places=1, default=2000.0)
-    overtime_hours_budget = models.DecimalField(max_digits=9, decimal_places=1, default=2000.0)
+    straight_hours_budget = models.DecimalField(max_digits=9, decimal_places=2, default=2000.0)
+    overtime_hours_budget = models.DecimalField(max_digits=9, decimal_places=2, default=2000.0)
     active = models.BooleanField(default=True, help_text="Is this project actively being worked on?")
     completed = models.BooleanField(default=False)
     budget_letter = models.BooleanField(verbose_name="75 percent letter sent", default=False)
@@ -60,6 +60,15 @@ class Project(models.Model):
         other_cost = other_cost_agg.get('other_cost__sum', 0.00)
         other_cost = 0
         return float(other_cost)
+    
+    @property
+    def total_invoiced(self):
+        ''' Sum of `payroll_to_date` & 1other_cost_to_date1 ''' 
+        self.payroll_to_date + self.other_cost_to_date
+    @property
+    def total_budget(self):
+        ''' Sum of payroll and other cost budgets '''
+        return self.other_cost_budget + self.payroll_budget
 
     @property
     def inspector_hours_to_date(self):
@@ -91,11 +100,3 @@ class Project(models.Model):
             return "unknown"
         latest_invoice = self.invoice_set.latest('end_date')
 
-    # def get_last_invoiced(self):
-    #     """
-    #     find the last date the job was invoiced up to
-    #     """
-    #     if (not Invoice.objects.filter(project__exact=self)):
-    #         return self.start_date
-    #     last_date = Invoice.objects.filter(project__exact=self).order_by('-end_date').first().end_date
-    #     return last_date

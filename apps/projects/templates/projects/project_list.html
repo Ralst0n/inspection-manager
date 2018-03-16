@@ -1,39 +1,27 @@
 {% extends 'table_page.html' %}
 {% block title %}Projects List{% endblock %}
 
-{% block projects-nav %}active{% endblock %}
 
 {% block page_name %}Current Projects{% endblock %}
-{%block table-properties %}table table-striped {%endblock %}
-{% block table %}
-  <thead>
+{% block table_head %}
   <tr>
-    <th>PennDot #</th>
-    <th>Prudent #</th>
-    <th>Max Budget</th>
+    <th>Agreement Number</th>
+    <th>Project Number</th>
+    <th>Budget</th>
     <th>Total Invoiced</th>
     <th>Invoiced Through</th>
   </tr>
-    </thead>
+  {% endblock %}
+  {% block table_body %}
   {% for project in project_list %}
   <tr>
     <td><a href="{{ project.get_absolute_url }}">{{project.penndot_number}}</a></td>
     <td>{{ project.prudent_number }}</td>
-    <td>${{ project.maximum_budget }}</td>
-    {% if project.get_current_amount == "None" %}
-    <td>{{ project.get_current_amount }}</td>
-    {% else %}
-    <td>${{ project.get_current_amount }}</td>
-    {% endif %}
-    <td>{{ project.get_last_invoiced }}</td>
+    <td>${{ project.total_budget }}</td>
+    <td>${{ project.total_invoiced }}</td>
+    <td>{{ project.last_invoiced }}</td>
   </tr>
   {% endfor %}
 
 {% endblock %}
-{% block script %}
-<script>
-$(document).ready(function() {
-    $('#table').DataTable();
-} );
-</script>
-{% endblock %}
+

@@ -6,16 +6,16 @@
 
 {% block page_name %}My Inspectors{% endblock %}
 {%block table-properties %}table table-border {%endblock %}
-{% block table %}
-<thead>
+{% block table_head %}
   <th>Name</th>
   <th>classification</th>
-</thead>
+{% endblock %}
+{% block table_body %}
   {% for inspector in inspector_list %}
   <tr>
     <td><a href="{{ inspector.get_absolute_url }}"> {{ inspector.first_name }} {{ inspector.last_name }}</a></td>
     <td>{{ inspector.classification }}</td>
   </tr>
   {% endfor %}
-
 {% endblock %}
+

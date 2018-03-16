@@ -1,5 +1,4 @@
-{% extends "dashboard_base.html" %}
-{% load humanize %}
+{% extends "base_nav.html" %}
 {% block title %}{{project.name}}{% endblock %}
 
 {% block projects-nav %} active {% endblock %}
@@ -45,11 +44,11 @@
 
 {% for invoice in invoices %}
     <tr>
-      <td>{{ invoice.invoice_number }}</td>
+      <td><a href="{{ invoice.get_absolute_url }}">{{ invoice.invoice_number }}</a></td>
       <td>{{ invoice.start_date }}</td>
       <td>{{ invoice.end_date }}</td>
       <td>{{ invoice.prudent_invoice_number }}</td>
-      <td>${{ invoice.total_cost|intcomma }}</td>
+      <td>${{ invoice.total_cost}}</td>
     </tr>
 {% endfor %}
 

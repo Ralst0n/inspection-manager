@@ -1,35 +1,51 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>INVOICE LIST</title>
-    <style media="screen">
+{% extends "table_page.html" %}
+    {% block title %}INVOICES{% endblock %}
+    {% block morestyles %}
       *{
         text-align: center;
       }
-      .titles {
+      <!-- a, href{
+        text-decoration: none;
+        text-align: center;
+        margin: 0 auto;
+    } -->
+      <!-- .titles {
         text-align: left;
       }
       .status {
         text-align: right;
-      }
+      } -->
 
-      table, th, td {
-        /*border: 1px solid black;
-        border-collapse: collapse; */
-      }
-    </style>
-  </head>
-  <body>
-    <h1>Invoice List</h1>
-    <table>
+
+      .button{
+        border: 1px solid black;
+        padding: 4px 6px;
+        background-color: #e0e0e0;
+        font-size: 2em;
+        color: #000;
+        border-radius: 5%;        
+    }
+    .submit{
+      background-color: rgb(82, 151, 68);
+      color: #fff;
+  } 
+    .options{
+      width: 100%;
+      display: block;
+    }
+      {% endblock %}
+
+{% block page_name %} Invoices {% endblock %}
+   {% block table_head %}
       <tr>
-        <th class="titles">Queued Invoices</th>
+        <th class="titles">Invoice</th>
         <th class="status">Status</th>
         {% if user.profile.role == "Observer" or user.profile.role == "Reviewer" %}
         <th class="office">Office</th>
         {% endif %}
       </tr>
+  {% endblock %}
+  {% block table_body %}
       {% for invoice in invoices %}
         <tr>
           <td class="titles"><a href="{{ invoice.get_absolute_url }}">{{ invoice.name }}</a></td>
@@ -39,6 +55,15 @@
           {% endif %}
         </tr>
     {% endfor %}
-    </table>
-  </body>
-</html>
+  {% endblock %}
+
+  {% block create %}
+  <div class="options">
+  {% if request.user.profile.role == 'Preparer' %}
+  <a class="button submit" href="{% url 'invoices:invoice_new' %}">Create Invoice</a>
+  {% endif %}
+  </div>
+  {% endblock %}
+
+ 
+

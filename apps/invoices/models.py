@@ -47,8 +47,12 @@ class Invoice(models.Model):
         return f"{self.project.prudent_number} #{self.estimate_number}"
 
     @property
+    def office(self):
+        return self.project.office
+
+    @property
     def readable_status(self):
-        return self.STATUS_CODE[self.status][1].lower()
+        return self.STATUS_CODE[self.status][1].capitalize()
 
     def get_absolute_url(self):
         """

@@ -1,18 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <style>
+{% extends "base_nav.html" %}
+    {%block styles %}
         a, href {
             text-decoration: none;
             
         }
-    </style>
-</head>
-<body>
+        .queue{
+            width: 100%;
+            display: block;
+        }
+    {% endblock %}
+
+{% block content %}
     {{ request.user.profile.display_name }} {{ request.user.profile.role}}
 
     {% if request.user.profile.role == 'Preparer' %}
@@ -20,7 +18,7 @@
     {% else %}
         <h2>Approval Queue</h2>
     {% endif %}
-    <div>
+    <div id='queue'>
         <ul> 
             {% for invoice in object_list %}
             <li><a href="{{ invoice.get_absolute_url }}">{{ invoice.name }}</a></li>
@@ -39,7 +37,4 @@
             {% endfor %}
         </table>
     {% endif %}
-
-
-</body>
-</html>
+{% endblock %}

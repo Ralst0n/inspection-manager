@@ -99,7 +99,7 @@ class Inspector(models.Model):
             return devices
 
     def get_current_project(self):
-        project = Project.objects.filter(completed=False, inspector=self)
+        project = History.objects.filter( inspector=self)
         job = []
         if project:
             for proj in project:

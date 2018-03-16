@@ -1,17 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>INVOICE CREATION</title>
-    <style>
+{% extends "base_nav.html" %}
+    {% block title %}Create Invoice{% endblock %}
+    {% block styles %}
         a, href{
             text-decoration: none;
         }
         .button{
             border: 1px solid black;
             padding: 4px 6px;
+            margin: 15px;
             margin-right: 3%;
             background-color: #e0e0e0;
             font-size: 2em;
@@ -25,9 +21,40 @@
             background-color: rgb(82, 151, 68);
             color: #fff;
         } 
-    </style>
-</head>
-<body>
+        input[type=text], input[type=number], select {
+            margin-bottom: 20px;
+            margin-top: 10px;
+            margin-left: 10%;
+            width: 300px;
+            padding: 15px;
+            border-radius:5px;
+            border:1px solid #7ac9b7;
+            display: block;
+        }
+        label {
+            margin-left: 10%;
+        }
+
+        input[type=file] {
+            margin-bottom: 20px;
+            margin-top: 10px;
+            margin-left: 10%;
+            width:80%;
+            padding: 15px;
+        }
+        @media screen and (min-width: 550) {
+            input[type=text], input[type=number], select{
+                width: 50%
+            }
+        }
+
+        .fieldWrapper{
+            display: inline-block;
+        }
+
+    {% endblock %}
+
+{% block content %}
     {% if form.errors %}
         {% for field in form %}
             {% for errone in field.errors %}
@@ -42,8 +69,12 @@
     {% endif %}
     <form action="" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        <p> Invoice name: {{ invoice_form.name }}</p>
-        <p> Invoice File: {{ invoice_form.invoice_file }}</p>
+        {% for field in invoice_form %}
+            <div class="fieldWrapper">
+                {{ field.errors }}
+                {{ field.label_tag}} {{ field }}
+            </div>
+        {% endfor %}
         {% if comment_form.body %}
             <h2>Add Comment</h2>
             <p>{{ comment_form.body }}</p>
@@ -56,5 +87,4 @@
             <a class="button reject" href="{% url 'invoices:invoices' %}">Cancel</a>
         {% endif %}
     </form>
-</body>
-</html>
+{% endblock %}

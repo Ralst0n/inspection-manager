@@ -3,10 +3,10 @@ from django import forms
 from .models import Comments, Invoice
 
 class InvoiceCreationForm(forms.ModelForm):
-
     class Meta:
         model = Invoice
-        fields = '__all__'
+        fields = ('project', 'estimate_number', 'start_date', 'end_date', 
+            'labor_cost', 'other_cost', 'straight_hours', 'overtime_hours', 'invoice_file')
 
 
 class CommentCreationForm(forms.ModelForm):

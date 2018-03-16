@@ -1,11 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-    <style>
+{% extends "base_nav.html" %}
+    {% block title %}Document{% endblock %}
+    {% block styles %}
     *{
         font-size: 105%;
     }
@@ -32,8 +27,9 @@
 
     #comments-section {
         border: black 1px solid;
-        max-height: 40vh;
-        max-width: 50vw;
+        width: 100%;
+        margin: 10%;
+        height: 300px;
         overflow: hidden;
         overflow-y: auto;
     }
@@ -45,11 +41,10 @@
         padding: 1% 0;
         margin: 0;
     }
-    /* .comment p{
-        margin: 0;
-    } */
+
     .comment-body{
         padding-left: 1.75%;
+        margin-top: 30px;
         font-size: 85%;
         font-family: Arial, Helvetica, sans-serif
     }
@@ -57,44 +52,73 @@
         font-size: 85%;
     }
 
-    .button-group{
-        margin-top: 2%;
+    .button-group div{
+        margin: 10px auto;
+        
     }
-    </style>
-</head>
-<body>
- 
+    .button-group {
+        border: 1px solid white;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    ul {
+        list-style-type: none;
+        margin-bottom:50px;
+    }
+    li{
+        margin-bottom: 15px;
+    }
+    #invoice-facts{
+        width: 100%;
+        font-size: 24px;
+    }
+    @media screen and (min-width: 450px) {
+        .button-group {
+            width: 400px;
+            margin: 0 auto;
+        }
+    }
+    {% endblock %}
+{% block content  %}
     {% if messages %}
         {% for message in messages %}
             <p>{{ message }}</p>
         {% endfor %}
     {% endif %}
-    <a class="button" href="{{ MEDIA_URL}}/{{ invoice.invoice_file }}" target="_blank">View {{ invoice.name }}</a>
-    <p>Preparer: {{ invoice.creator.profile.display_name }}</p>
-    <p>Last Modified: {{ invoice.last_modified }} by {{ invoice.last_modified_by.profile.display_name }}</p>
+    <div id="invoice-facts">
+        <ul>
+            <li><a class="doc" href="{{ MEDIA_URL}}/{{ invoice.invoice_file }}" target="_blank">View invoice {{ invoice.name }}</a></li>
+            <li>Preparer: {{ invoice.creator.profile.display_name }}</li>
+            <li>Last Modified: {{ invoice.last_modified }} by 
+                {% if invoice.last_modified_by %}
+                {{ invoice.last_modified_by.profile.display_name }}
+                {% else %}
+                {{ invoice.creator.profile.display_name }}
+                {% endif %}
+        </li>
+        </ul>
+    </div>
+    
+    <div id="invoice-info">
+        <ul>
+            <li><strong>Dates:</strong> {{ invoice.start_date }} - {{ invoice.end_date }}</li>
+            <li><strong>Labor cost:</strong> ${{ invoice.labor_cost }} </li>
+            <li><strong>Other cost:</strong> ${{ invoice.other_cost }}</li>
+        </ul>
+    </div>
 
-    <h2>COMMENTS</h2>
-    <div id="comments-section">
-    {% for comment in comments %}
-    <div class="comment">
-        <p><strong>{{ comment.creator.profile.display_name }}</strong> <span class="date">({{comment.created_at|date:"m/d/Y h:iA"}}) :</span>
-        <br>
-        <span class="comment-body"> {{comment.body}}</span>
-        </p>
-    </div>
-    {% endfor %}
-    </div>
     <!-- INVOICE OPTIONS FOR PREPARERS -->
     <div class="button-group">
-        {% if user.profile.role == "Observer" and invoice.status == 0 %}
-         <a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Submit</a>
-         <a class="button edit" href="{% url 'invoices:invoice_edit' pk=invoice.pk %}">Edit</a>
+        {% if user.profile.role == "Preparer" and invoice.status == 0 %}
+         <div class="fake-but"><a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Submit</a></div>
+         <div class="fake-but"><a class="button edit" href="{% url 'invoices:invoice_edit' pk=invoice.pk %}">Edit</a></div>
         {% endif %}
     </div>
 
     <!-- INVOICE OPTIONS FOR MANAGERS -->
     <div class="button-group">
-        {% if user.profile.role == "Observer" and invoice.status == 1 %}
+        {% if user.profile.role == "Manager" and invoice.status == 1 %}
         <a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Approve</a>
         <a class="button edit" href="{% url 'invoices:invoice_edit' pk=invoice.pk %}">Edit</a>
         <a class="button reject" href="{% url 'invoices:invoice_reject' pk=invoice.pk %}">Reject</a>
@@ -103,10 +127,21 @@
 
     <!-- INVOICE OPTIONS FOR Reviewers -->
     <div class="button-group">
-        {% if user.profile.role == "Observer" and invoice.status == 2 %}
+        {% if user.profile.role == "Reviewer" and invoice.status == 2 %}
         <a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Approve</a>
         <a class="button reject" href="{% url 'invoices:invoice_reject' pk=invoice.pk %}">Reject</a>
         {% endif %}
     </div>
-</body>
-</html>
+
+    <div id="comments-section">
+            <h2>COMMENTS</h2>
+        {% for comment in comments %}
+        <div class="comment">
+            <p class="commentor"><strong>{{ comment.creator.profile.display_name }}</strong> <span class="date">({{comment.created_at|date:"m/d/Y h:iA"}}) :</span></p>
+    
+            <p></p><span class="comment-body"> {{comment.body}}</span></p>
+            
+        </div>
+        {% endfor %}
+        </div>
+{% endblock %}

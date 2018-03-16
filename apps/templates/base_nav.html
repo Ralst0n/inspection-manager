@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    {% load static %}
+    {% block headers %}{% endblock %}
+    <link rel="stylesheet" href="{% static '/css/base_nav.css' %}">
+    
+    <style>
+        {% block styles %} {% endblock %}
+    </style>
+</head>
+<body>
+    <div class="container">
+            <div class="hamburger-container" onclick="flipBurger(this)">
+                    <div class="burger1" ></div>
+                    <div class="burger2" ></div>
+                    <div class="burger3" ></div>
+            </div>
+            
+            <div class="menu">
+                {% if request.user.profile.role == 'Observer' or request.user.profile.role == 'Reviewer' %}
+                <div class="menu-box"><a href={% url 'profiles:dashboard' %}>Home</a></div>
+                <div class="menu-box"><a href={% url 'invoices:invoices' %}>Invoices</a></div>
+                <div class="menu-box"><a href={% url 'projects' %}>Projects</a></div>
+                <div class="menu-box"><a href={% url 'equipment' %}>Devices</a></div>
+                <div class="menu-box"><a>Logout</a></div>
+                {% else %}
+                <div class="menu-box"><a href={% url 'profiles:dashboard' %}>Home</a></div>
+                <div class="menu-box"><a href={% url 'inspectors' %}>Inspectors</a></div>
+                <div class="menu-box"><a href={% url 'invoices:invoices' %}>Invoices</a></div>
+                <div class="menu-box"><a href={% url 'projects' %}>Projects</a></div>
+                <div class="menu-box"><a href={% url 'equipment' %}>Devices</a></div>
+                <!-- <div class="menu-box"><a>Partners</a></div> -->
+                <div class="menu-box"><a>Logout</a></div>
+                {% endif %}
+                
+            </div>
+
+            <nav>
+                    {% if request.user.profile.role == 'Observer' or request.user.profile.role == 'Reviewer' %}
+                    <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Home</a>
+                    <a class="lgmenu-box" href={% url 'invoices:invoices' %}>Invoices</a>
+                    <a class="lgmenu-box" href={% url 'projects' %}>Projects</a>
+                    <a class="lgmenu-box" href={% url 'equipment' %}>Devices</a>
+                    <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Logout</a>
+                    {% else %}
+                    <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Home</a>
+                    <a class="lgmenu-box" href={% url 'inspectors' %}>Inspectors</a>
+                    <a class="lgmenu-box" href={% url 'invoices:invoices' %}>Invoices</a>
+                    <a class="lgmenu-box" href={% url 'projects' %}>Projects</a>
+                    <a class="lgmenu-box" href={% url 'equipment' %}>Devices</a>
+                    <!-- <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Partners</a> -->
+                    <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>{{ request.user.profile.display_name }}</a>
+                    {% endif %}
+            </nav>
+
+            {% block content %}{% endblock %}
+    
+    <footer>
+        <div id="color-block"></div>
+        <div id="info">Ralston Lawson &copy; 2018</div>
+    </footer>
+    </div>
+        
+        <script>
+                function flipBurger(x) {
+                    x.classList.toggle("change");
+                    const menu_classes = document.getElementsByClassName("menu");
+                    menu = menu_classes[0];
+                    if (menu.style.display === "block") {
+                        menu.style.display = "none";
+                    } else {
+                        menu.style.display = "block";
+                    }
+                }
+                {% block script %}
+                {% endblock %}
+                
+        </script>
+</body>
+</html>

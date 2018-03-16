@@ -1,10 +1,11 @@
 from django.db import models
 
-from inspectors.models import Inspector, Notes
-from projects.models import Project, Invoice
-from partners.models import LetProject
+from .models import Inspector, Notes
+from apps.projects.models import Project
+from apps.invoices.models import Invoice
+from apps.partners.models import LetProject
 from datetime import date, datetime, timedelta
-from utils.helpers import formatted_date, last_sunday, next_sunday
+from apps.utils.helpers import formatted_date, last_sunday, next_sunday
 
 def check_let_projects(office):
     let_projects = '''<h2> The following projects have been proposed on ECMS:</h2>'''

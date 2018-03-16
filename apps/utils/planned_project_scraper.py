@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from decouple import config
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
@@ -9,8 +10,8 @@ import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ci_manager.settings")
 
 
-from partners.models import PlannedProject
-from utils.helpers import after_last_scrape, dateField_format, list_blend
+from apps.partners.models import PlannedProject
+from apps.utils.helpers import after_last_scrape, dateField_format, list_blend
 
 class PlannedProjectScraper:
     def __init__(self):
@@ -31,8 +32,8 @@ class PlannedProjectScraper:
 
     def login_user(self):
         # log user into ECMS website
-        my_username = str('')
-        my_password = str('')
+        my_username = config(ECMS_USERNAME)
+        my_password = config(ECMS_PASSWORD)
 
         self.driver.get(self.base_url)
         time.sleep(1) #

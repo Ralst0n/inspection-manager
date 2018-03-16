@@ -7,8 +7,8 @@ from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
-from partners.models import (LetProject, ProjectTeam, BusinessPartner )
-from utils.helpers import list_blend, none_project, before_cutoff_date
+from apps.partners.models import (LetProject, ProjectTeam, BusinessPartner )
+from apps.utils.helpers import list_blend, none_project, before_cutoff_date
 
 class LetProjectScrapper:
 

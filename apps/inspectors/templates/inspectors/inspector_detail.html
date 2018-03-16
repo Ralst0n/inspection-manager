@@ -1,6 +1,5 @@
-{% extends 'dashboard_base.html' %}
-{% load static from staticfiles %}
-{% static '' as staticURL %}
+{% extends 'base_nav.html' %}
+
 
 {% block title %} {{ inspector.first_name }} {{ inspector.last_name }} {% endblock %}
 {% block inspectors-nav %}active{% endblock %}
@@ -61,7 +60,7 @@
 {% if inspector.is_employee %}
 
 <p class="text-success">
-  {{ inspector.first_name }} {{inspector.last_name }} is a member of the {{inspector.office}} Engineering team and has been contributing to
+  {{ inspector.first_name }} {{inspector.last_name }} is a member of the {{inspector.office}} team and has been contributing to
   the success and growth of the company.
 </p>
 

@@ -1,0 +1,184 @@
+*, html, body {
+    box-sizing: border-box;
+
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    background-color: #FFF;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+nav {
+    display: none;
+}
+
+
+.hamburger-container {
+    display: block;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.burger1, .burger2, .burger3 {
+    width: 35px;
+    height: 5px;
+    background-color: #1269A8;
+    margin: 6px 0;
+    transition: 0.4s;
+}
+
+/* Rotate first burger */
+.change .burger1 {
+    -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+    transform: rotate(-45deg) translate(-9px, 6px);
+}
+
+/* Hide second burger patty */
+.change .burger2 {
+    opacity: 0;
+}
+
+/* Flip last burger up */
+.change .burger3 {
+    -webkit-transform: rotate(45deg) translate(-8px, -8px);
+    transform: rotate(45deg) translate(-8px, -8px);
+}
+
+.menu {
+    background-color: gold;
+    width: 100%;
+    height: auto;
+    padding: 0 14px;
+    padding-bottom: 14px;
+    /* max-height: 50%; */
+    display: none;
+    overflow: hidden;
+}
+
+.change .menu  {
+    display: block;
+    transition: 300px 0.4s ease;
+}
+
+.menu-box {
+    min-height: 48px;
+    height: auto;
+    width: auto;
+    background-color: white;
+    text-align: center;
+}
+
+h1{
+    margin: 0 auto;
+    text-align: center;
+    width: 100%;
+  }
+
+  footer{
+      margin-top: 150px;
+      width: 100%;
+      min-height: 150px;
+      background-color: sandybrown;
+      border: #fae;
+      text-align: center;
+  }
+
+  #color-block{
+      min-height:150px;
+      width: 100%;
+      background-color: orange;
+      border: #afe
+  }
+  .menu a{
+    color: #1269A8;
+}
+
+
+
+/* SCREEN SIZE OVER 800px */
+@media screen and (min-width: 800px) {
+    html, body {
+        background-color: #F1F1F1;
+        height: 100%;
+    }
+    .container{
+        border: 1px solid gold;
+        width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        height: auto;
+        background-color: #FFF;
+    }
+    nav{
+        display: inline-flex;
+        overflow: hidden;
+        background-color: #FFF;
+        position: relative;
+        top: 0;
+        width: 100%;
+        border-bottom: gold 1px solid;
+        margin-bottom: 30px;
+        vertical-align: top;
+    }
+
+    nav a{
+        color: #1269A8;
+    }
+    footer {
+        border-top: gold 1px solid;
+        width: 100%;
+    }
+    .hamburger-container .burger1, .burger2, .burger3, .menu, .change, .menu-box{
+        display: none;
+    }
+    div .menu {
+        display: none;
+    }
+
+
+    .lgmenu-box {
+        min-height: 24px;
+        height: auto;
+        width: auto;
+        font-size: 24px;
+        text-align: center;
+        padding: 14px 16px;
+        display: block;
+        text-decoration: none;
+        
+    }
+    .lgmenu-box:last-child {
+        float: right;
+        width: 100%;
+        text-align: right;
+    }
+    
+    
+}
+
+/* FORMS STUFF COPIED FROM INVOICE_CREATE */
+a, href{
+    text-decoration: none;
+}
+.button{
+    border: 1px solid black;
+    padding: 4px 6px;
+    margin: 15px;
+    margin-right: 3%;
+    background-color: #e0e0e0;
+    font-size: 2em;
+    color: #000;
+    border-radius: 5%;        
+}
+.reject{
+    background-color: red;
+}
+.submit{
+    background-color: rgb(82, 151, 68);
+    color: #fff;
+} 
