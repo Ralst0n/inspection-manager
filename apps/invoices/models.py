@@ -59,6 +59,9 @@ class Invoice(models.Model):
         Returns the url to access a particular invoice.
         """
         return reverse('invoices:details', args=[self.id])
+    @property
+    def total_cost(self):
+        return self.labor_cost + self.other_cost
 
 class Comments(models.Model):
     invoice = models.ForeignKey('invoice', on_delete=models.CASCADE)

@@ -73,12 +73,40 @@
         width: 100%;
         font-size: 24px;
     }
+    h1{
+        font-size: 40px;
+    }
+    h4{
+        text-align: center;
+        margin: 10px auto;
+    }
+    table, th, td{
+        border-collapse: collapse;
+        border: 1px solid #F1F1F1;
+        padding: 5px;
+        margin: 0 auto;
+    }
+    thead{
+        background-color: #1269A8;
+    }
+
+    th{
+        font-size: 24px;
+    }
+    td{
+        font-size: 20px;
+        text-align: center;
+    }
+    
     @media screen and (min-width: 450px) {
         .button-group {
             width: 400px;
             margin: 0 auto;
         }
+
     }
+
+
     {% endblock %}
 {% block content  %}
     {% if messages %}
@@ -86,7 +114,25 @@
             <p>{{ message }}</p>
         {% endfor %}
     {% endif %}
+    <h1> Invoice {{ invoice.name }}</h1>
+    <h4>({{invoice.start_date}} - {{invoice.end_date}})</h4>
     <div id="invoice-facts">
+        <table>
+            <thead>
+                <th>Business Partner</th>
+                <th>Project</th>
+                <th>Labor cost</th>
+                <th>Other Cost</th>
+                <th>Total Cost</th>
+            </thead>
+           <tbody>
+                <td>{{ invoice.project.business_partner }}</td>
+                <td><a href="{{invoice.project.get_absolute_url}}">{{ invoice.project.prudent_number }}</a></td>
+                <td>${{ invoice.labor_cost }}</td>
+                <td>${{ invoice.other_cost }}</td>
+                <td>${{ invoice.total_cost }}</td>
+           </tbody>
+        </table>
         <ul>
             <li><a class="doc" href="{{ MEDIA_URL}}/{{ invoice.invoice_file }}" target="_blank">View invoice {{ invoice.name }}</a></li>
             <li>Preparer: {{ invoice.creator.profile.display_name }}</li>
@@ -100,13 +146,6 @@
         </ul>
     </div>
     
-    <div id="invoice-info">
-        <ul>
-            <li><strong>Dates:</strong> {{ invoice.start_date }} - {{ invoice.end_date }}</li>
-            <li><strong>Labor cost:</strong> ${{ invoice.labor_cost }} </li>
-            <li><strong>Other cost:</strong> ${{ invoice.other_cost }}</li>
-        </ul>
-    </div>
 
     <!-- INVOICE OPTIONS FOR PREPARERS -->
     <div class="button-group">

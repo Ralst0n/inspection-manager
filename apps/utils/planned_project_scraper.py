@@ -1,13 +1,12 @@
+import time
+import traceback
+import os
+
 from bs4 import BeautifulSoup
 from decouple import config
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-import time
-import traceback
-
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "ci_manager.settings")
 
 
 from apps.partners.models import PlannedProject
@@ -32,11 +31,15 @@ class PlannedProjectScraper:
 
     def login_user(self):
         # log user into ECMS website
-        my_username = config(ECMS_USERNAME)
-        my_password = config(ECMS_PASSWORD)
+        my_username = config('ECMS_USERNAME')
+        my_password = config('ECMS_PASSWORD')
 
         self.driver.get(self.base_url)
         time.sleep(1) #
+
+        print(my_username)
+        print(my_password)
+        print(f"{my_password} is equal to Njs=1230 is {my_password == 'Njs=1230'}")
 
         #Entering user/pass into ECMS loggin page
         user_elem = self.driver.find_element_by_name("userid")
@@ -81,7 +84,7 @@ class PlannedProjectScraper:
             if PlannedProject.objects.count() > 0:
                 last_run_date = formatted_date(PlannedProject.objects.latest('scrapped_date'))
             else:
-                last_run_date = '12/25/2017'
+                last_run_date = '03/01/2018'
 
             project_name = row.find_all('td')[3].string.lower()
             if 'construction inspection' in project_name and after_last_scrape(row.find_all('td')[4].contents[0].strip(),last_run_date):

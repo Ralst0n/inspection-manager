@@ -1,8 +1,9 @@
 from django.contrib import admin
-from .models import Inspector, Notes
+from .models import Inspector, Notes, History
 # Register your models here.
 admin.site.register(Notes)
 
+admin.site.register(History)
 
 @admin.register(Inspector)
 class InspectorAdmin(admin.ModelAdmin):

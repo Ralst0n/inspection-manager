@@ -129,7 +129,7 @@ class History(models.Model):
     inspector = models.ForeignKey('inspector', on_delete=models.CASCADE)
     job = models.ForeignKey('projects.Project', on_delete=models.CASCADE, null=True)
     start_date = models.DateField()
-    stop_date = models.DateField(null=True)
+    stop_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         person = f"{self.inspector.first_name} {self.inspector.last_name}"
@@ -138,5 +138,13 @@ class History(models.Model):
     
     @property 
     def duration(self):
-        return self.stop_date - self.start_date
-    
+        '''
+        find duration on job by subtracting the stop date from the start date.
+        If the job is still active use today as the theoretical stop date.
+        '''
+        if self.stop_date:
+            stop_date = self.stop_date
+        else:
+            stop_date = datetime.now().date()
+        days = (stop_date - self.start_date).days
+        return float(days/ 365)

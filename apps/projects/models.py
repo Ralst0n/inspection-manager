@@ -3,6 +3,7 @@ from django.db.models import Sum
 from django.urls import reverse
 from datetime import datetime, date
 
+from apps.invoices.models import Invoice
 
 # Create your models here.
 class Project(models.Model):
@@ -50,21 +51,19 @@ class Project(models.Model):
         # access that key to get total. Do same for other cost
         if self.invoice_set:
             payroll_agg = self.invoice_set.aggregate(models.Sum('labor_cost'))
-            payroll = payroll_agg.get('labor_cost__sum', 0.00)
-        payroll = 0
+            payroll = payroll_agg.get('labor_cost__sum', 5.00)
         return float(payroll)
 
     @property
     def other_cost_to_date(self):
         other_cost_agg = self.invoice_set.aggregate(models.Sum('other_cost'))
-        other_cost = other_cost_agg.get('other_cost__sum', 0.00)
-        other_cost = 0
+        other_cost = other_cost_agg.get('other_cost__sum', 5.00)
         return float(other_cost)
     
     @property
     def total_invoiced(self):
         ''' Sum of `payroll_to_date` & 1other_cost_to_date1 ''' 
-        self.payroll_to_date + self.other_cost_to_date
+        return self.payroll_to_date + self.other_cost_to_date
     @property
     def total_budget(self):
         ''' Sum of payroll and other cost budgets '''
@@ -81,13 +80,34 @@ class Project(models.Model):
     @property
     def last_invoiced(self):
         """
-        return the end date on the most recent invoice instance
+        return the end date on the most recent invoice instance as a string
         """
         if self.invoice_set is None:
             return self.start_date.strftime("%m/%d/%y")
         latest_invoice = self.invoice_set.latest('end_date')
         return latest_invoice.end_date.strftime("%m/%d/%Y")
+    
+    def get_last_invoiced(self):
+        """
+        find the last date the job was invoiced up to
+        """
+        if (not Invoice.objects.filter(project__exact=self)):
+            return self.start_date
+        last_date = Invoice.objects.filter(project__exact=self).order_by('-end_date').first().end_date
+        return last_date
+    @property
+    def remaining_budget(self):
+        """
+        return the difference of total_budget and total_invoiced
+        """
+        return float(self.total_budget) - float(self.total_invoiced)
 
+    @property
+    def budget_utilization(self):
+        """
+        return the difference of total_budget and total_invoiced
+        """
+        return (self.total_invoiced/float(self.total_budget)*100)
     @property
     def end_date(self):
         """

@@ -1,18 +1,39 @@
 {% extends 'base_nav.html' %}
 
+{% block headers %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+{% endblock %}
 
 {% block title %} {{ inspector.first_name }} {{ inspector.last_name }} {% endblock %}
-{% block inspectors-nav %}active{% endblock %}
+{% block styles %}
+  .container {
+    width: 90%;
+  }
+  .table-container{
+    width: 100%;
+  }
+  .table-container *{
+    margin: 10px auto;
+    text-align: center;
+  }
+
+  .table-container table{
+
+  }
+  #work-history {
+    border: 1px dotted red;
+  }
+{% endblock %}
 
 {% block content %}
-<h2 class="text-center"> {{ inspector.first_name }} {{inspector.last_name}} ({{inspector.classification}})</h2>
-<hr><br>
-<div class="row">
+<h1 class="text-center"> {{ inspector.first_name }} {{inspector.last_name}} ({{inspector.classification}})</h1>
+
 
 
 <div class="offset-sm-3 col-sm-4">
   <h5>Contact Information</h5>
-  <hr>
   <p><strong>Email: </strong>{{ inspector.email }}</p>
   <p><strong>Phone: </strong>
     {% if inspector.phone_number %}
@@ -26,7 +47,6 @@
 </div>
 <div class="col-sm-4">
   <h5>Project information</h5>
-  <hr>
   <p><strong>Current Project: </strong>
     {% if inspector.get_current_project %}
     {% for project in inspector.get_current_project %}<a href="{{project.get_absolute_url}}">{{project.penndot_number}}</a> ({{project.prudent_number}}) {% endfor %}
@@ -52,38 +72,54 @@
       None
     {% endif %}
 </div>
-</div>
-<br>
+
 
 
 
 {% if inspector.is_employee %}
+<div id="certs-table" class="table-container">
+  <h2>Cert Expiration Dates</h2>
 
-<p class="text-success">
-  {{ inspector.first_name }} {{inspector.last_name }} is a member of the {{inspector.office}} team and has been contributing to
-  the success and growth of the company.
-</p>
+    <table class="table">
+      <thead>
+        <th>NICET</th>
+        <th>PennDot Bituminous</th>
+        <th>NECEPT Bituminous</th>
+        <th>PennDot Concrete</th>
+        <th>ACI Concrete</th>
+      </thead>
+      <tbody>
+      <tr>
+        <td>{{inspector.nicet_expiration}}</td>
+        <td>{{inspector.penndot_bituminous}}</td>
+        <td>{{inspector.necept_bituminous}}</td>
+        <td>{{inspector.penndot_concrete}}</td>
+        <td>{{inspector.aci_concrete}}</td>
+      </tr>
+    </tbody>
+    </table>
+</div>
 
-<h2>Cert Expiration Dates</h2>
-<p><a href="{{ STATIC_URL }}/static/resumes/{{inspector.first_name}}_{{inspector.last_name}}.pdf">View ECMS Resume</a></p>
-<div class="table-responsive">
-  <table class="table">
+<div id="work-history" class="">
+  <h2>Work History</h2>
+  <table id="history-table">
     <thead>
-      <th>NICET</th>
-      <th>PennDot Bituminous</th>
-      <th>NECEPT Bituminous</th>
-      <th>PennDot Concrete</th>
-      <th>ACI Concrete</th>
+      <th>Project</th>
+      <th>Duration</th>
+      <th>Start Date</th>
+      <th>End Date</th>
     </thead>
-    <tr>
-      <td>{{inspector.nicet_expiration}}</td>
-      <td>{{inspector.penndot_bituminous}}</td>
-      <td>{{inspector.necept_bituminous}}</td>
-      <td>{{inspector.penndot_concrete}}</td>
-      <td>{{inspector.aci_concrete}}</td>
-    </tr>
+    <tbody>
+      {% for story in history %}
+      <tr>
+      <td>{{story.job.prudent_number}}</td>
+      <td>{{story.duration|floatformat:1}} years </td>
+      <td>{{story.start_date}}</td>
+      <td>{{story.stop_date}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
   </table>
-
 </div>
 {% else %}
 <h2> Notes on {{ inspector.first_name }}: </h2>
@@ -99,4 +135,14 @@
     <tr>
   {% endfor %}
 {% endif %}
+
+
+{% endblock %}
+{% block script %}
+  $(document).ready(function() {
+    $('#history-table').DataTable({
+      "pageLength": 5,
+      "lengthChange": false
+    });
+} );
 {% endblock %}

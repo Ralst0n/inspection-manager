@@ -22,7 +22,6 @@ def scrape_let_projects():
 
 
 def scrape_planned_projects():
-    return 'c'
     p = PlannedProjectScraper()
     scraped_projects = p.run()
     if not scraped_projects:
@@ -50,7 +49,7 @@ def email_news_letter(office='King of Prussia'):
     message += check_project_burnrate(office)
     if not message:
         message += "Nothing to work on this week."
-    return message[:140]
+    return message
     mail.send_mail(
         subject,
         message,

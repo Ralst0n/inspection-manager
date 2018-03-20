@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^create$', views.InspectorCreateView.as_view(), name='inspector-create'),
     url(r'^update/(?P<pk>\d+)$', views.InspectorUpdateView.as_view(), name='inspector-update'),
     path('scrape_projects', views.ScrapeProjects,),
+    path('email_newsletter', views.Newsletter,),
 ]

@@ -39,7 +39,6 @@ class ProjectsListView(LoginRequiredMixin, generic.ListView):
         groups = []
         for group in self.request.user.groups.all():
             groups.append(str(group))
-        # return Project.objects.filter(completed__exact=False).filter(office__in=groups)
         return Project.objects.filter(office=office).filter(completed__exact=False)
 
 class ProjectsDetailView(LoginRequiredMixin, generic.DetailView):

@@ -2,16 +2,17 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User, Group
 from django.db.models import Q, Sum
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views import generic
 
 from datetime import datetime
 
-from .models import Inspector, Notes
+from .models import History, Inspector, Notes
 from apps.projects.models import Project
 from apps.invoices.models import Invoice
-from .tasks import email_news_letter, scrape_let_projects
+from .tasks import email_news_letter, scrape_planned_projects
 # Create your views here.
 
 @login_required
@@ -120,12 +121,15 @@ class InspectorDetailView(
         context = super().get_context_data(**kwargs)
         # self.object gives you access to the object the detail page is for.
         context['notes'] = Notes.objects.filter(inspector=self.object).order_by('-created_at')
+        context['history'] = History.objects.filter(inspector=self.object).order_by('-start_date')
         return context
 
 @user_passes_test(lambda u: u.is_superuser)
 def ScrapeProjects(request):
-    return scrape_let_projects();
+    resp = scrape_planned_projects()
+    return HttpResponse(resp)
 
 @user_passes_test(lambda u: u.is_superuser)
-def newsletter(request):
-    return email_news_letter();
+def Newsletter(request):
+    resp = email_news_letter()
+    return HttpResponse(resp)

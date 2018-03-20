@@ -24,6 +24,7 @@ def check_let_projects(office):
     return ''
 
 def check_inspector_certs(office):
+    ''' For each inspector, if they have a certain certification, make suer the expiration date isn't within the next 90 days '''
     future_date = date.today() + timedelta(days=90)
     cert_html = '''<h2> Inspector Updates </h2>'''
     for inspector in Inspector.objects.filter(office=office):
@@ -54,9 +55,9 @@ def check_invoice_created(office):
         month has happened yet. If it has we list the invoices that need updating.
      '''
     # last sunday wasn't the last sunday of the month, don't run this.
-    if last_sunday().month == (next_sunday().month):
+    if datetime.now() - timedelta(days=21) == (next_sunday().month):
         return ''
-    new_invoice_html = '''<h2> This week in Invoices </h2>'''
+    new_invoice_html = '''<h2> This Week in Invoices </h2>'''
 
     for project in Project.objects.filter(office=office).filter(active=True):
         new_invoice_html += f'''<p>{project.penndot_number} needs to be invoiced from {formatted_date(project.get_last_invoiced())} to
@@ -64,7 +65,8 @@ def check_invoice_created(office):
 
     new_invoice_html += '''<p font-size:8px>
     Invoice data can be added at <a href='https://www.prudentrlawson.pythonanywhere.com/projects/invoices/update'>here</a>.
-    <br/> Projects can be set to inactive <a href='https://www.prudentrlawson.pythonanywhere.com/projects/update'>here</a>.
+    <br/> 
+    Projects can be set to inactive <a href='https://www.prudentrlawson.pythonanywhere.com/projects/update'>here</a>.
     </p>'''
     return new_invoice_html
 
@@ -73,12 +75,13 @@ def check_invoice_reviewed(office):
     If an invoice is logged, but has no invoice number, we see if it was
     forgotten or if syracuse has to be hit up
     '''
-    recent_date = datetime.now() - timedelta(days=45)
+    recent_date = datetime.now() + timedelta(days=7)
     reviewed_invoice = "<h2>Pending Invoices</h2>"
 
-    for invoice in Invoice.objects.filter(end_date__gte=recent_date):
-        if invoice.estimate_number is '':
-            reviewed_invoice += '''<p> I'm missing an invoice number for {invoice.project.prudent_number} #{invoice.estimate_number}</p>'''
+    for invoice in Invoice.objects.filter(last_modified__lte=recent_date).filter(status__lte=2):
+        if not invoice.invoice_number:
+            reviewed_invoice += f'''<p> I'm missing an invoice number for {invoice.project.prudent_number} #{invoice.estimate_number}, which is currently
+            {invoice.readable_status}</p>'''
 
     if len(reviewed_invoice) > 30:
         reviewed_invoice += '''<p>Invoice numbers can be added <a href='Prudentrlawson.pythonanywhere.com/invoices/update'>here</a>.</p>'''
@@ -90,7 +93,7 @@ def check_project_burnrate(office):
     '''
     See if any projects are like to run out of money soon
     '''
-    burn_notice = '''<h2>The following project budgets are approaching:</h2>'''
+    burn_notice = '''<h2>Budgets Approaching:</h2>'''
     for project in Project.objects.filter(office=office).filter(active=True):
         # Get the average amount of the last 3 invoices' labor cost
         last_3_avg = project.invoice_set.order_by("-id")[:3].aggregate(models.Avg('labor_cost'))
