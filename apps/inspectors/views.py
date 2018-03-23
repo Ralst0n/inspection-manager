@@ -122,6 +122,7 @@ class InspectorDetailView(
         # self.object gives you access to the object the detail page is for.
         context['notes'] = Notes.objects.filter(inspector=self.object).order_by('-created_at')
         context['history'] = History.objects.filter(inspector=self.object).order_by('-start_date')
+        context['id'] = self.kwargs['pk']
         return context
 
 @user_passes_test(lambda u: u.is_superuser)

@@ -11,6 +11,20 @@
   .container {
     width: 90%;
   }
+  h5{
+    font-size: 20px;
+  }
+  #information {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  #information div {
+    margin: 0 auto;
+    width: 50%;
+    min-width: 200px;
+    text-align: center;
+  }
   .table-container{
     width: 100%;
   }
@@ -18,12 +32,28 @@
     margin: 10px auto;
     text-align: center;
   }
-
-  .table-container table{
-
+  #certs-table{
+    margin: 50px auto;
   }
+  #certs-table table, #certs-table th, #certs-table td {
+    border-collapse: collapse;
+    border: 1px solid #F1F1F1;
+    padding: 5px;
+  }
+
   #work-history {
-    border: 1px dotted red;
+    margin: 20px auto;
+    width: 70%;
+  }
+  #history-table td{
+    text-align: center;
+    color: blue;
+  }
+  #work-history h2 {
+    text-align:center;
+  }
+  .options {
+    width: 100%;
   }
 {% endblock %}
 
@@ -31,46 +61,47 @@
 <h1 class="text-center"> {{ inspector.first_name }} {{inspector.last_name}} ({{inspector.classification}})</h1>
 
 
+<div id="information">
+  <div>
+    <h5>Contact Information</h5>
+    <p><strong>Email: </strong>{{ inspector.email }}</p>
+    <p><strong>Phone: </strong>
+      {% if inspector.phone_number %}
+          ({{ inspector.phone_number|slice:":3"  }}) {{ inspector.phone_number|slice:"3:6"}}-{{ inspector.phone_number|slice:"6:"}}
+      {% else %}
+          Unlisted
+      {% endif %}
+    </p>
+    <p><strong>Address: </strong>{{ inspector.address }} {{ inspector.location }}</p>
+  </div>
 
-<div class="offset-sm-3 col-sm-4">
-  <h5>Contact Information</h5>
-  <p><strong>Email: </strong>{{ inspector.email }}</p>
-  <p><strong>Phone: </strong>
-    {% if inspector.phone_number %}
-        ({{ inspector.phone_number|slice:":3"  }}) {{ inspector.phone_number|slice:"3:6"}}-{{ inspector.phone_number|slice:"6:"}}
-    {% else %}
-        Unlisted
-    {% endif %}
-  </p>
-  <p><strong>Address: </strong>{{ inspector.address }} {{ inspector.location }}</p>
-
-</div>
-<div class="col-sm-4">
-  <h5>Project information</h5>
-  <p><strong>Current Project: </strong>
-    {% if inspector.get_current_project %}
-    {% for project in inspector.get_current_project %}<a href="{{project.get_absolute_url}}">{{project.penndot_number}}</a> ({{project.prudent_number}}) {% endfor %}
-    {% elif inspector.is_employee %}
-    <span class="text-danger">Unemployed</span>
-    {% else %}
+  <div>
+    <h5>Project information</h5>
+    <p><strong>Current Project: </strong>
+        {% for project in inspector.get_current_project %}
+          {% if forloop.first %}
+            <a href="{{project.job.get_absolute_url}}">{{project.job.prudent_number}}</a>
+          {% endif %}
+        {% empty %}
+          <span>THERE B NOTHING HERE!</span>
+        {% endfor %}
+    </p>
+    <p><strong>Name:</strong>
+      {% if inspector.get_current_project %}
+      {% for project in inspector.get_current_project %}<a href="{{story.job.get_absolute_url}}">{{story.job.name}}</a>{% endfor %}
+      {% elif inspector.is_employee %}
+      <span class="text-danger">None</span>
+      {% else %}
       N/A
-    {% endif %}
-  </p>
-  <p><strong>Name:</strong>
-    {% if inspector.get_current_project %}
-    {% for project in inspector.get_current_project %}<a href="{{project.get_absolute_url}}">{{project.name}}</a>{% endfor %}
-    {% elif inspector.is_employee %}
-    <span class="text-danger">None</span>
-    {% else %}
-    N/A
-    {% endif %}
-  </p>
-  <p><strong>Devices: </strong>
-    {% if inspector.get_equipment_list %}
-      {% for device in inspector.get_equipment_list %}<a href="{{ device.item.get_absolute_url }}"> {{device.item.name}} ({{device.item.device}})</a></span> {% if not forloop.last %} | {% endif %} {% endfor %}</p>
-    {% else %}
-      None
-    {% endif %}
+      {% endif %}
+    </p>
+    <p><strong>Devices: </strong>
+      {% if inspector.get_equipment_list %}
+        {% for device in inspector.get_equipment_list %}<a href="{{ device.item.get_absolute_url }}"> {{device.item.name}} ({{device.item.device}})</a></span> {% if not forloop.last %} | {% endif %} {% endfor %}</p>
+      {% else %}
+        None
+      {% endif %}
+  </div>
 </div>
 
 
@@ -112,7 +143,7 @@
     <tbody>
       {% for story in history %}
       <tr>
-      <td>{{story.job.prudent_number}}</td>
+      <td><a href="{{story.job.get_absolute_url}}">{{story.job.prudent_number}}</a></td>
       <td>{{story.duration|floatformat:1}} years </td>
       <td>{{story.start_date}}</td>
       <td>{{story.stop_date}}</td>
@@ -136,7 +167,12 @@
   {% endfor %}
 {% endif %}
 
+<div class="options">
+    {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
+    <a class="button submit" href="{% url 'inspector-update' pk=inspector.id %}">Edit Inspector</a>
 
+    {% endif %}
+</div>
 {% endblock %}
 {% block script %}
   $(document).ready(function() {

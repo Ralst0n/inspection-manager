@@ -1,11 +1,23 @@
 {% extends 'table_page.html' %}
 
 {% block title %}Inspector List{% endblock %}
-
+{% block morestyles %}
+#table-wrapper{
+  width: 100%;
+  background: red;
+}
+.options{
+  width: 100%;
+  text-align: center;
+}
+.options a{
+  margin: 0 auto;
+}
+{% endblock %}
 {% block inspectors-nav %}active{% endblock %}
 
 {% block page_name %}My Inspectors{% endblock %}
-{%block table-properties %}table table-border {%endblock %}
+<div id='table-wrapper'>{%block table-properties %}table table-border {%endblock %}
 {% block table_head %}
   <th>Name</th>
   <th>classification</th>
@@ -17,5 +29,13 @@
     <td>{{ inspector.classification }}</td>
   </tr>
   {% endfor %}
+</div>
 {% endblock %}
-
+{% block create %} 
+<div class="options">
+    {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
+    <a class="button submit" href="{% url 'inspector-create' %}">Add Inspector</a>
+    <a class="button" href="{% url 'search-inspectors'%}">Toggle Inspectors</a>
+    {% endif %}
+</div>
+{% endblock %}

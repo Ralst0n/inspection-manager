@@ -97,14 +97,16 @@ class Inspector(models.Model):
             for device in equipment:
                 devices.append(device)
             return devices
-
+    @property
     def get_current_project(self):
-        project = History.objects.filter( inspector=self)
+        projects = History.objects.filter(inspector=self).order_by("-stop_date")
         job = []
-        if project:
-            for proj in project:
+        if projects:
+            for proj in projects:
                 job.append(proj)
-            return job
+            if job[0].stop_date:
+                return
+        return job
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

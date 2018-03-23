@@ -7,8 +7,8 @@
   <tr>
     <th>Agreement Number</th>
     <th>Project Number</th>
-    <th>Budget</th>
-    <th>Total Invoiced</th>
+    <!-- <th>Budget</th>
+    <th>Total Invoiced</th> -->
     <th>Invoiced Through</th>
   </tr>
   {% endblock %}
@@ -17,8 +17,8 @@
   <tr>
     <td><a href="{{ project.get_absolute_url }}">{{project.penndot_number}}</a></td>
     <td>{{ project.prudent_number }}</td>
-    <td>${{ project.total_budget }}</td>
-    <td>${{ project.total_invoiced }}</td>
+    <!-- <td>${{ project.total_budget|floatformat:2 }}</td>
+    <td>${{ project.total_invoiced|floatformat:2 }}</td> -->
     <td>{{ project.last_invoiced }}</td>
   </tr>
   {% endfor %}

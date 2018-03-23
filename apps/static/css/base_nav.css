@@ -12,9 +12,14 @@
     padding-top: 0;
     padding-bottom: 0;
 }
-
+#site-nav{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
 nav {
     display: none;
+    margin-top: auto;
 }
 
 
@@ -84,16 +89,21 @@ h1{
       margin-top: 150px;
       width: 100%;
       min-height: 150px;
-      background-color: sandybrown;
-      border: #fae;
+      display: flex;
+      flex-direction: column;
       text-align: center;
   }
 
   #color-block{
       min-height:150px;
+      height:100%;
       width: 100%;
-      background-color: orange;
-      border: #afe
+      background-color: #F37224;
+  }
+  #info{
+      height: 25px;
+      background-color: sandybrown;
+      margin-top: auto;
   }
   .menu a{
     color: #1269A8;
@@ -107,7 +117,9 @@ h1{
         background-color: #F1F1F1;
         height: 100%;
     }
-
+    #site-nav{
+        border-bottom: gold 1px solid;
+    }
     nav{
         display: inline-flex;
         overflow: hidden;
@@ -115,7 +127,7 @@ h1{
         position: relative;
         top: 0;
         width: 100%;
-        border-bottom: gold 1px solid;
+        margin-top: auto;
         margin-bottom: 30px;
         vertical-align: top;
     }
@@ -126,6 +138,7 @@ h1{
     footer {
         border-top: gold 1px solid;
         width: 100%;
+        max-height: 450px;
     }
     .hamburger-container .burger1, .burger2, .burger3, .menu, .change, .menu-box{
         display: none;
