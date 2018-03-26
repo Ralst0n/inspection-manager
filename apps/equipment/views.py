@@ -22,3 +22,13 @@ class EquipmentDetailView(LoginRequiredMixin, generic.DetailView):
             return {}
         else:
             return _object
+
+class EquipmentCreateView(generic.edit.CreateView):
+    template_name = 'create_inspector.html'
+    model = Equipment
+    fields = '__all__'
+
+class EquipmentUpdateView(generic.edit.UpdateView):
+    template_name = 'create_inspector.html'
+    model = Equipment
+    fields = '__all__'
