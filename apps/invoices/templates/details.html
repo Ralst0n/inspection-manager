@@ -178,7 +178,7 @@
         <div class="comment">
             <p class="commentor"><strong>{{ comment.creator.profile.display_name }}</strong> <span class="date">({{comment.created_at|date:"m/d/Y h:iA"}}) :</span></p>
     
-            <p></p><span class="comment-body"> {{comment.body}}</span></p>
+            <p><span class="comment-body"> {{comment.body}}</span></p>
             
         </div>
         {% endfor %}

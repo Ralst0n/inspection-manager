@@ -66,29 +66,7 @@ class Inspector(models.Model):
         blank=True, null=True)
     aci_concrete = models.DateField("ACI Concrete Expiration", blank=True,
         null=True)
-    district_1_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0
-    )
-    district_2_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0)
-    district_3_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0)
-    district_4_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0)
-    district_5_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0)
-    district_6_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0)
-    district_8_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0)
-    district_9_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0)
-    district_10_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0)
-    district_11_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0)
-    district_12_experience = models.DecimalField(max_digits=3, decimal_places=1,
-        help_text="this is a number of years", null=True, default=0)
+
 
     def get_equipment_list(self):
         equipment = (Checkout.objects.filter(user=self, return_date__isnull=True))

@@ -55,6 +55,29 @@
   .options {
     width: 100%;
   }
+  #notes-section {
+    border: black 1px solid;
+    width: 100%;
+    margin: 10%;
+    height: 300px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.comment{
+   /*  background-color: rgba(255, 255, 255, 0.959);  */
+    border: 1px solid gray;
+    
+    padding: 1% 0;
+    margin: 0;
+}
+
+.comment-body{
+    padding-left: 1.75%;
+    margin-top: 30px;
+    font-size: 85%;
+    font-family: Arial, Helvetica, sans-serif
+}
 {% endblock %}
 
 {% block content %}
@@ -83,16 +106,16 @@
             <a href="{{project.job.get_absolute_url}}">{{project.job.prudent_number}}</a>
           {% endif %}
         {% empty %}
-          <span>THERE B NOTHING HERE!</span>
+          <span>None</span>
         {% endfor %}
     </p>
     <p><strong>Name:</strong>
       {% if inspector.get_current_project %}
-      {% for project in inspector.get_current_project %}<a href="{{story.job.get_absolute_url}}">{{story.job.name}}</a>{% endfor %}
-      {% elif inspector.is_employee %}
-      <span class="text-danger">None</span>
-      {% else %}
-      N/A
+        {% for project in inspector.get_current_project %}
+          {% if forloop.first %}
+            {{project.job.name}}
+          {% endif %}
+        {% endfor %}
       {% endif %}
     </p>
     <p><strong>Devices: </strong>
@@ -133,7 +156,7 @@
 
 <div id="work-history" class="">
   <h2>Work History</h2>
-  <table id="history-table">
+  <table id="history-table" class="datatable">
     <thead>
       <th>Project</th>
       <th>Duration</th>
@@ -153,18 +176,19 @@
   </table>
 </div>
 {% else %}
+<div id="notes-section">
 <h2> Notes on {{ inspector.first_name }}: </h2>
-<div class="table-responsive">
-  <table class="table">
-    <thead>
-      <th>Author</th>
-      <th>Note</th>
   {% for note in notes %}
-    <tr>
-      <td>[{{note.created_at}}] {{note.creator.first_name}}:</td>
-      <td><strong>{{note.body}}</strong><td>
-    <tr>
+  <div class="comment">
+      <p class="commentor"><strong>{{ note.creator.profile.display_name }}</strong> <span class="date">({{note.created_at|date:"m/d/Y h:iA"}}) :</span></p>
+
+      <p><span class="comment-body"> {{note.body}}</span></p>
+      
+  </div>
   {% endfor %}
+    </tbody>
+  </table>
+</div>
 {% endif %}
 
 <div class="options">
@@ -176,7 +200,7 @@
 {% endblock %}
 {% block script %}
   $(document).ready(function() {
-    $('#history-table').DataTable({
+    $('.datatable').DataTable({
       "pageLength": 5,
       "lengthChange": false
     });

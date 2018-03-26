@@ -1,5 +1,16 @@
 {% extends 'base_nav.html' %}
-
+{% block styles %}
+  td input, td select{
+    margin-bottom: 20px;
+    margin-top: 10px;
+    margin-left: 10%;
+    width: 300px;
+    padding: 15px;
+    border-radius:5px;
+    border:1px solid #7ac9b7;
+    display: block;
+  }
+{% endblock %}
 {% block content %}
 <h1>Add Inspector</h1>
 
@@ -8,7 +19,14 @@
     <table>
       {{ form.as_table }}
     </table>
-    <input class="button" type="submit" value="save" />
-
+    <div>
+      <input class="button" type="submit" value="Save" />
+      <!-- Cancel button goes back to the inspector page if there is an inpsector primary key, otherwise it goes back to the list -->
+      {% if inspector.id %}
+      <a class="button reject" href="{% url 'inspector-detail' pk=inspector.id %}">Cancel</a>
+      {% else %}
+      <a class="button reject" href="{% url 'inspectors' %}">Cancel</a>
+      {% endif %}
+    </div>  
 </form>
 {% endblock %}
