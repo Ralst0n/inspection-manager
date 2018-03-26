@@ -40,6 +40,20 @@ class Equipment(models.Model):
             last_name = Checkout.objects.filter(
                 item=self).order_by('-checkout_date').first().user.last_name
             return "{} {}".format(first_name, last_name)
+    
+    @property
+    def current_user(self):
+        """
+        get the most recent user of the object
+        """
+        #to get just the user append the field name to end of search
+        if Checkout.objects.filter(item=self).order_by(
+                '-checkout_date').exists():
+            first_name = Checkout.objects.filter(
+                item=self).order_by('-checkout_date').first().user.first_name
+            last_name = Checkout.objects.filter(
+                item=self).order_by('-checkout_date').first().user.last_name
+            return Checkout.objects.filter(item=self).order_by('-checkout_date').first().user
 
 class Checkout(models.Model):
     item = models.ForeignKey(Equipment, on_delete=models.CASCADE)
