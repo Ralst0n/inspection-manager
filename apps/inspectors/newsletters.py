@@ -3,15 +3,15 @@ from django.db import models
 from .models import Inspector, Notes
 from apps.projects.models import Project
 from apps.invoices.models import Invoice
-from apps.partners.models import LetProject
+from apps.partners.models import LetProject, PlannedProject
 from datetime import date, datetime, timedelta
 from apps.utils.helpers import formatted_date, last_sunday, next_sunday
 
-def check_let_projects(office):
-    let_projects = '''<h2> The following projects have been proposed on ECMS:</h2>'''
+def check_planned_projects(office):
+    planned_projects = '''<h2> Coming soon to a city near you:</h2>'''
 
-    for project in LetProject.objects.filter(office=office).filter(scrapped_date=LetProject.objects.latest('scrapped_date')):
-        let_projects += f'''<strong><p>
+    for project in PlannedProject.objects.filter(office=office).filter(scrapped_date=PlannedProject.objects.latest('scrapped_date')):
+        planned_projects += f'''<strong><p>
         {project.name}(<a href={project.url}>{project.agreement_number}</a>):</p></strong>
         <br/>
         <p>Cost: {project.cost}</p>
@@ -19,8 +19,8 @@ def check_let_projects(office):
         <br>
         <p>{description}</p>'''
 
-    if len(let_projects) > 65:
-        return let_projects
+    if len(planned_projects) > 65:
+        return planned_projects
     return ''
 
 def check_inspector_certs(office):
