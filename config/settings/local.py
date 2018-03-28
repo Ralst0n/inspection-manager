@@ -3,7 +3,7 @@ from decouple import config
 
 DEBUG = config('DJANGO_DEBUG', True)
 
-SECRET_KEY = config('DJANGO_SECRET_KEY')#,default='eji@ah)fc#m$uvaj579%h59q&92n%q@d7t_joy!t*bo5g5sm9z')
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 EMAIL_HOST = config('EMAIL_HOST')
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
