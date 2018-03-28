@@ -11,6 +11,9 @@ class PlannedProject(models.Model):
     advance_date = models.DateField()
     scrapped_date = models.DateField(auto_now_add=True)
 
+    def __str__(self):
+        return self.agreement_number
+
 class BusinessPartner(models.Model):
     name = models.CharField(max_length=255)
     image = models.URLField(blank=True, null=True)

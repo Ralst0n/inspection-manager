@@ -142,7 +142,12 @@
                 {% else %}
                 {{ invoice.creator.profile.display_name }}
                 {% endif %}
-        </li>
+            </li>
+            {% if invoice.invoice_number %}
+            <li>
+                Invoice Number: {{ invoice.invoice_number }}
+            </li>
+            {% endif %}
         </ul>
     </div>
     
@@ -164,9 +169,17 @@
         {% endif %}
     </div>
 
-    <!-- INVOICE OPTIONS FOR Reviewers -->
+    <!-- INVOICE OPTIONS FOR REVIEWERS ORIGINAL-->
     <div class="button-group">
-        {% if user.profile.role == "Reviewer" and invoice.status == 2 %}
+        {% if user.profile.role == "Reviewer" and invoice.status == 2 and not invoice.invoice_number %}
+        <a class="button submit" href="{% url 'invoices:invoice_number' pk=invoice.pk %}">Add Invoice Number</a>
+        <a class="button reject" href="{% url 'invoices:invoice_reject' pk=invoice.pk %}">Reject</a>
+        {% endif %}
+    </div>
+
+    <!-- INVOICE OPTIONS FOR REVIEWERS FINAL-->
+    <div class="button-group">
+        {% if user.profile.role == "Reviewer" and invoice.status == 2 and invoice.invoice_number %}
         <a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Approve</a>
         <a class="button reject" href="{% url 'invoices:invoice_reject' pk=invoice.pk %}">Reject</a>
         {% endif %}

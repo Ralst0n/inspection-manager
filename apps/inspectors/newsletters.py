@@ -5,19 +5,19 @@ from apps.projects.models import Project
 from apps.invoices.models import Invoice
 from apps.partners.models import LetProject, PlannedProject
 from datetime import date, datetime, timedelta
-from apps.utils.helpers import formatted_date, last_sunday, next_sunday
+from apps.utils.helpers import formatted_date, last_sunday, next_sunday, last_last_sunday, months_last_sunday
 
 def check_planned_projects(office):
-    planned_projects = '''<h2> Coming soon to a city near you:</h2>'''
+    planned_projects = '''<h2> Coming Soon to a City Near You</h2>'''
 
-    for project in PlannedProject.objects.filter(office=office).filter(scrapped_date=PlannedProject.objects.latest('scrapped_date')):
+    for project in PlannedProject.objects.filter(office=office).filter(scrapped_date=PlannedProject.objects.latest('scrapped_date').scrapped_date):
         planned_projects += f'''<strong><p>
         {project.name}(<a href={project.url}>{project.agreement_number}</a>):</p></strong>
-        <br/>
+
         <p>Cost: {project.cost}</p>
-        <p>Anticipated Advance: {advance_date}</p>
-        <br>
-        <p>{description}</p>'''
+        <p>Anticipated Advance: {project.advance_date}</p>
+
+        <p>{project.description}</p>'''
 
     if len(planned_projects) > 65:
         return planned_projects
@@ -26,7 +26,7 @@ def check_planned_projects(office):
 def check_inspector_certs(office):
     ''' For each inspector, if they have a certain certification, make suer the expiration date isn't within the next 90 days '''
     future_date = date.today() + timedelta(days=90)
-    cert_html = '''<h2> Inspector Updates </h2>'''
+    cert_html = '''<h2> Inspector Updates</h2>'''
     for inspector in Inspector.objects.filter(office=office):
         if inspector.nicet_expiration:
             if inspector.nicet_expiration < future_date:
@@ -54,14 +54,14 @@ def check_invoice_created(office):
         Invoices are done once a month, so we check if the last sunday of the
         month has happened yet. If it has we list the invoices that need updating.
      '''
-    # last sunday wasn't the last sunday of the month, don't run this.
-    if datetime.now() - timedelta(days=21) == (next_sunday().month):
-        return ''
-    new_invoice_html = '''<h2> This Week in Invoices </h2>'''
+    new_invoice_html = '''<h2> This Weeks Invoices</h2>'''
 
     for project in Project.objects.filter(office=office).filter(active=True):
-        new_invoice_html += f'''<p>{project.penndot_number} needs to be invoiced from {formatted_date(project.get_last_invoiced())} to
-        {formatted_date(last_sunday())} </p>'''
+        # if the last invoiced date for the project is older than 
+        # the most recent `invoiced date`
+        if datetime.strptime(project.last_invoiced, "%m/%d/%Y") < last_last_sunday():
+            new_invoice_html += f'''<p>{project.penndot_number} needs to be invoiced from {formatted_date(project.get_last_invoiced())} to
+            {formatted_date(last_sunday())} </p>'''
 
     new_invoice_html += '''<p font-size:8px>
     Invoice data can be added at <a href='https://www.prudentrlawson.pythonanywhere.com/projects/invoices/update'>here</a>.
@@ -93,7 +93,7 @@ def check_project_burnrate(office):
     '''
     See if any projects are like to run out of money soon
     '''
-    burn_notice = '''<h2>Budgets Approaching:</h2>'''
+    burn_notice = '''<h2>Budgets Approaching</h2>'''
     for project in Project.objects.filter(office=office).filter(active=True):
         # Get the average amount of the last 3 invoices' labor cost
         last_3_avg = project.invoice_set.order_by("-id")[:3].aggregate(models.Avg('labor_cost'))

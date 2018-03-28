@@ -6,7 +6,8 @@ class InvoiceCreationForm(forms.ModelForm):
     class Meta:
         model = Invoice
         fields = ('project', 'estimate_number', 'start_date', 'end_date', 
-            'labor_cost', 'other_cost', 'straight_hours', 'overtime_hours', 'invoice_file')
+            'labor_cost', 'other_cost', 'straight_hours', 'overtime_hours',
+             'invoice_file')
 
 
 class CommentCreationForm(forms.ModelForm):
@@ -24,3 +25,8 @@ class CommentCreationEditForm(forms.ModelForm):
     class Meta:
         model = Comments
         fields = ('body',)
+
+class InvoiceCompletionForm(forms.ModelForm):
+    class Meta:
+        model = Invoice
+        fields = ('invoice_number',)

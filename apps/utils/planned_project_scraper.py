@@ -17,7 +17,7 @@ class PlannedProjectScraper:
         pass
 
     def run(self):
-        self.driver = webdriver.Chrome()
+        self.driver = webdriver.Chrome("C:\chromedriver.exe")
         self.base_url = "https://www.dot14.state.pa.us/ECMS/"
         try:
             self.login_user()
@@ -39,7 +39,7 @@ class PlannedProjectScraper:
 
         print(my_username)
         print(my_password)
-        print(f"{my_password} is equal to Njs=1230 is {my_password == 'Njs=1230'}")
+
 
         #Entering user/pass into ECMS loggin page
         user_elem = self.driver.find_element_by_name("userid")
@@ -82,7 +82,7 @@ class PlannedProjectScraper:
         for row in table:
             # Only grab projects published since last scrape.
             if PlannedProject.objects.count() > 0:
-                last_run_date = formatted_date(PlannedProject.objects.latest('scrapped_date'))
+                last_run_date = formatted_date(PlannedProject.objects.latest('scrapped_date').scrapped_date)
             else:
                 last_run_date = '03/01/2018'
 

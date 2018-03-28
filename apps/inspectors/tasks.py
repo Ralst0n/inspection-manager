@@ -8,7 +8,7 @@ from django.utils.crypto import get_random_string
 
 from .newsletters import (
     check_inspector_certs, check_invoice_created, check_invoice_reviewed,
-    check_project_burnrate
+    check_project_burnrate, check_planned_projects
 )
 from apps.partners.models import LetProject, PlannedProject
 from apps.utils.planned_project_scraper import PlannedProjectScraper
@@ -44,9 +44,10 @@ def email_news_letter(office='King of Prussia'):
     subject = f'{office}: Week of {date}'
     message =''
     message += check_inspector_certs(office)
+    message += check_project_burnrate(office)
     message += check_invoice_created(office)
     message += check_invoice_reviewed(office)
-    message += check_project_burnrate(office)
+    message += check_planned_projects(office)
     if not message:
         message += "Nothing to work on this week."
     return message

@@ -54,8 +54,6 @@ class Inspector(models.Model):
         decimal_places=0)
     email = models.EmailField(verbose_name="E-mail", max_length=60)
     phone_number = models.CharField(max_length=10, blank=True)
-    is_employee = models.BooleanField(verbose_name="Your Employee?",
-        default=False)
     nicet_expiration = models.DateField("NICET Expiration", blank=True,
         null=True)
     penndot_bituminous = models.DateField("PennDOT Bituminous Expiration",
@@ -66,6 +64,8 @@ class Inspector(models.Model):
         blank=True, null=True)
     aci_concrete = models.DateField("ACI Concrete Expiration", blank=True,
         null=True)
+    is_employee = models.BooleanField(verbose_name="Is this your Employee?",
+    default=False)
 
 
     def get_equipment_list(self):

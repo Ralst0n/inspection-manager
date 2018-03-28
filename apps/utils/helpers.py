@@ -1,3 +1,4 @@
+from calendar import monthcalendar, monthrange
 from datetime import date, datetime, timedelta
 
 
@@ -49,7 +50,7 @@ def list_blend(list1, list2):
     x = 0
     while list1 or list2:
 
-        #therefore if it's list 2s turn and it doesn't exist we don't get an error
+        # therefore if it's list 2s turn and it doesn't exist we don't get an error
         if x % 2 != 0 and list2:
             new_list.append(list2.pop(0))
         else:
@@ -57,7 +58,41 @@ def list_blend(list1, list2):
         x += 1
     return new_list
 
+def last_last_sunday():
+    """
+    Find and return the date of last sunday of this month, if it 
+    hasn't happened yet, return the last sunday date of last month
 
+    Use calendar, timedelta, and date libraries
+    """
+    today = date.today()
+    year, month, = today.year, today.month 
+    # if we aren't in the last week of the month, use last month
+    if monthrange(year, month)[1] - 6 > today.day:
+        if today.month == 1:
+            # if its jan set month to 12 and the year by 1
+            year, month = today.year - 1, 12
+        else:
+            month = month - 1
+    last_sunday = months_last_sunday(month, year)
+    print(datetime.strptime(f"{month}/{last_sunday}/{year}",
+                            "%m/%d/%Y"))
+    return datetime.strptime(f"{month}/{last_sunday}/{year}",
+                            "%m/%d/%Y")
+
+
+
+
+def months_last_sunday(month, year):
+    """ 
+    Takes a number 1 - 12 to represent the month and returns
+    the date of the final sunday in that month
+    """
+    weeks = monthcalendar(year, month)
+    weeks.reverse()
+    for week in weeks:
+        if week[-1] != 0:
+            return week[-1]
 
 def next_sunday():
     ''' increment one day until reaching the first Sunday in the future '''
