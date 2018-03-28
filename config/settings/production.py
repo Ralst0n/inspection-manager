@@ -17,7 +17,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 SECRET_KEY = config('DJANGO_SECRET_KEY')
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://prudentoffice.herokuapp.com/',]
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
