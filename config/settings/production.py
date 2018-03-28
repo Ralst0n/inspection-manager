@@ -2,6 +2,7 @@ from .base import *
 from decouple import config
 
 import dj_database_url
+import django_heroku
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
