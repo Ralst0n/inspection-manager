@@ -1,4 +1,5 @@
 from .base import *
+from decouple import config
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
