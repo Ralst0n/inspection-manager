@@ -53,14 +53,15 @@ class Project(models.Model):
             payroll_agg = self.invoice_set.aggregate(models.Sum('labor_cost'))
             payroll = payroll_agg.get('labor_cost__sum', 5.00)
             return float(payroll)
-        else:
-            return 0.00
+        return 0.00
 
     @property
     def other_cost_to_date(self):
-        other_cost_agg = self.invoice_set.aggregate(models.Sum('other_cost'))
-        other_cost = other_cost_agg.get('other_cost__sum', 5.00)
-        return float(other_cost)
+        if self.invoice_set.count() > 0:
+            other_cost_agg = self.invoice_set.aggregate(models.Sum('other_cost'))
+            other_cost = other_cost_agg.get('other_cost__sum', 5.00)
+            return float(other_cost)
+        return 0.00
     
     @property
     def total_invoiced(self):
