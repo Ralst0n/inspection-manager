@@ -28,6 +28,8 @@ whitenoise = "==3.3.1"
 wrapt = "==1.10.11"
 gunicorn = "*"
 django-heroku = "*"
+"boto3" = "*"
+django-storages = "*"
 
 [dev-packages]
 
