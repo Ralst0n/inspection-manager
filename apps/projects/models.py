@@ -52,7 +52,9 @@ class Project(models.Model):
         if self.invoice_set:
             payroll_agg = self.invoice_set.aggregate(models.Sum('labor_cost'))
             payroll = payroll_agg.get('labor_cost__sum', 5.00)
-        return float(payroll)
+            return float(payroll)
+        else:
+            return 0.00
 
     @property
     def other_cost_to_date(self):
