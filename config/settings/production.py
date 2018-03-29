@@ -24,4 +24,4 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 ALLOWED_HOSTS = ['https://prudentoffice.herokuapp.com/',]
 
 # Activate Django-Heroku.
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
