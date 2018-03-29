@@ -85,8 +85,8 @@ class Project(models.Model):
         """
         return the end date on the most recent invoice instance as a string
         """
-        if self.invoice_set is None:
-            return self.start_date.strftime("%m/%d/%y")
+        if self.invoice_set.count() is 0:
+            return self.start_date.strftime("%m/%d/%Y")
         latest_invoice = self.invoice_set.latest('end_date')
         return latest_invoice.end_date.strftime("%m/%d/%Y")
     
