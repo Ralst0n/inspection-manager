@@ -5,6 +5,7 @@ import os
 from bs4 import BeautifulSoup
 from decouple import config
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -17,7 +18,12 @@ class PlannedProjectScraper:
         pass
 
     def run(self):
-        self.driver = webdriver.Chrome("C:\chromedriver.exe")
+        # Options to run selenium via buildpacks on heroku
+        chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
+        opts = ChromeOptions()
+        opts.binary_location = chrome_bin
+        self.driver = webdriver.Chrome(executable_path="chromedriver",
+        chrome_options=opts)
         self.base_url = "https://www.dot14.state.pa.us/ECMS/"
         try:
             self.login_user()
