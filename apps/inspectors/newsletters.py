@@ -44,7 +44,7 @@ def check_inspector_certs(office):
             if inspector.aci_concrete < future_date:
                 cert_html += f'''<li>{inspector.first_name} {inspector.last_name}'s ACI Concrete expires {formatted_date(inspector.aci_concrete)}</li>'''
     if len(cert_html) > 30:
-        cert_html += '''<p>inspector certs can be updated <a href='Prudentrlawson.pythonanywhere.com/inspectors/update'>here</a>.</p>'''
+        cert_html += '''<p>inspector certs can be updated <a href='https://prudentoffice.herokuapp.com/inspectors/'>here</a>.</p>'''
         return cert_html
     return ''
 
@@ -64,9 +64,9 @@ def check_invoice_created(office):
             {formatted_date(last_sunday())} </p>'''
 
     new_invoice_html += '''<p font-size:8px>
-    Invoice data can be added at <a href='https://www.prudentrlawson.pythonanywhere.com/projects/invoices/update'>here</a>.
+    Invoice data can be added at <a href='https://prudentoffice.herokuapp.com/invoices'>here</a>.
     <br/> 
-    Projects can be set to inactive <a href='https://www.prudentrlawson.pythonanywhere.com/projects/update'>here</a>.
+    Projects can be set to inactive <a href='https://prudentoffice.herokuapp.com/projects'>here</a>.
     </p>'''
     return new_invoice_html
 
@@ -84,7 +84,7 @@ def check_invoice_reviewed(office):
             {invoice.readable_status}</p>'''
 
     if len(reviewed_invoice) > 30:
-        reviewed_invoice += '''<p>Invoice numbers can be added <a href='Prudentrlawson.pythonanywhere.com/invoices/update'>here</a>.</p>'''
+        reviewed_invoice += '''<p>Invoice numbers can be added <a href='https://prudentoffice.herokuapp.com/invoices'>here</a>.</p>'''
         return reviewed_invoice
 
     return ''
