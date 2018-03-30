@@ -93,7 +93,7 @@ def invoice_submit(request, pk):
             recipients = []
             for recipient in recip_set:
                 recipients.append(recipient.user.email)
-            emessage = f"<p>{invoice.creator.first_name} {invoice.creator.last_name} has submitted <a href=localhost:8000/invoices/{pk}> {invoice.name}</a> for your approval.</p>"
+            emessage = f"<p>{invoice.creator.first_name} {invoice.creator.last_name} has submitted <a href=https://prudentoffice.herokuapp.com/invoices/{pk}> {invoice.name}</a> for your approval.</p>"
             send_mail(
                 f" Invoice Review: {invoice.name}",
                 '',
