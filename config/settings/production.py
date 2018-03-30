@@ -31,4 +31,4 @@ AWS_S3_OBJECT_PARAMETERS = {
 }
 
 
-DEFAULT_FILE_STORAGE = 'config.storage_backends.MediaStorage' 
+DEFAULT_FILE_STORAGE = 'config.settings.storage_backends.MediaStorage' 
