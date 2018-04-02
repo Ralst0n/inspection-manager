@@ -14,6 +14,8 @@ def check_planned_projects(office):
         planned_projects += f'''<strong><p>
         {project.name}(<a href={project.url}>{project.agreement_number}</a>):</p></strong>
 
+        <p>District: {project.district}</p>
+
         <p>Cost: {project.cost}</p>
         <p>Anticipated Advance: {project.advance_date}</p>
 
@@ -54,14 +56,14 @@ def check_invoice_created(office):
         Invoices are done once a month, so we check if the last sunday of the
         month has happened yet. If it has we list the invoices that need updating.
      '''
-    new_invoice_html = '''<h2> This Weeks Invoices</h2>'''
+    new_invoice_html = '''<h2> This Week's Invoices</h2>'''
 
     for project in Project.objects.filter(office=office).filter(active=True):
         # if the last invoiced date for the project is older than 
         # the most recent `invoiced date`
         if datetime.strptime(project.last_invoiced, "%m/%d/%Y") < last_last_sunday():
             new_invoice_html += f'''<p>{project.penndot_number} needs to be invoiced from {formatted_date(project.get_last_invoiced())} to
-            {formatted_date(last_sunday())} </p>'''
+            {formatted_date(last_last_sunday())} </p>'''
 
     new_invoice_html += '''<p font-size:8px>
     Invoice data can be added at <a href='https://prudentoffice.herokuapp.com/invoices'>here</a>.
@@ -80,11 +82,11 @@ def check_invoice_reviewed(office):
 
     for invoice in Invoice.objects.filter(last_modified__lte=recent_date).filter(status__lte=2):
         if not invoice.invoice_number:
-            reviewed_invoice += f'''<p> I'm missing an invoice number for {invoice.project.prudent_number} #{invoice.estimate_number}, which is currently
-            {invoice.readable_status}</p>'''
+            reviewed_invoice += f'''<p> Invoice {invoice.project.prudent_number} #{invoice.estimate_number}, was placed into 
+            {invoice.readable_status} status on {formatted_date(invoice.last_modified)}</p>'''
 
     if len(reviewed_invoice) > 30:
-        reviewed_invoice += '''<p>Invoice numbers can be added <a href='https://prudentoffice.herokuapp.com/invoices'>here</a>.</p>'''
+        reviewed_invoice += '''<p>Invoices can be approved <a href='https://prudentoffice.herokuapp.com/invoices'>here</a>.</p>'''
         return reviewed_invoice
 
     return ''
