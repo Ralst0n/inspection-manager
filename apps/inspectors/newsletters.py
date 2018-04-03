@@ -98,22 +98,31 @@ def check_project_burnrate(office):
     burn_notice = '''<h2>Budgets Approaching</h2>'''
     for project in Project.objects.filter(office=office).filter(active=True):
         # Get the average amount of the last 3 invoices' labor cost
-        last_3_avg = project.invoice_set.order_by("-id")[:3].aggregate(models.Avg('labor_cost'))
-        burn_rate = list(last_3_avg.values())[0]
+        invoice_set =  project.invoice_set.order_by("-end_date")
+        last_3 = project.invoice_set.order_by("-end_date")[:3].aggregate(models.Sum('labor_cost'))
+        burn_rate = list(last_3.values())[0]
+        total_duration = 0
+        if invoice_set.count() == 0:
+            return ""
+        for invoice in invoice_set:
+             total_duration += (invoice.end_date - invoice.start_date).days
+        
         # if there aren't any invoices to use to create a burn rate, then set
         # the burn rate to one so the whole thing doesn't fail.
         if burn_rate is None:
             burn_rate = 1
-        months_left = round((float(project.payroll_budget) - project.payroll_to_date)/burn_rate)
+        daily_avg = float(burn_rate / total_duration)
+        months_left = round((float(project.payroll_budget) - project.payroll_to_date)/daily_avg)
         if months_left <= 3:
             end_project = formatted_date(project.get_last_invoiced() + timedelta(days=(months_left*30)))
             burn_notice += f'''<p>{project.prudent_number} projects to reach it's payroll budget by {end_project}</p>'''
 
-        last_3_avg = project.invoice_set.order_by("-id")[:3].aggregate(models.Avg('other_cost'))
-        burn_rate = list(last_3_avg.values())[0]
+        last_3 = project.invoice_set.order_by("-end_date")[:3].aggregate(models.Sum('other_cost'))
+        burn_rate = list(last_3.values())[0]
         if burn_rate is None:
             burn_rate = 1
-        months_left = round((float(project.other_cost_budget) - project.other_cost_to_date)/burn_rate)
+        daily_avg = float(burn_rate / total_duration)
+        months_left = round((float(project.other_cost_budget) - project.other_cost_to_date)/daily_avg)
         if months_left <= 3:
             burn_notice += f'''<p>{project.prudent_number} projects to reach it's other cost budget by {formatted_date(project.get_last_invoiced() + timedelta(days=(months_left*30)))}</p>'''
     if len(burn_notice) > 70:
