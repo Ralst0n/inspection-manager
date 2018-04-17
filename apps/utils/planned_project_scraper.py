@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 from apps.partners.models import PlannedProject
-from apps.utils.helpers import after_last_scrape, dateField_format, list_blend
+from apps.utils.helpers import after_last_scrape, dateField_format, formatted_date, list_blend
 
 class PlannedProjectScraper:
     def __init__(self):
