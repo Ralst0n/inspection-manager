@@ -12,7 +12,7 @@ from datetime import datetime
 from .models import History, Inspector, Notes
 from apps.projects.models import Project
 from apps.invoices.models import Invoice
-from .tasks import email_news_letter, scrape_planned_projects
+from .tasks import email_news_letter, scrape_let_projects, scrape_planned_projects
 # Create your views here.
 
 @login_required
@@ -133,4 +133,9 @@ def ScrapeProjects(request):
 @user_passes_test(lambda u: u.is_superuser)
 def Newsletter(request):
     resp = email_news_letter()
+    return HttpResponse(resp)
+
+@user_passes_test(lambda u: u.is_superuser)
+def LetProjects(request):
+    resp = scrape_let_projects()
     return HttpResponse(resp)
