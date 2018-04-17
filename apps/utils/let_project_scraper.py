@@ -159,7 +159,7 @@ class LetProjectScrapper:
             results_rows = list_blend(results_even_rows, results_odd_rows)
 
             for row in results_rows[2:]:
-                cutoff_date = '01/02/2016'
+                cutoff_date = '01/02/2017'
                 date = row.find('td').find('a').contents[0].strip()
 
                 if before_cutoff_date(date, cutoff_date):
