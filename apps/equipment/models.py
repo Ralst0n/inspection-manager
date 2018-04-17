@@ -53,6 +53,7 @@ class Equipment(models.Model):
                 item=self).order_by('-checkout_date').first().user.first_name
             last_name = Checkout.objects.filter(
                 item=self).order_by('-checkout_date').first().user.last_name
+            return f"{first_name} {last_name}"
             return Checkout.objects.filter(item=self).order_by('-checkout_date').first().user
 
 class Checkout(models.Model):
