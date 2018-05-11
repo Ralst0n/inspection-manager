@@ -47,7 +47,6 @@
                 {% endfor %}
             </ul>
         </div>
-        {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
         <div id=table>
             <h2>Recent Activity</h2>
             <table>
@@ -59,5 +58,4 @@
             </table>
         </div>
     </div>
-    {% endif %}
 {% endblock %}
