@@ -4,37 +4,60 @@
             text-decoration: none;
             
         }
-        .queue{
+        #main-content{
             width: 100%;
-            display: block;
+            display: flex;
+
+        }
+        #queue{
+            width: 50%;
+            text-align: center;
+        }
+        ul {
+           list-style: none;
+        }
+        li {
+            font-size: 24px;
+        }
+        #table{
+            display: inline-block;
+            width: 50%;
+            text-align: center;
+        }
+        table{
+            width: 100%;
         }
     {% endblock %}
 
 {% block content %}
-    {{ request.user.profile.display_name }} {{ request.user.profile.role}}
-
-    {% if request.user.profile.role == 'Preparer' %}
-        <h2>Active Status</h2>
-    {% else %}
-        <h2>Approval Queue</h2>
-    {% endif %}
-    <div id='queue'>
-        <ul> 
-            {% for invoice in object_list %}
-            <li><a href="{{ invoice.get_absolute_url }}">{{ invoice.name }}</a></li>
-            {% empty %}
-            <li> Your queue is empty </li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
-        <table>
-            <th>Recent Activity</th>
-            {% for invoice in recent %}
-                <tr><td>{{ invoice.name}} has moved to {{ invoice.readable_status }}</td></tr>
+    <h1>{{ request.user.first_name }} {{ request.user.last_name }} - {{ request.user.profile.role}}: {{ request.user.profile.office }}</h1>
+    <div id=main-content>
+        <div id='queue'>   
+        {% if request.user.profile.role == 'Preparer' %}
+            <h2>Active Status</h2>
+        {% else %}
+            <h2>Invoices awaiting your approval</h2>
+        {% endif %}
+        
+            <ul> 
+                {% for invoice in object_list %}
+                <li><a href="{{ invoice.get_absolute_url }}">{{ invoice.name }}</a></li>
                 {% empty %}
-                    <tr><td>None</td></tr>
-            {% endfor %}
-        </table>
+                <li> Your queue is empty </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
+        <div id=table>
+            <h2>Recent Activity</h2>
+            <table>
+                {% for invoice in recent %}
+                    <tr><td>{{ invoice.name}} moved to {{ invoice.readable_status }} by {{invoice.last_modified_by}}</td></tr>
+                    {% empty %}
+                        <tr><td>None</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
     {% endif %}
 {% endblock %}
