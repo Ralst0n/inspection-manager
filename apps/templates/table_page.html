@@ -47,11 +47,13 @@
 {% endblock %}
 {% block script %}
 $(document).ready(function() {
-    $('#table').DataTable({});
-} );
-if( document.documentElement.clientWidth < 680){
-    $('#table').DataTable( {
-        "scrollX": true
-    });
-}
+    if( document.documentElement.clientWidth < 680){
+        $('#table').DataTable( {
+            "scrollX": true
+        });
+    }
+    else{
+        $('#table').DataTable({});
+    } 
+});
 {% endblock %}
