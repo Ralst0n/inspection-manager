@@ -97,7 +97,7 @@ class PlannedProjectScraper:
         
         # For each job row, if the published date is newer than latest publishing
         # And the job description includes one of our services, add it to `project_links`
-        services = ['inspection', ]
+        services = ['inspection']
         for row in table:
             project_name = row.find_all('td')[3].string.lower()
             print(f"[SCRAPER]: Project_name is {project_name} and published date is {row.find_all('td')[4].contents[0].strip()}")
