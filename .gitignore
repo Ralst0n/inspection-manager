@@ -101,3 +101,8 @@ ENV/
 .mypy_cache/
 
 .vs*
+
+# Heroku dumps
+latest.dump
+
+apps/media
