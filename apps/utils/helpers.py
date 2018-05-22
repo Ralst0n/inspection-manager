@@ -9,6 +9,10 @@ def after_last_scrape(test_date, cutoff_date):
     '''
     new_date = datetime.strptime(str(test_date), '%m/%d/%Y')
     cut_date = datetime.strptime(str(cutoff_date), '%m/%d/%Y')
+    if new_date > cut_date:
+        print (f"{test_date} is after {cutoff_date}")
+    else:
+        print (f"{test_date} is before {cutoff_date}")
     return new_date > cut_date
 
 def before_cutoff_date(test_date, cutoff_date):
