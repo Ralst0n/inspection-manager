@@ -86,14 +86,14 @@ class PlannedProjectScraper:
         table = list_blend(even_rows, odd_rows)
 
         project_links = []
+        # Only grab projects published since last scrape.
+        if PlannedProject.objects.count() > 0:
+            last_run_date = formatted_date(PlannedProject.objects.latest('scrapped_date').scrapped_date)
+            print("VOLTORB LIVES")
+        else:
+            last_run_date = '03/01/2018'
+            print("I SAY U HE DED ")
         for row in table:
-            # Only grab projects published since last scrape.
-            if PlannedProject.objects.count() > 0:
-                last_run_date = formatted_date(PlannedProject.objects.latest('scrapped_date').scrapped_date)
-                print("VOLTORB LIVES")
-            else:
-                last_run_date = '03/01/2018'
-                print("I SAY U HE DED ")
             project_name = row.find_all('td')[3].string.lower()
             if 'construction inspection' in project_name and after_last_scrape(row.find_all('td')[4].contents[0].strip(),last_run_date):
                 project_links.append(row.find('td').find('a').get('href'))

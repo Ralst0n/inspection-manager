@@ -133,7 +133,7 @@ def invoice_submit(request, pk):
                 html_message=emessage
             )
             # Add a comment to the Invoice Showing who approved it
-            comment = Comment()
+            comment = Comments()
             comment.body = f"{request.user.profile.role} Approved"
             comment.creator = request.user
             comment.created_at = timezone.now()
@@ -153,6 +153,21 @@ def invoice_reject(request, pk):
                 invoice.status = invoice.status - 1
                 messages.add_message(request, messages.INFO, f"Invoice Status revereted to {invoice.STATUS_CODE[invoice.status][1]}")
             invoice.save()
+            if invoice.status == 0:
+                # If an invoice is rejected back to preparer, notify preparer with an email including changes to be made.
+                recip_set = Profile.objects.filter(office=invoice.creator.profile.office).filter(role="Preparer")
+                recipients = []
+                for recipient in recip_set:
+                    recipients.append(recipient.user.email)
+                emessage = f"<p>{invoice.last_modified_by.first_name} {invoice.last_modified_by.last_name} has rejected <a href=https://prudentoffice.herokuapp.com/invoices/{pk}> {invoice.name}</a>:</p><p>{invoice.comments_set.lastest('created_at')}</p>" 
+            elif invoice.status == 1:
+                # If an invoice is rejected back to manager, notify manager with an email including changes to be made.
+                recip_set = Profile.objects.filter(office=invoice.creator.profile.office).filter(role="manager")
+                recipients = []
+                for recipient in recip_set:
+                    recipients.append(recipient.user.email)
+                emessage = f"<p>{invoice.last_modified_by.first_name} {invoice.last_modified_by.last_name} has rejected <a href=https://prudentoffice.herokuapp.com/invoices/{pk}> {invoice.name}</a>:</p><p>{invoice.comments_set.lastest('created_at')}</p>" 
+            
             comment = form.save(commit=False)
             comment.creator = request.user
             comment.created_at = timezone.now()
