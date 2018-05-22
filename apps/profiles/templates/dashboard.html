@@ -34,16 +34,25 @@
     <div id=main-content>
         <div id='queue'>   
         {% if request.user.profile.role == 'Preparer' %}
-            <h2>Active Status</h2>
+            <h2>Your invoice pipeline</h2>
         {% else %}
             <h2>Invoices awaiting your approval</h2>
         {% endif %}
         
             <ul> 
                 {% for invoice in object_list %}
-                <li><a href="{{ invoice.get_absolute_url }}">{{ invoice.name }}</a></li>
+                <li>
+                    <a href="{{ invoice.get_absolute_url }}">{{ invoice.name }}</a>
+                    {% if request.user.profile.role == 'Preparer'%}
+                    : {{ invoice.readable_status }}
+                    {% endif %}
+                </li>
                 {% empty %}
-                <li> Your queue is empty </li>
+                    {% if request.user.profile.role == 'Preparer'%}
+                        <li> Pipeline Clean</li>
+                    {% else %}
+                        <li> Your queue is empty </li>
+                    {% endif %}    
                 {% endfor %}
             </ul>
         </div>
