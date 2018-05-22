@@ -28,7 +28,6 @@
                 <div class="menu">
                     {% if request.user.profile.role == 'Observer' or request.user.profile.role == 'Reviewer' %}
                     <div class="menu-box"><a href={% url 'profiles:dashboard' %}>Home</a></div>
-                    <div class="menu-box"><a href={% url 'invoices:invoices' %}>Invoices</a></div>
                     <div class="menu-box"><a href={% url 'projects' %}>Projects</a></div>
                     <div class="menu-box"><a href={% url 'equipment' %}>Devices</a></div>
                     <div class="menu-box"><a>Logout</a></div>
@@ -47,7 +46,6 @@
                 <nav>
                         {% if request.user.profile.role == 'Observer' or request.user.profile.role == 'Reviewer' %}
                         <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Home</a>
-                        <a class="lgmenu-box" href={% url 'invoices:invoices' %}>Invoices</a>
                         <a class="lgmenu-box" href={% url 'projects' %}>Projects</a>
                         <a class="lgmenu-box" href={% url 'equipment' %}>Devices</a>
                         <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Logout</a>
