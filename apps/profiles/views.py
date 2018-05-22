@@ -23,7 +23,7 @@ class DashboardView(LoginRequiredMixin, ListView):
         elif user_role == "Reviewer":
             qs = Invoice.objects.filter(status=2)
         else:
-            qs = Invoice.objects.all()
+            qs = []
         
         return qs
 
@@ -37,7 +37,7 @@ class DashboardView(LoginRequiredMixin, ListView):
         elif user_role == "Manager":
             context['recent'] = Invoice.objects.filter(
             creator__profile__office=self.request.user.profile.office).filter(status__gt=2).order_by(
-                '-last_modified')[:10]
+                'last_modified')[:10]
         return context
 
     
