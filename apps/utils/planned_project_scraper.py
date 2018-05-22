@@ -80,7 +80,7 @@ class PlannedProjectScraper:
             print('no table found')
             return 'no table found'
 
-        # Get just the rows with data removing the colgroup & headings
+        # Get the rows with data removing the colgroup & headings
         even_rows = table.find('tbody').find_all('tr', class_='PDEvenRow')
         odd_rows = table.find('tbody').find_all('tr', class_='PDOddRow')
         table = list_blend(even_rows, odd_rows)
@@ -89,28 +89,28 @@ class PlannedProjectScraper:
         # Only grab projects published since last scrape.
         if PlannedProject.objects.count() > 0:
             last_run_date = formatted_date(PlannedProject.objects.latest('scrapped_date').scrapped_date)
-            print("VOLTORB LIVES")
+            print(f"[SCRAPER]: 'FINDING PROJECTS ADDED SINCE: {last_run_date}'")
         else:
-            last_run_date = '03/01/2018'
-            print("I SAY U HE DED ")
+            last_run_date = '05/01/2018'
+            print("[SCRAPER]: 'NO PREVIOUS SCRAPE DATE FOUND, USING 05/01/2018'")
         for row in table:
             project_name = row.find_all('td')[3].string.lower()
+            print(f"[SCRAPER]: Project_name is {project_name} and published date is {row.find_all('td')[4].contents[0].strip()}")
             if 'construction inspection' in project_name and after_last_scrape(row.find_all('td')[4].contents[0].strip(),last_run_date):
                 project_links.append(row.find('td').find('a').get('href'))
-
+                
         # We will keep a list of the necessary attributes for each project inside
         # the planned_projects list.
         planned_projects = []
-        # On to individual planned project page
+        print(f" [SCRAPER]: There are {len(planned_projects)} planned projects being added today")
+
+        # GET INFORMATION FROM EACH PLANNED PROJECT DETAIL PAGE
         for project in project_links:
-            project_data = []
             self.driver.get(self.base_url + project)
             project_html = self.driver.page_source
             soup = BeautifulSoup(project_html, "html.parser")
-            planned_project_tables = soup.findChildren('table')
-            #publishing_table = planned_project_tables[6]
-            # Go to the row of the `publishing controls` table with the initiating org
 
+            # Go to the row of the `publishing controls` table with the initiating organization
             alternate_org = soup.find_all('table', class_='Page')[0]
             district = soup.find_all('td', class_='Section1Body')[0].find('tbody').find('tr').find_all('td')[1].find('label').string
 
@@ -133,6 +133,7 @@ class PlannedProjectScraper:
 
             # format `advance_date` to YYYY-MM-DD as django datefield requires
             advance_date = dateField_format(advance_date)
+
             # remove 'engineering district' and ending '-0' from district
             # so that only the int remains
             district = int(district.strip("Engineering District -0"))
