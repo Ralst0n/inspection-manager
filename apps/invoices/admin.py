@@ -4,6 +4,7 @@ from .models import Invoice, Comments
 # admin.site.register(Invoice)
 
 class InvoiceAdmin(admin.ModelAdmin):
-    list_display = ('name', 'status')
+    list_display = ('project', 'estimate_number', 'status')
+    list_filter = ('project', 'status')
 admin.site.register(Invoice, InvoiceAdmin)
 admin.site.register(Comments)
