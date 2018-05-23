@@ -1,5 +1,5 @@
 {% extends "base_nav.html" %}
-
+{% load humanize %}
 
 {% block headers %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -26,8 +26,11 @@
   .data ul {
     list-style-type: none;
     width: 50%;
-    border: 1px dotted red;
+    border-bottom: 1px solid black;
     font-size: 18px;
+  }
+  .data ul:first-of-type{
+    border-right: 1px solid black;
   }
   li {
     margin-bottom: 5px;
@@ -40,38 +43,22 @@
 <h6>{{project.prudent_number }}</h6>
 </div>
 
-<!-- <div>
-<h4>Description</h4>
-<p>{{project.description}}</p>
-</div>
-<div>
-<h4>Inspectors</h4>
-{% if project.inspector %}
-<p>
-{% for inspector in project.inspector.all %}
-  <a href="{{ inspector.get_absolute_url }}">{{ inspector.first_name }} {{ inspector.last_name }}</a> <br />
-{% endfor %}
-</p>
-{% else %}
-<p class="danger">None</p>
-{% endif %}
-</div> -->
 
 <div class="data">
   <ul>
     <li><strong>Project Totals</strong></li>
-    <li>Total Budget: ${{ project.total_budget }}</li>
-    <li>Labor Budget: ${{ project.payroll_budget }}</li>
-    <li>Other Budget: ${{ project.other_cost_budget }}</li>
-    <li>Remaining budget: {{ project.remaining_budget }}</li>
+    <li>Total Budget: ${{ project.total_budget|intcomma }}</li>
+    <li>Labor Budget: ${{ project.payroll_budget|intcomma }}</li>
+    <li>Other Budget: ${{ project.other_cost_budget|intcomma }}</li>
+    <li>Remaining budget: ${{ project.remaining_budget|intcomma }}</li>
     <li>Business Partner: {{ project.business_partner }}</li>
     
   </ul>
   <ul>
     <li><strong>To Date</strong></li>
-    <li>Total Cost: ${{ project.total_invoiced|floatformat:2 }}</li>
-    <li>Labor Cost: ${{ project.payroll_to_date }}</li>
-    <li>Other Cost: ${{ project.other_cost_to_date }}</li>
+    <li>Total Cost: ${{ project.total_invoiced|intcomma }}</li>
+    <li>Labor Cost: ${{ project.payroll_to_date|intcomma }}</li>
+    <li>Other Cost: ${{ project.other_cost_to_date|intcomma }}</li>
     <li>Budget Utilization: {{ project.budget_utilization|floatformat:2 }}%</li>
   </ul>
 </div>
