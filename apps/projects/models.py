@@ -54,7 +54,7 @@ class Project(models.Model):
             payroll_agg = self.invoice_set.aggregate(models.Sum('labor_cost'))
             payroll = payroll_agg.get('labor_cost__sum', 5.00)
             return Decimal(payroll)
-        return 0.00
+        return Decimal(0.00)
 
     @property
     def other_cost_to_date(self):
@@ -62,7 +62,7 @@ class Project(models.Model):
             other_cost_agg = self.invoice_set.aggregate(models.Sum('other_cost'))
             other_cost = other_cost_agg.get('other_cost__sum', 5.00)
             return Decimal(other_cost)
-        return 0.00
+        return Decimal(0.00)
     
     @property
     def total_invoiced(self):
