@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import Sum
 from django.urls import reverse
 from datetime import datetime, date
+from decimal import Decimal
 
 from apps.invoices.models import Invoice
 
@@ -52,7 +53,7 @@ class Project(models.Model):
         if self.invoice_set.count() > 0:
             payroll_agg = self.invoice_set.aggregate(models.Sum('labor_cost'))
             payroll = payroll_agg.get('labor_cost__sum', 5.00)
-            return float(payroll)
+            return Decimal(payroll)
         return 0.00
 
     @property
@@ -60,13 +61,14 @@ class Project(models.Model):
         if self.invoice_set.count() > 0:
             other_cost_agg = self.invoice_set.aggregate(models.Sum('other_cost'))
             other_cost = other_cost_agg.get('other_cost__sum', 5.00)
-            return float(other_cost)
+            return Decimal(other_cost)
         return 0.00
     
     @property
     def total_invoiced(self):
-        ''' Sum of `payroll_to_date` & 1other_cost_to_date1 ''' 
+        ''' Sum of `payroll_to_date` & `other_cost_to_date` ''' 
         return self.payroll_to_date + self.other_cost_to_date
+
     @property
     def total_budget(self):
         ''' Sum of payroll and other cost budgets '''
@@ -98,19 +100,20 @@ class Project(models.Model):
             return self.start_date
         last_date = Invoice.objects.filter(project__exact=self).order_by('-end_date').first().end_date
         return last_date
+        
     @property
     def remaining_budget(self):
         """
         return the difference of total_budget and total_invoiced
         """
-        return float(self.total_budget) - float(self.total_invoiced)
+        return self.total_budget - self.total_invoiced
 
     @property
     def budget_utilization(self):
         """
         return the difference of total_budget and total_invoiced
         """
-        return (self.total_invoiced/float(self.total_budget)*100)
+        return (self.total_invoiced/(self.total_budget)*100)
     @property
     def end_date(self):
         """
