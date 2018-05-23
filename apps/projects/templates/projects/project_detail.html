@@ -39,8 +39,8 @@
 {% block content %}
 <div id="header">
 <h1>{{project.penndot_number}}: {{project.name}}</h1>
-<h5 style="color:#aaa">({{project.start_date}} - {{project.end_date}})</h5>
-<h6>{{project.prudent_number }}</h6>
+<h2 style="color:#aaa">({{project.start_date}} - {{project.end_date}})</h2>
+<h2>{{project.prudent_number }}</h2>
 </div>
 
 
@@ -81,7 +81,7 @@
       <td>{{ invoice.start_date|date:"SHORT_DATE_FORMAT" }}</td>
       <td>{{ invoice.end_date|date:"SHORT_DATE_FORMAT" }}</td>
       <td>{{ invoice.invoice_number }}</td>
-      <td>${{ invoice.total_cost}}</td>
+      <td>${{ invoice.total_cost|intcomma}}</td>
     </tr>
 {% endfor %}
   </tbody>
