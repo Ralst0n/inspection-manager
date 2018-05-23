@@ -1,4 +1,6 @@
 {% extends "base_nav.html" %}
+{% load humanize %}
+
     {% block title %}Document{% endblock %}
     {% block styles %}
     *{
@@ -128,9 +130,9 @@
            <tbody>
                 <td>{{ invoice.project.business_partner }}</td>
                 <td><a href="{{invoice.project.get_absolute_url}}">{{ invoice.project.prudent_number }}</a></td>
-                <td>${{ invoice.labor_cost }}</td>
-                <td>${{ invoice.other_cost }}</td>
-                <td>${{ invoice.total_cost }}</td>
+                <td>${{ invoice.labor_cost|intcomma }}</td>
+                <td>${{ invoice.other_cost|intcomma }}</td>
+                <td>${{ invoice.total_cost|intcomma }}</td>
            </tbody>
         </table>
         <ul>
