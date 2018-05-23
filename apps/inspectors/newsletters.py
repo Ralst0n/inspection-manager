@@ -10,8 +10,10 @@ from apps.utils.helpers import formatted_date, last_sunday, next_sunday, last_la
 
 def check_planned_projects(office):
     planned_projects = '''<h2> Coming Soon to a City Near You</h2>'''
-
-    for project in PlannedProject.objects.filter(office=office).filter(scrapped_date=PlannedProject.objects.latest('scrapped_date').scrapped_date):
+    # Get last successful scrapped date
+    latest_scrape = PlannedProject.objects.latest("scrapped_date").scrapped_date
+    # Add data for each project found since the last successful scrape
+    for project in PlannedProject.objects.filter(office=office).filter(scrapped_date__gt=latest_scrape):
         planned_projects += f'''<strong><p>
         {project.name}(<a href={project.url}>{project.agreement_number}</a>):</p></strong>
 
