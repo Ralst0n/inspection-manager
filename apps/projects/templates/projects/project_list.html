@@ -1,4 +1,5 @@
 {% extends 'table_page.html' %}
+{% load humanize %}
 {% block title %}Projects List{% endblock %}
 
 
@@ -7,9 +8,8 @@
   <tr>
     <th>Agreement Number</th>
     <th>Project Number</th>
-    <!-- <th>Budget</th>
-    <th>Total Invoiced</th> -->
     <th>Invoiced Through</th>
+    <th>Budget Utilizated</th>
   </tr>
   {% endblock %}
   {% block table_body %}
@@ -17,9 +17,8 @@
   <tr>
     <td><a href="{{ project.get_absolute_url }}">{{project.penndot_number}}</a></td>
     <td>{{ project.prudent_number }}</td>
-    <!-- <td>${{ project.total_budget|floatformat:2 }}</td>
-    <td>${{ project.total_invoiced|floatformat:2 }}</td> -->
     <td>{{ project.last_invoiced }}</td>
+    <td>{{ project.budget_utilization|floatformat:2 }}%</td>
   </tr>
   {% endfor %}
 
