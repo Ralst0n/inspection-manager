@@ -12,4 +12,5 @@ urlpatterns = [
     url(r'^update/(?P<pk>\d+)$', views.InspectorUpdateView.as_view(), name='inspector-update'),
     path('scrape_projects', views.ScrapeProjects,),
     path('email_newsletter', views.Newsletter,),
+    path('scrape_let_projects', views.LetProjects,),
 ]
