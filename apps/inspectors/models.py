@@ -66,7 +66,6 @@ class Inspector(models.Model):
         null=True)
     is_employee = models.BooleanField(verbose_name="Is this your Employee?",
     default=False)
-    resume_file = models.FileField('resume/', blank=True)
 
 
     def get_equipment_list(self):
