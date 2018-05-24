@@ -48,7 +48,7 @@
                         <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Home</a>
                         <a class="lgmenu-box" href={% url 'projects' %}>Projects</a>
                         <a class="lgmenu-box" href={% url 'equipment' %}>Devices</a>
-                        <a class="lgmenu-box" href={% url 'logout' %}>Logout</a>
+                        <a class="lgmenu-box" href={% url 'logout' %}>Logout {{ request.user.profile.display_name }}</a>
                         {% else %}
                         <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Home</a>
                         <a class="lgmenu-box" href={% url 'inspectors' %}>Inspectors</a>
