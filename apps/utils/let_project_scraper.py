@@ -5,6 +5,7 @@ import traceback
 from bs4 import BeautifulSoup
 from decouple import config
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
@@ -119,8 +120,8 @@ class LetProjectScrapper:
 
     def login_user(self):
         # log user into ECMS website
-        my_username = config(ECMS_USERNAME)
-        my_password = config(ECMS_PASSWORD)
+        my_username = config('ECMS_USERNAME')
+        my_password = config('ECMS_PASSWORD')
 
         self.driver.get(self.base_url)
         time.sleep(1) #
