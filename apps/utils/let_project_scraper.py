@@ -14,13 +14,16 @@ from apps.utils.helpers import list_blend, none_project, before_cutoff_date
 class LetProjectScrapper:
 
     def run(self):
-        self.driver = webdriver.Chrome()
+        # Options to run selenium via buildpacks on heroku
+        chrome_bin = os.environ.get('GOOGLE_CHROME_SHIM', None)
+        opts = ChromeOptions()
+        opts.binary_location = chrome_bin
+        self.driver = webdriver.Chrome(executable_path="chromedriver",
+        chrome_options=opts)
         self.valid_districts = ["Engineering District 3-0", "Engineering District 4-0", "Engineering District 5-0", "Engineering District 6-0", "Engineering District 8-0"]
-        #self.valid_districts = ["Engineering District 1-0", "Engineering District 2-0", "Engineering District 9-0", "Engineering District 10-0", "Engineering District 11-0", "Engineering District 12-0"]
+        self.valid_districts += ["Engineering District 1-0", "Engineering District 2-0", "Engineering District 9-0", "Engineering District 10-0", "Engineering District 11-0", "Engineering District 12-0"]
 
         self.base_url = "https://www.dot14.state.pa.us/ECMS"
-        #r'C:\Windows\chromedriver.exe')  # Optional argument, if not specified will search path.
-        # try:
         projects_by_district = {}
         project_and_rankings_list = []
         self.login_user()
@@ -33,10 +36,6 @@ class LetProjectScrapper:
                 project_and_rankings = {job['prono']: self.get_project_rankings(job)}
                 projects_by_district[job['district']].update(project_and_rankings)
         self.driver.quit()
-        # except Exception as e:
-        #     print(e)
-        #     traceback.print_exc()
-        #     self.driver.quit()
 
 
 
@@ -52,7 +51,7 @@ class LetProjectScrapper:
         # if construction inspection is not in either job type location, check for bridge inspection
         if ((job_type is None or "construction inspection" not in job_type.lower()) and (job_type2 is None or "construction inspection" not in job_type2.lower())):
             #if its not bridge inspection either, return None
-           if ((job_type is None or"bridge inspection" not in job_type.lower()) and (job_type2 is None or "bridge inspection" not in job_type2.lower())):
+           if ((job_type is None or"inspection" not in job_type.lower()) and (job_type2 is None or "inspection" not in job_type2.lower())):
                 return None
 
 
@@ -159,7 +158,7 @@ class LetProjectScrapper:
             results_rows = list_blend(results_even_rows, results_odd_rows)
 
             for row in results_rows[2:]:
-                cutoff_date = '01/02/2017'
+                cutoff_date = '01/01/2018'
                 date = row.find('td').find('a').contents[0].strip()
 
                 if before_cutoff_date(date, cutoff_date):
