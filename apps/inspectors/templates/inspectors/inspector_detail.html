@@ -96,6 +96,9 @@
       {% endif %}
     </p>
     <p><strong>Address: </strong>{{ inspector.address }} {{ inspector.location }}</p>
+    {% if inspector.resume %}
+    <p><a class="doc" href="{{ MEDIA_URL}}/{{ inspector.resume }}" target="_blank">View resume {{ inspector.first_name }}</a></p>
+    {% endif %}
   </div>
 
   <div>
