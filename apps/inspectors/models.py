@@ -64,6 +64,7 @@ class Inspector(models.Model):
         blank=True, null=True)
     aci_concrete = models.DateField("ACI Concrete Expiration", blank=True,
         null=True)
+    resume = models.FileField('resume/', blank=True)
     is_employee = models.BooleanField(verbose_name="Is this your Employee?",
     default=False)
 
