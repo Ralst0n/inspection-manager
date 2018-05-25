@@ -22,6 +22,7 @@ class LetProjectScrapper:
         self.driver = webdriver.Chrome(executable_path="chromedriver",
         chrome_options=opts)
         self.valid_districts = ["Engineering District 3-0", "Engineering District 4-0", "Engineering District 5-0", "Engineering District 6-0", "Engineering District 8-0"]
+        # Districts for the Pittsburgh office aren't always included
         self.valid_districts += ["Engineering District 1-0", "Engineering District 2-0", "Engineering District 9-0", "Engineering District 10-0", "Engineering District 11-0", "Engineering District 12-0"]
 
         self.base_url = "https://www.dot14.state.pa.us/ECMS"
@@ -47,11 +48,11 @@ class LetProjectScrapper:
         rankings = BeautifulSoup(rankings_page, "html.parser")
         job_type = rankings.find('tr', class_='PDOddRow').find_all('td')[-1].string
         job_type2 = rankings.find_all('tr', class_='PDEvenRow')[1].find_all('td')[-1].string
-        #if their is no service type listed, on the first sub or the potential second sub, return None
+        # if their is no service type listed, on the first sub or the potential second sub, return None
 
-        # if construction inspection is not in either job type location, check for bridge inspection
+        # if construction inspection is not in either job type location, check for just inspection
         if ((job_type is None or "construction inspection" not in job_type.lower()) and (job_type2 is None or "construction inspection" not in job_type2.lower())):
-            #if its not bridge inspection either, return None
+            #if its not inspection either, return None
            if ((job_type is None or"inspection" not in job_type.lower()) and (job_type2 is None or "inspection" not in job_type2.lower())):
                 return None
 
@@ -85,38 +86,40 @@ class LetProjectScrapper:
                     )
         # Make the district into an integer for saving into model
         district = int(project['district'].strip("Engineering District -0"))
-        # Add the current `let_project` to the database by using the prime from each of the first 3 teams
-        if len(teams) >= 3:
-            LetProject.objects.create(
-                agreement_number = project['prono'],
-                district = district,
-                winner = BusinessPartner.objects.get(name=teams[0].get('p')),
-                second_place = BusinessPartner.objects.get(name=teams[1].get('p')),
-                third_place = BusinessPartner.objects.get(name=teams[2].get('p')),
-            )
-        elif len(teams) == 2:
-            LetProject.objects.create(
-                agreement_number = project['prono'],
-                district = district,
-                winner = BusinessPartner.objects.get(name=teams[0].get('p')),
-                second_place = BusinessPartner.objects.get(name=teams[1].get('p')),
-            )
-        elif len(teams) == 1:
-            LetProject.objects.create(
-                agreement_number = project['prono'],
-                district = district,
-                winner = BusinessPartner.objects.get(name=teams[0].get('p')),
-            )
 
-        # Add each team combination to `Project_Team` by iterating through the team rosters
-        for team in teams:
-            for sub in team['s']:
-                ProjectTeam.objects.create(
-                    agreement_number = LetProject.objects.get(agreement_number=project['prono']),
-                    prime = BusinessPartner.objects.get(name=team['p']),
-                    sub = BusinessPartner.objects.get(name=sub),
+        if LetProject.objects.filter(agreement_number=project['prono']).count() == 0:
+            # Add the current `let_project` to the database by using the prime from each of the first 3 teams
+            if len(teams) >= 3:
+                LetProject.objects.create(
+                    agreement_number = project['prono'],
+                    district = district,
+                    winner = BusinessPartner.objects.get(name=teams[0].get('p')),
+                    second_place = BusinessPartner.objects.get(name=teams[1].get('p')),
+                    third_place = BusinessPartner.objects.get(name=teams[2].get('p')),
                 )
-        return teams
+            elif len(teams) == 2:
+                LetProject.objects.create(
+                    agreement_number = project['prono'],
+                    district = district,
+                    winner = BusinessPartner.objects.get(name=teams[0].get('p')),
+                    second_place = BusinessPartner.objects.get(name=teams[1].get('p')),
+                )
+            elif len(teams) == 1:
+                LetProject.objects.create(
+                    agreement_number = project['prono'],
+                    district = district,
+                    winner = BusinessPartner.objects.get(name=teams[0].get('p')),
+                )
+
+            # Add each team combination to `Project_Team` by iterating through the team rosters
+            for team in teams:
+                for sub in team['s']:
+                    ProjectTeam.objects.create(
+                        agreement_number = LetProject.objects.get(agreement_number=project['prono']),
+                        prime = BusinessPartner.objects.get(name=team['p']),
+                        sub = BusinessPartner.objects.get(name=sub),
+                    )
+            return teams
 
     def login_user(self):
         # log user into ECMS website
@@ -144,10 +147,10 @@ class LetProjectScrapper:
 
 
     def collect_projects(self):
-        #collect all the projects that match our districts
+        # collect all the projects that match our districts
         self.driver.get("http://www.dot14.state.pa.us/ECMS/SVSERFinalRanking?action=CSCMeetingResultsPast&ORGANIZATION_SCOPE=STATE")
         results_html = self.driver.page_source
-        #parse the results page html
+        # parse the results page html
         soup = BeautifulSoup(results_html, "html.parser")
         projects = [] #list of projects
         results_table = soup.find('table', class_='results')
@@ -158,25 +161,25 @@ class LetProjectScrapper:
             results_odd_rows = results_table.find_all('tr', class_='PDOddRow')
             results_rows = list_blend(results_even_rows, results_odd_rows)
 
-            for row in results_rows[2:]:
+            for row in results_rows:
                 cutoff_date = '01/01/2018'
                 date = row.find('td').find('a').contents[0].strip()
 
                 if before_cutoff_date(date, cutoff_date):
                     print(f"{date} is before {cutoff_date}")
-                    return projects
+                    continue
 
                 tiny_results_table = row.find('tbody').find_all('tr')
                 for organization in tiny_results_table:
                     district = organization.find('td').contents[0].strip()
 
                     if district in self.valid_districts:
-                        #project data gets the next td
-                        #for some reason the string inside of the district td counts as a sibling so we use next sibling twice.
+                        # project data gets the next td
+                        # for some reason the string inside of the district td counts as a sibling so we use next sibling twice.
                         project_data = organization.find('td').next_sibling.next_sibling.find_all('a')
                         for proj_info in project_data:
-                            #for each project number in a valid district:
-                            #put the project number as the dict 'prono' and the link as the 'proj_info'
+                            # for each project number in a valid district:
+                            # put the project number as the dict 'prono' and the link as the 'proj_info'
                             project_dict = {'district': district, 'prono': proj_info.contents[0].strip(), 'href': proj_info.get('href')}
                             projects.append(project_dict)
 
