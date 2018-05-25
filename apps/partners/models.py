@@ -1,4 +1,5 @@
 from django.db import models
+from django.shortcuts import reverse
 
 class PlannedProject(models.Model):
     agreement_number = models.CharField(max_length=6)
@@ -38,6 +39,11 @@ class LetProject(models.Model):
     def __str__(self):
         return self.agreement_number
 
+    def get_absolute_url(self):
+        """
+        Returns the url to access a particular invoice.
+        """
+        return reverse('letproject:details', args=[self.id])
 class ProjectTeam(models.Model):
     agreement_number = models.ForeignKey('partners.LetProject',
                                           on_delete=models.CASCADE
