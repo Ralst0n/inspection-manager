@@ -27,4 +27,5 @@ urlpatterns = [
     path('inspectors/', include('apps.inspectors.urls')),
     path('projects/', include('apps.projects.urls')),
     path('devices/', include('apps.equipment.urls')),
+    path('letprojects/', include('apps.partners.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
