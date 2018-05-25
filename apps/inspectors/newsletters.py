@@ -63,9 +63,10 @@ def check_invoice_created(office):
 
     for project in Project.objects.filter(office=office).filter(active=True):
         # if the last invoiced date for the project is older than 
-        # the most recent `invoiced date`
+        # the most recent `invoicing date`
         if datetime.strptime(project.last_invoiced, "%m/%d/%Y") < last_last_sunday():
-            new_invoice_html += f'''<p>{project.penndot_number} needs to be invoiced from {formatted_date(project.get_last_invoiced())} to
+            # needs to be invoiced from last invoice date + 1 day to most recent invoice date
+            new_invoice_html += f'''<p>{project.penndot_number} needs to be invoiced from {formatted_date(project.get_last_invoiced() +timedelta(days=1))} to
             {formatted_date(last_last_sunday())} </p>'''
 
     new_invoice_html += '''<p font-size:8px>
