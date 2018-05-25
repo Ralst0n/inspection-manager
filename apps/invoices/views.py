@@ -19,8 +19,8 @@ class InvoiceList(ListView):
         # Reviewers should only see invoices that are currently in their queue
         elif self.request.user.profile.role == "Reviewer":
             queryset = Invoice.objects.filter(status=2)
-        elif self.request.user.profile.role == "Observer":
-            queryset = Invoice.objects.all()
+        else:
+            queryset = None
             
         return queryset
     template_name = "templates/invoice_list.html"
