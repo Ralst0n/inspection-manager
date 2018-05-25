@@ -1,0 +1,60 @@
+{% extends "base_nav.html" %}
+
+{% block styles %}
+table, th, td{
+    border-collapse: collapse;
+    border: 1px solid #1269A8;
+    padding: 5px;
+    margin: 0 auto;
+}
+thead{
+    background-color: #1269A8;
+}
+
+th{
+    font-size: 24px;
+}
+td{
+    font-size: 20px;
+    text-align: center;
+}
+li {
+    list-style-type:none;
+}
+{% endblock %}
+{% block content %}
+<h1>{{ letproject.agreement_number }} (district {{ letproject.district }})</h1>
+
+
+<table>
+    <thead>
+        <th>Rank</th>
+        <th>Prime</th>
+        <th>Sub(s)</th>
+    </thead>
+    <tbody>
+        <tr>
+            <td>1</td>
+            <td>{{ letproject.winner }}</td>
+            <td> {% for team in winning_subs %}
+            <li>{{ team.sub }}</li>
+            {% endfor %}</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>{{ letproject.second_place }}</td>
+            <td> {% for team in second_subs %}
+            <li>{{ team.sub }}</li>
+            {% endfor %}</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>{{ letproject.third_place }}</td>
+            <td> {% for team in third_subs %}
+            <li>{{ team.sub }}</li>
+            {% endfor %}</td>
+        </tr>
+    </tbody>
+</table>
+
+{% endblock %}
