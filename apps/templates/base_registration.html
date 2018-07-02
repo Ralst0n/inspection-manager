@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Oswald|Shrikhand" >
+    <link rel="stylesheet" type="text/css" media="screen" href="main.css" />
+    <style>
+        :root{
+            --border-color: gold;
+            --company-blue: #1269A8;
+            --company-orange: #F37224;
+        }
+        body {
+            background-color: #F9F9F9
+        }
+        #logo{
+            color: var(--company-blue);
+            margin: 5% auto;
+            font-family: 'Shrikhand', open-sans;
+            text-align: center;
+            letter-spacing: 2px;
+            font-size: 4em;
+            
+        }
+        main{
+            border: 1px solid var(--company-blue);
+            width: 30%;
+            margin: 0 auto;
+            text-align: center;
+            font-family: 'Oswald', sans-serif;
+            background-color: white;
+
+
+        }
+        .button {
+            background-color: #1269A8;
+            width: 20%;
+            font-family: 'Oswald', sans-serif;
+            border-radius: 12%;
+            color: white;
+            text-transform: capitalize;
+        }
+        .login-buttons {
+            margin-left: 13%;
+        }
+        .login-form {
+            padding-top: 4%; 
+        }
+    </style>
+</head>
+<body>
+    <h1 id=logo>Prudent PA</h1>
+
+    <main>
+    {% block content %}
+    {% endblock %}
+    </main>
+</body>
+</html>
