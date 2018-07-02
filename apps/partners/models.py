@@ -35,6 +35,7 @@ class LetProject(models.Model):
     third_place = models.ForeignKey('partners.BusinessPartner',
                                     related_name='thirds', null=True,
                                     on_delete=models.CASCADE)
+    scrapped_date = models.DateField(auto_now_add=True, default=datetime.now)
 
     def __str__(self):
         return self.agreement_number
@@ -44,6 +45,7 @@ class LetProject(models.Model):
         Returns the url to access a particular invoice.
         """
         return reverse('letproject:details', args=[self.id])
+
 class ProjectTeam(models.Model):
     agreement_number = models.ForeignKey('partners.LetProject',
                                           on_delete=models.CASCADE
