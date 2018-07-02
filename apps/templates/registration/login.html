@@ -1,10 +1,12 @@
 
+{% extends 'base_registration.html' %}
+{% block title %}Titleass headass boy{% endblock %}
 
 {% block content %}
 
 {% if form.errors %}
 
-<p style="color:red, font-weight:bold">Your username and password didn't match. Please try again.</p>
+<p style="color:#F37224; font-weight:bold;">Your username and password didn't match. Please try again.</p>
 {% endif %}
 
 {% if next %}
@@ -19,7 +21,7 @@
 <form action="{% url 'login' %}" method="post">
 {% csrf_token %}
 
-<div class="">
+<div class="login-form">
   <td>{{ form.username.label_tag }}</td>
   <td>{{ form.username }}</td>
 </div>
@@ -28,9 +30,9 @@
   <td>{{ form.password }}</td>
 </div>
 
-<div class="">
-  <input id="loginButton" type="submit" name="" value="Login" />
-  <input id="guestLog" type="button" name="" value="login as guest">
+<div class="login-buttons">
+  <input class='button' id="loginButton" type="submit" name="" value="Login" />
+  <input class='button' id="guestLog" type="button" name="" value="login as guest">
   <input type="hidden" name="next" value="{{ next}}" />
 </div>
 </form>
