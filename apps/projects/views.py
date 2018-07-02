@@ -5,7 +5,11 @@ from django.db.models import Sum
 from django.shortcuts import render
 from django.views import generic
 
+from rest_framework import generics, viewsets
+from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
+
 from .models import Project
+from .serializers import ProjectSerializer 
 from apps.invoices.models import Invoice
 
 # Create your views here.
@@ -56,3 +60,14 @@ class ProjectsDetailView(LoginRequiredMixin, generic.DetailView):
             return {}
         else:
             return _object
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows projects to be viewed or edited.
+    """
+    queryset = Project.objects.all().order_by('prudent_number')
+    serializer_class = ProjectSerializer
+
+class ProjectDetail(generics.RetrieveUpdateAPIView):
+    queryset = Project.objects.all()
+    render_classes = (JSONRenderer,)
