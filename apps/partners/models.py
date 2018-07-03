@@ -1,6 +1,8 @@
 from django.db import models
 from django.shortcuts import reverse
 
+from datetime import datetime
+
 class PlannedProject(models.Model):
     agreement_number = models.CharField(max_length=6)
     district = models.DecimalField(max_digits=2, decimal_places=0)
@@ -35,7 +37,7 @@ class LetProject(models.Model):
     third_place = models.ForeignKey('partners.BusinessPartner',
                                     related_name='thirds', null=True,
                                     on_delete=models.CASCADE)
-    scrapped_date = models.DateField(auto_now_add=True, default=datetime.now)
+    scrapped_date = models.DateField(auto_now_add=True)
 
     def __str__(self):
         return self.agreement_number
