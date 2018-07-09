@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "18f54bd6507decd6060d65533ad419bd8ae9cffe084f6560021bcd88968e132c"
+            "sha256": "1d771ceddc61e6064c22678082886518710872f4c2421ef1c7ec5b2491db618d"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -46,6 +46,7 @@
                 "sha256:1b70e8824435c87aed06655bb9d1b91b43ae6b187c955f34bcf57866b77b6dea",
                 "sha256:8c3df93ad70437c0cd5074af892765c7ed3b9d7814cbd46e332186642046abdd"
             ],
+            "index": "pypi",
             "version": "==1.9.19"
         },
         "bs4": {
@@ -112,12 +113,21 @@
             "index": "pypi",
             "version": "==1.6.6"
         },
+        "djangorestframework": {
+            "hashes": [
+                "sha256:b6714c3e4b0f8d524f193c91ecf5f5450092c2145439ac2769711f7eba89a9d9",
+                "sha256:c375e4f95a3a64fccac412e36fb42ba36881e52313ec021ef410b40f67cddca4"
+            ],
+            "index": "pypi",
+            "version": "==3.8.2"
+        },
         "docutils": {
             "hashes": [
                 "sha256:02aec4bd92ab067f6ff27a38a38a41173bf01bed8f89157768c1573f53e474a6",
                 "sha256:51e64ef2ebfb29cae1faa133b3710143496eca21c530f3f71424d77687764274",
                 "sha256:7a4bd47eaf6596e1295ecb11361139febe29b084a87bf005bf899f9a42edc3c6"
             ],
+            "index": "pypi",
             "version": "==0.14"
         },
         "gunicorn": {
@@ -142,6 +152,7 @@
                 "sha256:6a81d4c9aa62caf061cb517b4d9ad1dd300374cd4706997aff9cd6aedd61fc64",
                 "sha256:f11b4461f425740a1d908e9a3f7365c3d2e569f6ca68a2ff8bc5bcd9676edd63"
             ],
+            "index": "pypi",
             "version": "==0.9.3"
         },
         "lazy-object-proxy": {
@@ -244,6 +255,7 @@
                 "sha256:891c38b2a02f5bb1be3e4793866c8df49c7d19baabf9c1bad62547e0b4866aca",
                 "sha256:95511bae634d69bc7329ba55e646499a842bc4ec342ad54a8cdb65645a0aad3c"
             ],
+            "index": "pypi",
             "version": "==2.6.1"
         },
         "python-decouple": {
@@ -273,6 +285,7 @@
                 "sha256:90dc18e028989c609146e241ea153250be451e05ecc0c2832565231dacdf59c1",
                 "sha256:c7a9ec356982d5e9ab2d4b46391a7d6a950e2b04c472419f5fdec70cc0ada72f"
             ],
+            "index": "pypi",
             "version": "==0.1.13"
         },
         "selenium": {
