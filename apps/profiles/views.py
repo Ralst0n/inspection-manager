@@ -4,6 +4,7 @@ from django.views.generic.list import ListView
 # Create your views here.
 
 from apps.invoices.models import Invoice
+from apps.projects.models import Project
 
 class DashboardView(LoginRequiredMixin, ListView):
     template_name = "dashboard.html"
@@ -33,11 +34,17 @@ class DashboardView(LoginRequiredMixin, ListView):
         if user_role == "Preparer":
             context['recent'] = Invoice.objects.filter(
             creator__profile__office=self.request.user.profile.office).filter(status__gt=1).order_by(
-                '-last_modified')[:10]
+                '-last_modified')[:7]
         elif user_role == "Manager":
             context['recent'] = Invoice.objects.filter(
             creator__profile__office=self.request.user.profile.office).filter(status__gt=2).order_by(
-                'last_modified')[:10]
+                'last_modified')[:7]
+        if user_role == "Preparer" or user_role == "Manager":
+            total = 0
+            for project in Project.objects.all():
+                total += project.ytd_invoiced
+            context['revenue'] = total
+            context['revenue_percent'] = (total/1000000) * 100
         return context
 
     
