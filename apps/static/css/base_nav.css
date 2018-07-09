@@ -11,6 +11,7 @@
     background-color: #FFF;
     padding-top: 0;
     padding-bottom: 0;
+    min-height: 1000px;
 }
 #site-nav{
     width: 100%;
