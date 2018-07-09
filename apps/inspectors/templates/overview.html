@@ -1,0 +1,109 @@
+{% load humanize %}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.5.0/d3.js"></script>
+    <style>
+        *{
+            -webkit-print-color-adjust: exact;
+        }
+        #container{
+            width: 1000px;
+            margin: 0 10px;
+        }
+        svg{
+            display: block;
+            margin: 30px auto;
+        }
+        p{
+            font-size: 1.25em;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.8em;
+
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 2.0em;
+        }
+    </style>
+    
+</head>
+<body>
+    <div id="container">
+            <h1>{{request.user.profile.office}} Overview - {{month}} {{year}} </h1>
+        <div id="revenue">
+            <h2>Revenue Update</h2>
+            <p>Total invoiced for {{ month }}: ${{ monthly| intcomma }}</p>
+            <p>Total invoiced to date for {{year}}: ${{ yearly| intcomma }}</p>
+            
+            <p>Projected revenue for {{ year }} is ${{ revenue_projection|intcomma }}</p>
+
+            
+        </div>
+        <h2>Jobs Ending Soon</h2>
+        {% for date in  end_dates %}
+            <p>{{ date.0 }} projects to reach its {{date.3}} budget on {{ date.1 }}</p>
+        {% endfor %}
+    </div>  
+    <script>
+        function formatNumber (num) {
+            return "$" + num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        }
+        three = {{ three_old_monthly }}
+        two = {{ last_last_monthly }}
+        one = {{ last_monthly }}
+        zero = {{ monthly }}
+        month = "{{ month }}"
+        last_month = "{{ last_month }}"
+        last_last_month = "{{ last_last_month }}"
+        three_old_month = "{{ three_old_month }}"
+        dataset = [three, two, one, zero];
+        months = [three_old_month, last_last_month, last_month, month ]
+        console.log(dataset);
+        const h = 350;
+        const w = 800;
+        const bar_width = 160;
+        const modifier = 1;
+        const svg = d3.select("#revenue")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h)
+
+        svg.selectAll("rect")
+        .data(dataset)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) =>{
+            return i * (bar_width + 30);
+        })
+        .attr("y", d => {
+            return 300 - (d/100) * modifier
+        })
+        .attr("width", bar_width)
+        .attr("height", (d, i) => {
+            return ((d/100) * modifier);
+        })
+        .attr("fill", d => d < 50000 ? "orange" : "green")
+        .text(d=>d)
+        svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("x", (d,i) => i *(bar_width + 30))
+        .attr("y", 330)
+        .text((d,i) => {
+            return `${months[i]}: ${formatNumber(d)}`;
+        })
+
+
+    </script>
+</body>
+</html>
