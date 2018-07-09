@@ -1,4 +1,5 @@
 {% extends "base_nav.html" %}
+{% load humanize %}
     {%block styles %}
         a, href {
             text-decoration: none;
@@ -18,23 +19,62 @@
         }
         li {
             font-size: 24px;
+            padding-bottom: 9px;
         }
         #table{
             display: inline-block;
             width: 50%;
             text-align: center;
+            
         }
         table{
             width: 100%;
         }
+        td {
+            font-size: 18px;
+            padding-bottom: 9px;
+        }
+        #progress-section{
+            width: 100%;
+            text-align: center;
+        }
+        #progress-bar{
+            width: 50%;
+            border: 1px solid blue;
+            margin: 0 auto;
+            border-radius: 5px;
+        }
+        #progress {
+            background-color: green;
+            width: 15%;
+            height: 40px;
+            text-align: center;
+            font-size: 25px;
+            color: white;
+            top: 50%;
+            border-radius: 5px;
+        }
     {% endblock %}
 
 {% block content %}
+    
     <h1>{{ request.user.first_name }} {{ request.user.last_name }} - {{ request.user.profile.role}}: {{ request.user.profile.office }}</h1>
+    {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
+    <div id="progress-section">
+        <h3>Invoiced to Date: ${{ revenue|intcomma}}</h3>
+        <div id="progress-bar">
+                <div id="progress">
+                   {{ revenue_percent|floatformat:2}}%
+                </div>
+            </div>
+            <h3>2018 Goal: $1,000,000.00</h3>
+    </div>
+    {% endif %}
     <div id=main-content>
+
         <div id='queue'>   
         {% if request.user.profile.role == 'Preparer' %}
-            <h2>Your invoice pipeline</h2>
+            <h2>Invoice Queue</h2>
         {% else %}
             <h2>Invoices awaiting your approval</h2>
         {% endif %}
