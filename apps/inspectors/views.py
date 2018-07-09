@@ -7,12 +7,17 @@ from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views import generic
 
-from datetime import datetime
+from datetime import date, datetime, timedelta
+from decimal import Decimal
 
 from .models import History, Inspector, Notes
-from apps.projects.models import Project
-from apps.invoices.models import Invoice
+from .newsletters import check_project_burnrate, check_inspector_certs
 from .tasks import email_news_letter, scrape_let_projects, scrape_planned_projects
+from apps.invoices.models import Invoice
+from apps.projects.models import Project
+from apps.utils.helpers import formatted_date
+
+
 # Create your views here.
 
 @login_required
@@ -139,3 +144,91 @@ def Newsletter(request):
 def LetProjects(request):
     resp = scrape_let_projects()
     return HttpResponse(resp)
+
+@user_passes_test(lambda u: u.is_superuser)
+def office_overview(request):
+    projects = Project.objects.all()
+    month = Invoice.objects.latest('end_date').end_date.month
+    year = Invoice.objects.latest('end_date').end_date.year
+    months_remaining = datetime(2018, 12, 1).month - month
+    
+    # GET TOTAL INVOICED FOR THE YEAR
+    invoiced_to_date = 0
+    
+    for project in projects:
+        invoiced_to_date += project.ytd_invoiced
+    
+    # GET TOTAL INVOICED FOR THE MONTH
+    monthly_total = 0
+    last_monthly_total = 0
+    last_last_monthly_total = 0
+    three_old_monthly_total = 0
+    for invoice in Invoice.objects.filter(end_date__month=month).filter(status__gte=3):
+        monthly_total += invoice.total_cost
+    
+    for invoice in Invoice.objects.filter(end_date__month=(month-1)).filter(status__gte=3):
+        last_monthly_total += invoice.total_cost
+    
+    for invoice in Invoice.objects.filter(end_date__month=(month-2)).filter(status__gte=3):
+        last_last_monthly_total += invoice.total_cost
+
+    for invoice in Invoice.objects.filter(end_date__month=(month-3)).filter(status__gte=3):
+        three_old_monthly_total += invoice.total_cost
+
+    # REVENUE PROJECTION JUST TOTAL THIS MONTH TIMES MONTHS REMAINING PLUS TOTAL TO DATE
+    # Actually just average the year thus far
+    # revenue_projection = (months_remaining * monthly_total) + invoiced_to_date
+    revenue_projection = (invoiced_to_date/month) * months_remaining + invoiced_to_date
+
+    #BURN RATE RUSH
+    ending_projects = []
+
+    for project in Project.objects.filter(office="King of Prussia").filter(active=True):
+        # Get the average amount of the last 3 invoices' labor cost
+        invoice_set =  project.invoice_set.order_by("-end_date")[:3]
+        # If there are no invoices, end this check
+        if invoice_set.count() == 0:
+            return ""
+        # Get the total labor cost of last 3 invoices as a decimal
+        last_3 = project.invoice_set.order_by("-end_date")[:3].aggregate(Sum('labor_cost'))
+        # Get just the Decimal value from last_3
+        burn_rate = list(last_3.values())[0]
+        total_duration = 0        
+        for invoice in invoice_set:
+             total_duration += (invoice.end_date - invoice.start_date).days
+        
+        daily_avg = Decimal(burn_rate / total_duration)
+        days_left = round(((project.payroll_budget) - project.payroll_to_date)/daily_avg)
+        if days_left <= 120:
+            end_project = formatted_date(project.get_last_invoiced() + timedelta(days=(days_left)))
+            ending_projects.append([
+                project.prudent_number, end_project, 'Specific Rate'
+            ])
+        # Repeat process for other cost 
+        last_3 = project.invoice_set.order_by("-end_date")[:3].aggregate(Sum('other_cost'))
+        burn_rate = list(last_3.values())[0]
+        daily_avg = Decimal(burn_rate / total_duration)
+        days_left = round((project.other_cost_budget - project.other_cost_to_date)/daily_avg)
+        if days_left <= 120:
+            end_project = formatted_date(project.get_last_invoiced() + timedelta(days=(days_left)))
+            ending_projects.append([
+                project.prudent_number, end_project, 'Other Cost'
+            ])
+    context = {
+        'revenue_projection': revenue_projection,
+        'end_dates': ending_projects,
+        'monthly': monthly_total,
+        'yearly': invoiced_to_date,
+        'month': datetime(year, month, 1).strftime('%B'),
+        'last_month': datetime(year, month -1, 1).strftime('%B'),
+        'last_last_month': datetime(year, month-2, 1).strftime('%B'),
+        'three_old_month': datetime(year, month-3, 1).strftime('%B'),
+        'last_monthly': last_monthly_total,
+        'last_last_monthly': last_last_monthly_total,
+        'three_old_monthly': three_old_monthly_total,
+        'year': year
+    }
+
+    return render(request, 'overview.html', context)
+
+    
