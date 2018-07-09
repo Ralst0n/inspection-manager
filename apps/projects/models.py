@@ -126,3 +126,13 @@ class Project(models.Model):
             return "unknown"
         latest_invoice = self.invoice_set.latest('end_date')
 
+    @property
+    def ytd_invoiced(self):
+        """
+        return the total invoiced in the current calendar year for the job
+        """
+        this_years_invoices = self.invoice_set.filter(end_date__year=date.today().year).filter(status__gte=3)
+        total_invoiced = 0
+        for invoice in this_years_invoices:
+            total_invoiced += invoice.total_cost
+        return total_invoiced
