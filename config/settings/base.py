@@ -61,8 +61,8 @@ LOCAL_APPS = (
     )
 
 THIRD_PARTY_APPS = (
-    'storages',
     'rest_framework',
+    'storages',
     )
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
