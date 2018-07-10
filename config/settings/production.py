@@ -1,6 +1,7 @@
 from .base import *
 from decouple import config
 
+import django
 import dj_database_url
 import django_heroku
 
@@ -22,7 +23,7 @@ EMAIL_USE_TLS = True
 
 SECRET_KEY = config('DJANGO_SECRET_KEY')
 ALLOWED_HOSTS = ['prudentoffice.herokuapp.com',]
-
+django.setup()
 
 
 AWS_ACCESS_KEY_ID = config('AWS_ACCESS_KEY_ID')
