@@ -97,7 +97,7 @@ class PlannedProjectScraper:
         
         # For each job row, if the published date is newer than latest publishing
         # And the job description includes one of our services, add it to `project_links`
-        services = ['inspection']
+        services = ['inspection', 'ci']
         for row in table:
             project_name = row.find_all('td')[3].string.lower()
             print(f"[SCRAPER]: Project_name is {project_name} and published date is {row.find_all('td')[4].contents[0].strip()}")
@@ -110,20 +110,26 @@ class PlannedProjectScraper:
         # We will keep a list of the necessary attributes for each project inside
         # the planned_projects list.
         planned_projects = []
-        print(f" [SCRAPER]: There are {len(planned_projects)} planned projects being added today")
+        print(f" [SCRAPER]: There are {len(project_links)} planned projects being added today")
 
         # GET INFORMATION FROM EACH PLANNED PROJECT DETAIL PAGE
         for project in project_links:
             self.driver.get(self.base_url + project)
+            print(f"ADDING PROJECT {project}")
             project_html = self.driver.page_source
             soup = BeautifulSoup(project_html, "html.parser")
 
             # Go to the row of the `publishing controls` table with the initiating organization
             alternate_org = soup.find_all('table', class_='Page')[0]
-            district = soup.find_all('td', class_='Section1Body')[0].find('tbody').find('tr').find_all('td')[1].find('label').string
 
-            details_table = soup.find_all('table', class_='Section1Body')[1]
-            agreement_number = details_table.find_all('td', class_='data')[1].find('a').contents[0].strip()
+            service_requested = soup.find_all('table', class_='Section1')[1].find('tbody').find('tr').find('td').find_all('table')[1].find('tbody').find('tr').find_all('tr', class_='body')[4].find_all('td')[1].string
+            if "inspection" not in service_requested.lower():
+                print(f"{service_requested} not covered by Prudent PA")
+                continue
+            district = soup.find_all('table', class_='Section1')[1].find('table', class_="Section1Body").find('label').string
+
+            details_table = soup.find_all('table', class_='Section1')[2]
+            agreement_number = details_table.find_all('td', class_='data')[0].find('a').contents[0].strip()
             project_name = details_table.find_all('table', class_='body')[1].find_all('tr')[1].find_all('td', class_='PDTextarea')[0].string
             url = self.base_url + project
             estimated_cost = details_table.find_all('td', class_='data')[5].contents[0].strip()
