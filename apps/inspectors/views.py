@@ -9,6 +9,8 @@ from django.views import generic
 
 from datetime import date, datetime, timedelta
 from decimal import Decimal
+from rq import Queue
+from worker import conn
 
 from .models import History, Inspector, Notes
 from .newsletters import check_project_burnrate, check_inspector_certs
@@ -19,7 +21,7 @@ from apps.utils.helpers import formatted_date
 
 
 # Create your views here.
-
+q = Queue(connection=conn)
 @login_required
 def index(request):
     groups = []
@@ -132,7 +134,8 @@ class InspectorDetailView(
 
 @user_passes_test(lambda u: u.is_superuser)
 def ScrapeProjects(request):
-    resp = scrape_planned_projects()
+    result = q.enqueue(scrape_planned_projects)
+    resp = "Projects should scrape..."
     return HttpResponse(resp)
 
 @user_passes_test(lambda u: u.is_superuser)
