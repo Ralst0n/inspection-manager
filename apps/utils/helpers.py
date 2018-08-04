@@ -22,6 +22,39 @@ def before_cutoff_date(test_date, cutoff_date):
 
     return new_date < cut_date
 
+def certified(inspector, cert):
+    ''' does the inspector have a given cert and is it up to date? '''
+    d = datetime.now().date()
+    if cert == "nicet_expiration":
+        if inspector.nicet_expiration is not None: 
+            if inspector.nicet_expiration > d:
+                 return True
+        return False
+
+    if cert == "penndot_bituminous":
+        if inspector.penndot_bituminous is not None:
+            if inspector.penndot_bituminous > d:
+                 return True
+        return False
+
+    if cert == "necept_bituminous":
+        if inspector.necept_bituminous is not None:
+            if inspector.necept_bituminous > d:
+                return True
+        return False
+
+    if cert == "penndot_concrete":
+        if inspector.penndot_concrete is not None:
+            if inspector.penndot_concrete > d:
+                return True
+        return False
+
+    if cert  == "aci_concrete":
+        if inspector.aci_concrete is not None:
+            if inspector.aci_concrete > d:
+                return True
+        return False
+
 
 def dateField_format(dater):
     '''converts datestring to YYYY-MM-DD format expected by datefield'''
