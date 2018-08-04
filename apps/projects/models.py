@@ -51,7 +51,7 @@ class Project(models.Model):
         # that gives you a dictionary with the key as payroll_cost__sum
         # access that key to get total. Do same for other cost
         if self.invoice_set.count() > 0:
-            payroll_agg = self.invoice_set.aggregate(models.Sum('labor_cost'))
+            payroll_agg = self.invoice_set.filter(status__gte=1).aggregate(models.Sum('labor_cost'))
             payroll = payroll_agg.get('labor_cost__sum', 5.00)
             return Decimal(payroll)
         return Decimal(0.00)
@@ -59,7 +59,7 @@ class Project(models.Model):
     @property
     def other_cost_to_date(self):
         if self.invoice_set.count() > 0:
-            other_cost_agg = self.invoice_set.aggregate(models.Sum('other_cost'))
+            other_cost_agg = self.invoice_set.filter(status__gte=1).aggregate(models.Sum('other_cost'))
             other_cost = other_cost_agg.get('other_cost__sum', 5.00)
             return Decimal(other_cost)
         return Decimal(0.00)
@@ -76,10 +76,10 @@ class Project(models.Model):
 
     @property
     def inspector_hours_to_date(self):
-        st= self.invoice_set.aggregate(models.Sum('straight_hours'))
+        st= self.invoice_set.filter(status__gte=1).aggregate(models.Sum('straight_hours'))
         straight_hours = st.get('straight_hours__sum', 0.0)
-        ot = self.invoice_set.aggregate(models.Sum('overtime_hours'))
-        overtime_hours = st.get('overtime_hours__sum', 0.0)
+        ot = self.invoice_set.filter(status__gte=1).aggregate(models.Sum('overtime_hours'))
+        overtime_hours = ot.get('overtime_hours__sum', 0.0)
         return float(straight_hours + overtime_hours)
 
     @property
@@ -87,7 +87,7 @@ class Project(models.Model):
         """
         return the end date on the most recent invoice instance as a string
         """
-        if self.invoice_set.count() is 0:
+        if self.invoice_set.filter(status__gte=1).count() is 0:
             return self.start_date.strftime("%m/%d/%Y")
         latest_invoice = self.invoice_set.latest('end_date')
         return latest_invoice.end_date.strftime("%m/%d/%Y")
@@ -124,14 +124,14 @@ class Project(models.Model):
             return "present"
         if self.invoice_set is None:
             return "unknown"
-        latest_invoice = self.invoice_set.latest('end_date')
+        latest_invoice = self.invoice_set.filter(status__gte=1).latest('end_date')
 
     @property
     def ytd_invoiced(self):
         """
         return the total invoiced in the current calendar year for the job
         """
-        this_years_invoices = self.invoice_set.filter(end_date__year=date.today().year).filter(status__gte=3)
+        this_years_invoices = self.invoice_set.filter(end_date__year=date.today().year).filter(status__gte=1)
         total_invoiced = 0
         for invoice in this_years_invoices:
             total_invoiced += invoice.total_cost
