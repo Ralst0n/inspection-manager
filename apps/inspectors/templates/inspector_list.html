@@ -1,41 +1,75 @@
-{% extends 'table_page.html' %}
+{% extends 'base_nav.html' %}
+{% load static %}
 
 {% block title %}Inspector List{% endblock %}
-{% block morestyles %}
-#table-wrapper{
-  width: 100%;
-  background: red;
-}
-.options{
-  width: 100%;
-  text-align: center;
-}
-.options a{
-  margin: 0 auto;
-}
+{% block headers %}
+<link rel="stylesheet" href="{% static '/css/inspector_list.css' %}">
+<script src="{% static '/js/inspector_list.js' %}"></script>
 {% endblock %}
-{% block inspectors-nav %}active{% endblock %}
 
-{% block page_name %}My Inspectors{% endblock %}
-<div id='table-wrapper'>{%block table-properties %}table table-border {%endblock %}
-{% block table_head %}
-  <th>Name</th>
-  <th>classification</th>
-{% endblock %}
-{% block table_body %}
-  {% for inspector in inspector_list %}
-  <tr>
-    <td><a href="{{ inspector.get_absolute_url }}"> {{ inspector.first_name }} {{ inspector.last_name }}</a></td>
-    <td>{{ inspector.classification }}</td>
-  </tr>
-  {% endfor %}
+{% block content %}
+<div id="inspector-search">
+  <h4>Find inspectors by:</h4>
+<form action="" >
+  {% csrf_token %}
+
+  <div class="form-row">
+  <label for="classification">Classification:</label>
+  <select name="classification" id="">
+    <option value="all" >---</option>
+    <option >TA-1</option>
+    <option >TA-2</option>
+    <option >TCI-1</option>
+    <option >TCI-2</option>
+    <option >TCI-3</option>
+    <option >TCIS-1</option>
+    <option >TCIS-2</option>
+  </select>
 </div>
-{% endblock %}
+  
+<div class="form-row">
+  <label for="certs">Certifications:</label>
+  <input name="certs" type="checkbox" value="nicet_expiration">NICET
+  <input name="certs" type="checkbox" value="penndot_bituminous">PennDOT Bituminous
+  <input name="certs" type="checkbox" value="necept_bituminous"> NECEPT Bituminous
+  <input name="certs" type="checkbox" value="penndot_concrete"> PennDOT Concrete
+  <input name="certs" type="checkbox" value="aci_concrete"> ACI Concrete
+</div>
+
+  <input id="inspector-search-button" type="button" value="Search">
+</form>
+</div>
+
+
+<div id="inspectors">
+    {% for inspector in inspector_list %}
+    <div class="inspector-card">
+      <h4><a href="{{ inspector.get_absolute_url }}" target=_blank> {{ inspector.first_name }} {{ inspector.last_name }}</a></h4>
+      <p>{{ inspector.classification }}</p>
+      <hr>
+      <p class="location">{{ inspector.home_city }}, {{ inspector.home_state }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+
 {% block create %} 
 <div class="options">
     {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
-    <a class="button submit" href="{% url 'inspector-create' %}">Add Inspector</a>
-    <a class="button" href="{% url 'search-inspectors'%}">Toggle Inspectors</a>
+    <a class="button submit"  id="add-inspector-button" href="{% url 'inspector-create' %}">Add Inspector</a>
     {% endif %}
 </div>
+
+<div class="modal">
+  
+  <div class="modal-body">
+      <h2>Add Inspector</h2>
+      <h5 id="modal-message"></h5>
+  <form action="" id="inspector-form">
+    {% csrf_token %}
+  </form>
+</div>
+</div>
+
+{% endblock %}
 {% endblock %}
