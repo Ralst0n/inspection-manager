@@ -1,201 +1,111 @@
 {% extends "base_nav.html" %}
 {% load humanize %}
+{% load static %}
 
-    {% block title %}Document{% endblock %}
-    {% block styles %}
-    *{
-        font-size: 105%;
-    }
-    .button{
-        border: 1px solid black;
-        padding: 4px 6px;
-        margin-right: 3%;
-        background-color: #e0e0e0;
-        font-size: 2em;
-        color: #000;
-        border-radius: 5%;
-        
-    } 
-    a, href{
-        text-decoration: none;
-    }
-    .submit{
-        background-color: rgb(82, 151, 68);
-        color: #fff;
-    }
-    .reject{
-        background-color: red;
-    }
+{% block title %}Invoice {{ invoice.name }}{% endblock %}
 
-    #comments-section {
-        border: black 1px solid;
-        width: 100%;
-        margin: 10%;
-        height: 300px;
-        overflow: hidden;
-        overflow-y: auto;
-    }
+{% block headers %}
+<link rel="stylesheet" href="{% static '/css/invoice_details.css' %}">
+<script src="{% static '/js/invoice_details.js' %}"></script>
+{% endblock %}
 
-    .comment{
-       /*  background-color: rgba(255, 255, 255, 0.959);  */
-        border: 1px solid gray;
-        
-        padding: 1% 0;
-        margin: 0;
-    }
-
-    .comment-body{
-        padding-left: 1.75%;
-        margin-top: 30px;
-        font-size: 85%;
-        font-family: Arial, Helvetica, sans-serif
-    }
-    .date{
-        font-size: 85%;
-    }
-
-    .button-group div{
-        margin: 10px auto;
-        
-    }
-    .button-group {
-        border: 1px solid white;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-    }
-    ul {
-        list-style-type: none;
-        margin-bottom:50px;
-    }
-    li{
-        margin-bottom: 15px;
-    }
-    #invoice-facts{
-        width: 100%;
-        font-size: 24px;
-    }
-    h1{
-        font-size: 40px;
-    }
-    h4{
-        text-align: center;
-        margin: 10px auto;
-    }
-    table, th, td{
-        border-collapse: collapse;
-        border: 1px solid #F1F1F1;
-        padding: 5px;
-        margin: 0 auto;
-    }
-    thead{
-        background-color: #1269A8;
-    }
-
-    th{
-        font-size: 24px;
-    }
-    td{
-        font-size: 20px;
-        text-align: center;
-    }
-    
-    @media screen and (min-width: 450px) {
-        .button-group {
-            width: 400px;
-            margin: 0 auto;
-        }
-
-    }
-
-
-    {% endblock %}
 {% block content  %}
-    {% if messages %}
-        {% for message in messages %}
-            <p>{{ message }}</p>
-        {% endfor %}
-    {% endif %}
-    <h1> Invoice {{ invoice.name }}</h1>
-    <h4>({{invoice.start_date}} - {{invoice.end_date}})</h4>
-    <div id="invoice-facts">
-        <table>
-            <thead>
-                <th>Business Partner</th>
-                <th>Project</th>
-                <th>Labor cost</th>
-                <th>Other Cost</th>
-                <th>Total Cost</th>
-            </thead>
-           <tbody>
-                <td>{{ invoice.project.business_partner }}</td>
-                <td><a href="{{invoice.project.get_absolute_url}}">{{ invoice.project.prudent_number }}</a></td>
-                <td>${{ invoice.labor_cost|intcomma }}</td>
-                <td>${{ invoice.other_cost|intcomma }}</td>
-                <td>${{ invoice.total_cost|intcomma }}</td>
-           </tbody>
-        </table>
-        <ul>
-            <li><a class="doc" href="{{ MEDIA_URL}}/{{ invoice.invoice_file }}" target="_blank">View invoice {{ invoice.name }}</a></li>
-            <li>Preparer: {{ invoice.creator.profile.display_name }}</li>
-            <li>Last Modified: {{ invoice.last_modified }} by 
-                {% if invoice.last_modified_by %}
-                {{ invoice.last_modified_by.profile.display_name }}
-                {% else %}
-                {{ invoice.creator.profile.display_name }}
-                {% endif %}
-            </li>
-            {% if invoice.invoice_number %}
-            <li>
-                Invoice Number: {{ invoice.invoice_number }}
-            </li>
+{% if messages %}
+    {% for message in messages %}
+        <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+<h1> Invoice {{ invoice.name }}</h1>
+<!-- Show status if not complete -->
+{% if invoice.status == 1 %}
+<h4 id="status-update">STATUS INCOMPLETE: Awaiting manager approval</h4>
+{% elif invoice.status == 2 %}
+<h4 id="status-update">STATUS INCOMPLETE: Awaiting reviewer approval</h4>
+{% endif %}
+<h4>(<span class="edittable">{{invoice.start_date}}</span> - <span class="edittable">{{invoice.end_date}})</span></h4>
+<div id="invoice-facts">
+    <table>
+        <thead>
+            <th>Business Partner</th>
+            <th>Project</th>
+            <th>Labor cost</th>
+            <th>Other Cost</th>
+            <th>Total Cost</th>
+        </thead>
+        <tbody>
+            <td>{{ invoice.project.business_partner }}</td>
+            <td><a href="{{invoice.project.get_absolute_url}}">{{ invoice.project.prudent_number }}</a></td>
+            <td id="labor_cost" class="edittable">${{ invoice.labor_cost|intcomma }}</td>
+            <td id="other_cost" class="edittable">${{ invoice.other_cost|intcomma }}</td>
+            <td id="total_cost">${{ invoice.total_cost|intcomma }}</td>
+        </tbody>
+    </table>
+    <ul>
+        <li><a class="doc" href="{{ MEDIA_URL}}/{{ invoice.invoice_file }}" target="_blank">View invoice {{ invoice.name }}</a></li>
+        <li>Preparer: {{ invoice.creator.profile.display_name }}</li>
+        <li>Last Modified: {{ invoice.last_modified }} by 
+            {% if invoice.last_modified_by %}
+            {{ invoice.last_modified_by.profile.display_name }}
+            {% else %}
+            {{ invoice.creator.profile.display_name }}
             {% endif %}
-        </ul>
-    </div>
-    
-
-    <!-- INVOICE OPTIONS FOR PREPARERS -->
-    <div class="button-group">
-        {% if user.profile.role == "Preparer" and invoice.status == 0 %}
-         <div class="fake-but"><a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Submit</a></div>
-         <div class="fake-but"><a class="button edit" href="{% url 'invoices:invoice_edit' pk=invoice.pk %}">Edit</a></div>
+        </li>
+        {% if invoice.invoice_number %}
+        <li>
+            Invoice Number: {{ invoice.invoice_number }}
+        </li>
         {% endif %}
-    </div>
+    </ul>
+</div>
 
-    <!-- INVOICE OPTIONS FOR MANAGERS -->
-    <div class="button-group">
-        {% if user.profile.role == "Manager" and invoice.status == 1 %}
-        <a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Approve</a>
-        <a class="button edit" href="{% url 'invoices:invoice_edit' pk=invoice.pk %}">Edit</a>
-        <a class="button reject" href="{% url 'invoices:invoice_reject' pk=invoice.pk %}">Reject</a>
-        {% endif %}
-    </div>
 
-    <!-- INVOICE OPTIONS FOR REVIEWERS ORIGINAL-->
-    <div class="button-group">
-        {% if user.profile.role == "Reviewer" and invoice.status == 2 and not invoice.invoice_number %}
-        <a class="button submit" href="{% url 'invoices:invoice_number' pk=invoice.pk %}">Add Invoice Number</a>
-        <a class="button reject" href="{% url 'invoices:invoice_reject' pk=invoice.pk %}">Reject</a>
-        {% endif %}
-    </div>
+<!-- INVOICE OPTIONS FOR PREPARERS -->
+<div class="button-group">
+    {% if user.profile.role == "Preparer" and invoice.status == 0 %}
+        <div class="fake-but"><a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Submit</a></div>
+        <div class="fake-but"><a id="edit" class="button edit" href="{% url 'invoices:invoice_edit' pk=invoice.pk %}">Edit</a></div>
+    {% endif %}
+</div>
 
-    <!-- INVOICE OPTIONS FOR REVIEWERS FINAL-->
-    <div class="button-group">
-        {% if user.profile.role == "Reviewer" and invoice.status == 2 and invoice.invoice_number %}
-        <a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Approve</a>
-        <a class="button reject" href="{% url 'invoices:invoice_reject' pk=invoice.pk %}">Reject</a>
-        {% endif %}
-    </div>
+<!-- INVOICE OPTIONS FOR MANAGERS -->
+<div class="button-group">
+    {% if user.profile.role == "Manager" and invoice.status == 1 %}
+    <a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Approve</a>
+    <a class="button edit" id="edit" href="{% url 'invoices:invoice_edit' pk=invoice.pk %}">Edit</a>
+    <a class="button reject" href="{% url 'invoices:invoice_reject' pk=invoice.pk %}">Reject</a>
+    {% endif %}
+</div>
 
-    <div id="comments-section">
-            <h2>COMMENTS</h2>
+<!-- INVOICE OPTIONS FOR REVIEWERS ORIGINAL-->
+<div class="button-group">
+    {% if user.profile.role == "Reviewer" and invoice.status == 2 and not invoice.invoice_number %}
+    <a class="button submit" href="{% url 'invoices:invoice_number' pk=invoice.pk %}">Add Invoice Number</a>
+    <a class="button reject" href="{% url 'invoices:invoice_reject' pk=invoice.pk %}">Reject</a>
+    {% endif %}
+</div>
+
+<!-- INVOICE OPTIONS FOR REVIEWERS FINAL-->
+<div class="button-group">
+    {% if user.profile.role == "Reviewer" and invoice.status == 2 and invoice.invoice_number %}
+    <a class="button submit" href="{% url 'invoices:invoice_submit' pk=invoice.pk %}">Approve</a>
+    <a class="button reject" href="{% url 'invoices:invoice_reject' pk=invoice.pk %}">Reject</a>
+    {% endif %}
+</div>
+
+
+<div id="comments-section">
+    <h2>COMMENTS</h2>
+    <div id="comments">
         {% for comment in comments %}
         <div class="comment">
-            <p class="commentor"><strong>{{ comment.creator.profile.display_name }}</strong> <span class="date">({{comment.created_at|date:"m/d/Y h:iA"}}) :</span></p>
-    
+            <p class="commentor"><strong>{{ comment.creator.profile.display_name }}</strong> </p>
+
             <p><span class="comment-body"> {{comment.body}}</span></p>
+
+            <p><span class="date">{{comment.created_at|date:"m/d/Y h:iA"}}</span></p>
             
         </div>
         {% endfor %}
-        </div>
+    </div>  
+</div>
 {% endblock %}
