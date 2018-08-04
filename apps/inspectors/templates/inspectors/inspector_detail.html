@@ -95,7 +95,9 @@
           Unlisted
       {% endif %}
     </p>
-    <p><strong>Address: </strong>{{ inspector.address }} {{ inspector.location }}</p>
+    <p><strong>Address: </strong>{{ inspector.address }}. {{ inspector.home_city }}, {{ inspector.home_state }}
+      {{ inspector.home_zip }}
+    </p>
     {% if inspector.resume %}
     <p><a class="doc" href="{{ MEDIA_URL}}/{{ inspector.resume }}" target="_blank">View resume {{ inspector.first_name }}</a></p>
     {% endif %}
