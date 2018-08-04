@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User, Group
 from django.db.models import Q, Sum
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
 from django.views import generic
@@ -17,8 +17,9 @@ from .newsletters import check_project_burnrate, check_inspector_certs
 from .tasks import email_news_letter, scrape_let_projects, scrape_planned_projects
 from apps.invoices.models import Invoice
 from apps.projects.models import Project
-from apps.utils.helpers import formatted_date
+from apps.utils.helpers import certified, formatted_date
 
+import json
 
 # Create your views here.
 q = Queue(connection=conn)
@@ -65,6 +66,73 @@ class InspectorCreateView(generic.edit.CreateView):
     model = Inspector
     fields = '__all__'
 
+def create_person(request):
+        print(f"get gives #{request.GET.get('first name')} post gives #{request.POST.get('first name')}")
+        print(request.GET)
+        print(f"THE POST IS #{request.POST}")
+        Inspector.objects.create(
+            first_name =request.POST.get("first name"),
+            last_name = request.POST.get("last name"),
+            office = request.POST.get("office"),
+            classification =request.POST.get("classification"),
+            address = request.POST.get("address"),
+            home_city = request.POST.get("city"),
+            home_state = request.POST.get("state"),
+            home_zip = request.POST.get("zip"),
+            work_radius = request.POST.get("radius"),
+            email = request.POST.get("email"),
+            phone_number = request.POST.get("phone number"),
+        )
+        if Inspector.objects.filter(first_name=request.POST.get("first name"), last_name = request.POST.get("last name")):
+            print("urray")
+            data = {
+                "message": 
+                f"{request.POST.get('first name')} {request.POST.get('last name')} added to inspectors"
+            }
+            return JsonResponse(data)
+        print("Oh me oh my!")   
+        data = {
+                "message": "Inspector not added something went oopsy"
+            } 
+        return JsonResponse(data)
+
+def find_inspectors(request):
+    classification = request.POST.get("classification")
+    # make the querydict into a python dict then separate the certs string into indivudal list items
+    certs = request.POST.dict()
+    certs = certs["certs"].split(",")
+
+    # if classification is not specified, filter all
+    if classification == "all":
+        filtered_inspectors = Inspector.objects.all()
+    else:
+        filtered_inspectors = Inspector.objects.filter(classification=classification)
+
+
+    filtered_list = []
+    for inspector in filtered_inspectors:
+        # if an inspector is missing a cert they switch to invalid and aren't returned in the response data
+        valid = True
+
+        # If certs first element is emtpy string we move on otherwise iterate over them
+        if certs[0]:
+            for cert in certs:
+                # certified inspector checks they have the cert and that it isn't expired
+                if not certified(inspector, cert):
+                    valid = False
+                    break
+        if valid:
+            data = {}
+            data['name'] = f"{inspector.first_name} {inspector.last_name}"
+            data['url'] = inspector.get_absolute_url()
+            data['classification'] = inspector.classification
+            data['location'] =f"{inspector.home_city}, {inspector.home_state}"
+            filtered_list.append(data)
+            
+    
+    response = {"inspectors": filtered_list}
+    print(response)
+    return JsonResponse(response)
 class InspectorUpdateView(generic.edit.UpdateView):
     template_name = 'create_inspector.html'
     model = Inspector
@@ -106,7 +174,7 @@ class InspectorListView(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         if self.request.user.is_anonymous:
             return []
-        qs = Inspector.objects.filter(office=self.request.user.profile.office)
+        qs = Inspector.objects.filter(office=self.request.user.profile.office, is_employee=True)
         return qs
 
 class InspectorDetailView(
