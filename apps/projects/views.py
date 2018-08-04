@@ -1,10 +1,12 @@
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.db.models import Sum
+from django.db.models import Max, Sum
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import generic
 
+from datetime import timedelta
 from rest_framework import generics, viewsets
 from rest_framework.renderers import JSONRenderer, TemplateHTMLRenderer
 
@@ -51,7 +53,7 @@ class ProjectsDetailView(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # self.object gives you access to the object the detail page is for.
-        context['invoices'] = Invoice.objects.filter(project=self.object).order_by('-end_date')
+        context['invoices'] = Invoice.objects.filter(project=self.object, status__gte=1).order_by('-end_date')
         return context
 
     def get_object(self):
@@ -71,3 +73,25 @@ class ProjectViewSet(viewsets.ModelViewSet):
 class ProjectDetail(generics.RetrieveUpdateAPIView):
     queryset = Project.objects.all()
     render_classes = (JSONRenderer,)
+
+def get_info(request):
+    '''Get the information to auto populate the estimate number and start date for an invoice'''
+    prudent_number = request.POST.get("prudent_number")
+    project = Project.objects.get(prudent_number=prudent_number)
+    # if there are no previous invoices, tell js there's no previous data.
+    if project.invoice_set.count() == 0:
+        data = {
+            "previous": ""
+        }
+    else:
+        latest_invoice = project.invoice_set.latest('end_date')
+        estimate_number = latest_invoice.estimate_number + 1
+        start_date = latest_invoice.end_date + timedelta(days=1)
+        start_date = start_date.strftime("%Y-%m-%d")
+        data = {
+            "previous": True,
+            "estimate_number": estimate_number,
+            "start_date": start_date
+        }
+
+    return JsonResponse(data)
