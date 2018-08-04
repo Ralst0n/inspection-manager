@@ -14,4 +14,6 @@ urlpatterns = [
     path('email_newsletter', views.Newsletter,),
     path('scrape_let_projects', views.LetProjects,),
     path('report', views.office_overview,),
+    path('create_person', views.create_person),
+    path('find', views.find_inspectors),
 ]
