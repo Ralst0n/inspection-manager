@@ -2,13 +2,18 @@ from django.core.mail import send_mail
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
+from django.http import JsonResponse
 from django.views.generic import DetailView, ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
+
+from datetime import datetime
+
 from .forms import CommentCreationEditForm, CommentCreationForm, InvoiceCompletionForm, InvoiceCreationForm
 from .models import Invoice, Comments
 from apps.profiles.models import Profile
+from apps.projects.models import Project
 
 class InvoiceList(ListView):
     def get_queryset(self):
@@ -153,27 +158,29 @@ def invoice_reject(request, pk):
                 invoice.status = invoice.status - 1
                 messages.add_message(request, messages.INFO, f"Invoice Status revereted to {invoice.STATUS_CODE[invoice.status][1]}")
             invoice.save()
-            if invoice.status == 0:
-                # If an invoice is rejected back to preparer, notify preparer with an email including changes to be made.
-                recip_set = Profile.objects.filter(office=invoice.creator.profile.office).filter(role="Preparer")
-                recipients = []
-                for recipient in recip_set:
-                    recipients.append(recipient.user.email)
-                emessage = f"<p>{invoice.last_modified_by.first_name} {invoice.last_modified_by.last_name} has rejected <a href=https://prudentoffice.herokuapp.com/invoices/{pk}> {invoice.name}</a>:</p><p>{invoice.comments_set.lastest('created_at')}</p>" 
-            elif invoice.status == 1:
-                # If an invoice is rejected back to manager, notify manager with an email including changes to be made.
-                recip_set = Profile.objects.filter(office=invoice.creator.profile.office).filter(role="manager")
-                recipients = []
-                for recipient in recip_set:
-                    recipients.append(recipient.user.email)
-                emessage = f"<p>{invoice.last_modified_by.first_name} {invoice.last_modified_by.last_name} has rejected <a href=https://prudentoffice.herokuapp.com/invoices/{pk}> {invoice.name}</a>:</p><p>{invoice.comments_set.lastest('created_at')}</p>" 
-            
+            # Save the comment
             comment = form.save(commit=False)
             comment.creator = request.user
             comment.created_at = timezone.now()
             comment.body = f"[Reject] {comment.body}"
             comment.invoice = invoice
             comment.save()
+            if invoice.status == 0:
+                # If an invoice is rejected back to preparer, notify preparer with an email including changes to be made.
+                recip_set = Profile.objects.filter(office=invoice.creator.profile.office).filter(role="Preparer")
+                recipients = []
+                for recipient in recip_set:
+                    recipients.append(recipient.user.email)
+                emessage = f"<p>{invoice.last_modified_by.first_name} {invoice.last_modified_by.last_name} has rejected <a href=https://prudentoffice.herokuapp.com/invoices/{pk}> {invoice.name}</a>:</p><p>{invoice.comments_set.latest('created_at')}</p>" 
+            elif invoice.status == 1:
+                # If an invoice is rejected back to manager, notify manager with an email including changes to be made.
+                recip_set = Profile.objects.filter(office=invoice.creator.profile.office).filter(role="manager")
+                recipients = []
+                for recipient in recip_set:
+                    recipients.append(recipient.user.email)
+                emessage = f"<p>{invoice.last_modified_by.first_name} {invoice.last_modified_by.last_name} has rejected <a href=https://prudentoffice.herokuapp.com/invoices/{pk}> {invoice.name}</a>:</p><p>{invoice.comments_set.latest('created_at')}</p>" 
+            
+
             return redirect('invoices:details', pk=pk)
     else:
         form = InvoiceCreationForm(instance=invoice)
@@ -196,3 +203,55 @@ def invoice_number(request, pk):
     else:
         form = InvoiceCompletionForm(instance=invoice)
         return render(request, 'templates/invoice_number.html', {'form': form, 'invoice': invoice})
+
+def create_invoice(request):
+    if request.method == "POST":
+        data = {
+            "valid":True,
+            "message": ""
+            }
+        project = Project.objects.get(prudent_number=request.POST.get("project_id"))
+        estimate_number = request.POST.get("Estimate number")
+        
+
+        # If estimate number already exist, increment until we find first available estimate number
+        while project.invoice_set.filter(estimate_number=estimate_number).count() > 0:
+            estimate_number += 1
+
+        # verify start date is after latest end date
+        start_date = request.POST.get("Start date")
+        # convert the date to a datetime.date
+        start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
+        
+        if start_date < project.invoice_set.latest("end_date").end_date:
+            data["valid"] = False
+            data['message'] += f"<p>Start date must be after end date for invoice {estimate_number - 1}</p>"
+            return JsonResponse
+
+        # Verify end date is after start date
+        end_date = request.POST.get("End date")
+        end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
+        if end_date <= start_date:
+            data["valid"] = False
+            data['message'] += f"<p>End date for this invoice must come after Start date</p>"
+
+        # If the data is valid create an invoice object, otherwise tell why it's not created
+        if data["valid"]:
+            project.invoice_set.latest("end_date")
+            invoice = Invoice.objects.create(
+                project=project,
+                estimate_number = estimate_number ,
+                start_date = request.POST.get("Start date"),
+                end_date = request.POST.get("End date"),
+                labor_cost = request.POST.get("Labor cost"),
+                other_cost = request.POST.get("Other cost"),
+                straight_hours = request.POST.get("Straight hours"),
+                overtime_hours = request.POST.get("Overtime hours"),
+                invoice_file = request.POST.get("Invoice File"),
+                creator = request.user,
+                last_modified_by = request.user
+
+            )
+            data["invoice"] = invoice.id
+            data["message"] = f"<p> Invoice {invoice.estimate_number} successfully created</p>"
+        return JsonResponse(data)
