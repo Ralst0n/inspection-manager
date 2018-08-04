@@ -1,10 +1,13 @@
 {% extends "base_nav.html" %}
+{% load static %}
 {% load humanize %}
 
 {% block headers %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" href="{% static '/css/project_detail.css' %}">
+  <script src="{% static '/js/project_detail.js' %}"></script>
 {% endblock %}
 
 {% block title %}{{project.name}}{% endblock %}
@@ -40,7 +43,7 @@
 <div id="header">
 <h1>{{project.penndot_number}}: {{project.name}}</h1>
 <h2 style="color:#aaa">({{project.start_date}} - {{project.end_date}})</h2>
-<h2>{{project.prudent_number }}</h2>
+<h2 id="project_number" data-id={{project.prudent_number}} >{{project.prudent_number }}</h2>
 </div>
 
 
@@ -76,7 +79,11 @@
     </thead>
     <tbody>
 {% for invoice in invoices %}
-    <tr>
+    {% if invoice.status < 3 %}
+      <tr class="incomplete">
+    {% else %}
+      <tr>
+    {% endif %}
       <td><a href="{{ invoice.get_absolute_url }}">{{ invoice.estimate_number }}</a></td>
       <td>{{ invoice.start_date|date:"SHORT_DATE_FORMAT" }}</td>
       <td>{{ invoice.end_date|date:"SHORT_DATE_FORMAT" }}</td>
@@ -87,7 +94,23 @@
   </tbody>
 
   </table>
+  {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
+  <button id="invoice-button" class="button submit"> Create Invoice</button>
+  {% endif %}
 </div>
+
+<!-- Modal for Create Invoice onclick -->
+<div class="modal">
+  
+  <div class="modal-body">
+      <h2>Create Invoice</h2>
+      <h5 id="modal-message"></h5>
+  <form action="" id="invoice-form" enctype="multipart/form-data">
+    {% csrf_token %}
+
+  </form>
+</div>
+
 {% endblock %}
 {% block script %}
   $(document).ready(function() {
