@@ -1,60 +1,13 @@
 {% extends "base_nav.html" %}
+{% load static %}
 {% load humanize %}
-    {%block styles %}
-        a, href {
-            text-decoration: none;
-            
-        }
-        #main-content{
-            width: 100%;
-            display: flex;
 
-        }
-        #queue{
-            width: 50%;
-            text-align: center;
-        }
-        ul {
-           list-style: none;
-        }
-        li {
-            font-size: 24px;
-            padding-bottom: 9px;
-        }
-        #table{
-            display: inline-block;
-            width: 50%;
-            text-align: center;
-            
-        }
-        table{
-            width: 100%;
-        }
-        td {
-            font-size: 18px;
-            padding-bottom: 9px;
-        }
-        #progress-section{
-            width: 100%;
-            text-align: center;
-        }
-        #progress-bar{
-            width: 50%;
-            border: 1px solid blue;
-            margin: 0 auto;
-            border-radius: 5px;
-        }
-        #progress {
-            background-color: green;
-            width: 15%;
-            height: 40px;
-            text-align: center;
-            font-size: 25px;
-            color: white;
-            top: 50%;
-            border-radius: 5px;
-        }
-    {% endblock %}
+{% block title %}{{request.user}}- Dashboard{% endblock %}
+{% block headers %}
+<link rel="stylesheet" href="{% static '/css/dashboard.css' %}">
+<script src="{% static '/js/dashboard.js' %}"></script>
+{% endblock %}
+
 
 {% block content %}
     
@@ -63,8 +16,10 @@
     <div id="progress-section">
         <h3>Invoiced to Date: ${{ revenue|intcomma}}</h3>
         <div id="progress-bar">
-                <div id="progress">
+                <div data-percent={{revenue_percent}} id="progress">
+                    {% if revenue_percent > 15 %}
                    {{ revenue_percent|floatformat:2}}%
+                   {% endif %}
                 </div>
             </div>
             <h3>2018 Goal: $1,000,000.00</h3>
@@ -74,9 +29,9 @@
 
         <div id='queue'>   
         {% if request.user.profile.role == 'Preparer' %}
-            <h2>Invoice Queue</h2>
+            <h2 id="invoice-queue-heading">Invoice Queue</h2>
         {% else %}
-            <h2>Invoices awaiting your approval</h2>
+            <h2 id="invoice-queue-heading">Invoices awaiting your approval</h2>
         {% endif %}
         
             <ul> 
@@ -88,11 +43,7 @@
                     {% endif %}
                 </li>
                 {% empty %}
-                    {% if request.user.profile.role == 'Preparer'%}
-                        <li> Pipeline Clean</li>
-                    {% else %}
-                        <li> Your queue is empty </li>
-                    {% endif %}    
+                        <li> Your queue is empty </li>  
                 {% endfor %}
             </ul>
         </div>
@@ -100,7 +51,7 @@
             <h2>Recent Activity</h2>
             <table>
                 {% for invoice in recent %}
-                    <tr><td>{{ invoice.name}} moved to {{ invoice.readable_status }} by {{invoice.last_modified_by}}</td></tr>
+                    <tr><td>{{invoice.last_modified}} :{{ invoice.name}} moved to {{ invoice.readable_status }} by {{invoice.last_modified_by}}</td></tr>
                     {% empty %}
                         <tr><td>None</td></tr>
                 {% endfor %}
