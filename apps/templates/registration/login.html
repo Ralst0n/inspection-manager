@@ -1,6 +1,6 @@
 
 {% extends 'base_registration.html' %}
-{% block title %}Titleass headass boy{% endblock %}
+{% block title %}Login{% endblock %}
 
 {% block content %}
 
@@ -32,22 +32,12 @@
 
 <div class="login-buttons">
   <input class='button' id="loginButton" type="submit" name="" value="Login" />
-  <input class='button' id="guestLog" type="button" name="" value="login as guest">
   <input type="hidden" name="next" value="{{ next}}" />
 </div>
 </form>
 
-{# Assumes you setup the password_reset view in your URLconf #}
+
 <p><a href="{% url 'password_reset' %}">Lost password?</a></p>
 
 {% endblock %}
 
-{% block script %}
-  <script>
-    $("#guestLog").on("click", function(){
-      $("#id_username").val("MBaggoo399120")
-      $("#id_password").val("MB7519203484")
-      $("#loginButton").click();
-    })
-  </script>
-{% endblock %}
