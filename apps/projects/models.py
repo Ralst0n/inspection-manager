@@ -50,7 +50,7 @@ class Project(models.Model):
         # aggregate the payroll_cost & get the sum of that.
         # that gives you a dictionary with the key as payroll_cost__sum
         # access that key to get total. Do same for other cost
-        if self.invoice_set.count() > 0:
+        if self.invoice_set.filter(status__gte=1).count() > 0:
             payroll_agg = self.invoice_set.filter(status__gte=1).aggregate(models.Sum('labor_cost'))
             payroll = payroll_agg.get('labor_cost__sum', 5.00)
             return Decimal(payroll)
@@ -58,7 +58,7 @@ class Project(models.Model):
 
     @property
     def other_cost_to_date(self):
-        if self.invoice_set.count() > 0:
+        if self.invoice_set.filter(status__gte=1).count() > 0:
             other_cost_agg = self.invoice_set.filter(status__gte=1).aggregate(models.Sum('other_cost'))
             other_cost = other_cost_agg.get('other_cost__sum', 5.00)
             return Decimal(other_cost)
