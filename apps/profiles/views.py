@@ -18,7 +18,7 @@ class DashboardView(LoginRequiredMixin, ListView):
         user_role = self.request.user.profile.role
 
         if user_role == "Preparer":
-            qs = Invoice.objects.filter(creator=self.request.user).filter(status__lte=2)
+            qs = Invoice.objects.filter(creator=self.request.user).filter(status__lte=0)
         elif user_role == "Manager":
             qs = Invoice.objects.filter(creator__profile__office=self.request.user.profile.office).filter(status=1)
         elif user_role == "Reviewer":
@@ -31,20 +31,21 @@ class DashboardView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user_role = self.request.user.profile.role
-        if user_role == "Preparer":
-            context['recent'] = Invoice.objects.filter(
-            creator__profile__office=self.request.user.profile.office).filter(status__gt=1).order_by(
-                '-last_modified')[:7]
-        elif user_role == "Manager":
-            context['recent'] = Invoice.objects.filter(
-            creator__profile__office=self.request.user.profile.office).filter(status__gt=2).order_by(
-                'last_modified')[:7]
         if user_role == "Preparer" or user_role == "Manager":
+            # Show most recent activity on last 7 invoices that wasn't done by this person
+            context['recent'] = Invoice.objects.filter(
+            creator__profile__office=self.request.user.profile.office).exclude(last_modified_by=self.request.user).order_by(
+                '-last_modified')[:7]
+            # Additionally show revenue status for preparers and managers.
             total = 0
             for project in Project.objects.all():
                 total += project.ytd_invoiced
             context['revenue'] = total
             context['revenue_percent'] = (total/1000000) * 100
+        else:
+            context['recent'] = Invoice.objects.filter(
+            creator__profile__office=self.request.user.profile.office).order_by(
+                'last_modified')[:7]
         return context
 
     
