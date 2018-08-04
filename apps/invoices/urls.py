@@ -12,4 +12,5 @@ urlpatterns = [
     path('submit/<pk>/', views.invoice_submit, name='invoice_submit'),
     path('reject/<pk>/', views.invoice_reject, name='invoice_reject'),
     path('inv_number/<pk>/', views.invoice_number, name='invoice_number'),
+    path('create', views.create_invoice, ),
 ]
