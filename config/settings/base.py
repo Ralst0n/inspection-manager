@@ -166,3 +166,6 @@ STATICFILES_FINDERS = (
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = str(APPS_DIR('media'))
+
+USE_TZ = True
+TIME_ZONE = "America/New_York"
