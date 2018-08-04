@@ -1,0 +1,124 @@
+:root {
+    --primary-font: #1269A8;
+}
+form {
+    font-size: 1.5em;
+}
+.inspector-card {
+    border: 1px solid #033;
+    height: 150px;
+    width: 250px;
+    margin: 30px;
+    font-size: 35px;
+    color: #033;
+}
+
+input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+}
+.inspector-card a {
+    color: var(--primary-font)
+}
+
+#inspectors {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: wrap;
+    text-align: center;
+    justify-content: center;
+
+}
+
+#inspector-search {
+    display: flex;
+    flex-direction: column;
+    margin: 10px auto;
+}
+/* #inspector-search>h4 {
+    margin: 0 auto;
+    margin-top: 15px;
+} */
+
+#inspector-search label {
+    font-size: 20px;
+    text-align: center;
+}
+
+#inspector-search select, #inspector-search-button {
+    font-size: 25px;
+} 
+form {
+    margin: 0 auto;
+}
+
+#inspector-search-button {
+    color: white;
+    background-color: var(--primary-font);
+}
+
+.location {
+    font-size: 20px;
+    color: #aaa;
+}
+
+
+.options{
+    width: 100%;
+    text-align: center;
+  }
+  .options a{
+    margin: 0 auto;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0,0,0.5);
+  }
+  .modal-body>h3 {
+    background-color:white;
+    
+  }
+  .modal-body {
+    background-color: white;
+    padding-bottom: 30px;
+    width: 50%;
+    margin:5% 15%;
+    height: 80%;
+    overflow-y: auto;
+  }
+  /* input[type], label {
+    display: block;
+  } */
+  input[type=checkbox] {
+    display: inline;
+    margin-left: 4px;
+  }
+  .form-row {
+    display: block;
+  }
+  #flash-message{
+    margin: 0 30%;
+    background-color: orange;
+    
+  }
+  #modal-message{
+    color: red;
+  }
+
+  .exit {
+        color: blue;
+        position: relative;
+        top:0;
+        left:0;
+
+  }
+
+  #search-message {
+      font-size: 49px;
+      width: 100%;
+  }

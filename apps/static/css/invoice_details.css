@@ -1,0 +1,129 @@
+*{
+    font-size: 105%;
+}
+.button{
+    border: 1px solid black;
+    padding: 4px 6px;
+    margin-right: 3%;
+    background-color: #e0e0e0;
+    font-size: 2em;
+    color: #000;
+    border-radius: 5%;
+    
+} 
+a, href{
+    text-decoration: none;
+}
+.submit{
+    background-color: rgb(82, 151, 68);
+    color: #fff;
+}
+.reject{
+    background-color: red;
+}
+
+#comments-section {
+    width: 100%;
+    margin-top: 10%;
+}
+
+#comments-section h2 {
+    font-size: 1.5em;
+    margin-left: 10%
+}
+#comments {
+    border: black 1px solid;
+    width: 80%;
+    margin: 0 auto;
+    height: 300px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+
+
+.comment{
+   /*  background-color: rgba(255, 255, 255, 0.959);  */
+    border: 1px solid gray;
+    
+    padding: 1% 0;
+}
+
+.comment>p {
+    margin-left: 10px;
+}
+
+.comment-body{
+    padding-left: 1.75%;
+    margin-top: 30px;
+    font-size: 85%;
+    font-family: Arial, Helvetica, sans-serif
+}
+
+.date{
+    font-size: 55%;
+    color: #aaa;
+}
+
+.button-group div{
+    margin: 10px auto;
+    
+}
+.button-group {
+    border: 1px solid white;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+ul {
+    list-style-type: none;
+    margin-bottom:50px;
+    margin-top: 5%;
+}
+li{
+    margin-bottom: 15px;
+}
+#invoice-facts{
+    width: 100%;
+    font-size: 24px;
+}
+h1{
+    font-size: 40px;
+}
+h4{
+    text-align: center;
+    margin: 10px auto;
+    width: 100%;
+}
+#status-update {
+    color: rgba(200,0,0, .7);
+}
+table, th, td{
+    border-collapse: collapse;
+    border: 1px solid #F1F1F1;
+    padding: 5px;
+    margin: 0 auto;
+}
+thead{
+    background-color: #1269A8;
+}
+
+th{
+    font-size: 24px;
+}
+td{
+    font-size: 20px;
+    text-align: center;
+}
+
+@media screen and (min-width: 450px) {
+    .button-group {
+        width: 400px;
+        margin: 0 auto;
+    }
+
+}
+
+.edittable {
+    font-size: 1em;
+}

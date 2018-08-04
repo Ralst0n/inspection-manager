@@ -1,0 +1,56 @@
+a, href {
+    text-decoration: none;
+    
+}
+#main-content{
+    width: 100%;
+    display: flex;
+
+}
+#queue{
+    width: 50%;
+    text-align: left;
+}
+#invoice-queue-heading{
+    padding-left: 40px
+}
+ul {
+   list-style: none;
+}
+li {
+    font-size: 24px;
+    padding-bottom: 9px;
+}
+#table{
+    display: inline-block;
+    width: 50%;
+    text-align: left;
+    
+}
+table{
+    width: 100%;
+}
+td {
+    font-size: 18px;
+    padding-bottom: 9px;
+}
+#progress-section{
+    width: 100%;
+    text-align: center;
+}
+#progress-bar{
+    width: 50%;
+    border: 1px solid blue;
+    margin: 0 auto;
+    border-radius: 5px;
+}
+#progress {
+    background-color: green;
+    width: 15%;
+    height: 40px;
+    text-align: center;
+    font-size: 25px;
+    color: white;
+    top: 50%;
+    border-radius: 5px;
+}

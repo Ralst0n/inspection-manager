@@ -1,0 +1,37 @@
+#invoice-button {
+    margin: 0 auto;
+    
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0,0,0.5);
+  }
+.modal-body>h3 {
+  background-color:white;
+  
+}
+.modal-body {
+  background-color: white;
+  padding-bottom: 30px;
+  width: 50%;
+  margin:5% 15%;
+  height: 80%;
+  overflow-y: auto;
+}
+
+#modal-message{
+  color: red;
+}
+
+.incomplete {
+  color: rgba(200,0,0, .7);
+}
+
+.incomplete:hover {
+  content: "Not yet approved";
+}
