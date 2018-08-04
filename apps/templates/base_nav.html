@@ -18,48 +18,47 @@
 </head>
 <body>
     <div class="container">
-            <div id="site-nav">
-                <div class="hamburger-container" onclick="flipBurger(this)">
-                        <div class="burger1" ></div>
-                        <div class="burger2" ></div>
-                        <div class="burger3" ></div>
-                </div>
-                
-                <div class="menu">
-                    {% if request.user.profile.role == 'Observer' or request.user.profile.role == 'Reviewer' %}
-                    <div class="menu-box"><a href={% url 'profiles:dashboard' %}>Home</a></div>
-                    <div class="menu-box"><a href={% url 'projects' %}>Projects</a></div>
-                    <div class="menu-box"><a href={% url 'equipment' %}>Devices</a></div>
-                    <div class="menu-box"><a href={% url 'logout' %}>Logout</a></div>
-                    {% else %}
-                    <div class="menu-box"><a href={% url 'profiles:dashboard' %}>Home</a></div>
-                    <div class="menu-box"><a href={% url 'inspectors' %}>Inspectors</a></div>
-                    <div class="menu-box"><a href={% url 'invoices:invoices' %}>Invoices</a></div>
-                    <div class="menu-box"><a href={% url 'projects' %}>Projects</a></div>
-                    <div class="menu-box"><a href={% url 'equipment' %}>Devices</a></div>
-                    <div class="menu-box"><a href={% url 'logout' %}>Logout</a></div>
-                    {% endif %}
-                    
-                </div>
-                
-                <!-- NAV for the desktop version -->
-                <nav>
-                        {% if request.user.profile.role == 'Observer' or request.user.profile.role == 'Reviewer' %}
-                        <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Home</a>
-                        <a class="lgmenu-box" href={% url 'projects' %}>Projects</a>
-                        <a class="lgmenu-box" href={% url 'equipment' %}>Devices</a>
-                        <a class="lgmenu-box" href={% url 'logout' %}>Logout {{ request.user.profile.display_name }}</a>
-                        {% else %}
-                        <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Home</a>
-                        <a class="lgmenu-box" href={% url 'inspectors' %}>Inspectors</a>
-                        <a class="lgmenu-box" href={% url 'invoices:invoices' %}>Invoices</a>
-                        <a class="lgmenu-box" href={% url 'projects' %}>Projects</a>
-                        <a class="lgmenu-box" href={% url 'equipment' %}>Devices</a>
-                        <a class="lgmenu-box" href={% url 'logout' %}>Logout</a>
-                        {% endif %}
-                </nav>
+        <div id="site-nav">
+            <div class="hamburger-container" onclick="flipBurger(this)">
+                    <div class="burger1" ></div>
+                    <div class="burger2" ></div>
+                    <div class="burger3" ></div>
             </div>
-
+            
+            <div class="menu">
+                {% if request.user.profile.role == 'Observer' or request.user.profile.role == 'Reviewer' %}
+                <div class="menu-box"><a href={% url 'profiles:dashboard' %}>Home</a></div>
+                <div class="menu-box"><a href={% url 'projects' %}>Projects</a></div>
+                <div class="menu-box"><a href={% url 'equipment' %}>Devices</a></div>
+                <div class="menu-box"><a href={% url 'logout' %}>Logout</a></div>
+                {% else %}
+                <div class="menu-box"><a href={% url 'profiles:dashboard' %}>Home</a></div>
+                <div class="menu-box"><a href={% url 'inspectors' %}>Inspectors</a></div>
+                <!-- <div class="menu-box"><a href={% url 'invoices:invoices' %}>Invoices</a></div> -->
+                <div class="menu-box"><a href={% url 'projects' %}>Projects</a></div>
+                <div class="menu-box"><a href={% url 'equipment' %}>Devices</a></div>
+                <div class="menu-box"><a href={% url 'logout' %}>Logout</a></div>
+                {% endif %}
+                
+            </div>
+            
+            <!-- NAV for the desktop version -->
+            <nav>
+                    {% if request.user.profile.role == 'Observer' or request.user.profile.role == 'Reviewer' %}
+                    <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Home</a>
+                    <a class="lgmenu-box" href={% url 'projects' %}>Projects</a>
+                    <a class="lgmenu-box" href={% url 'equipment' %}>Devices</a>
+                    <a class="lgmenu-box" href={% url 'logout' %}>Logout {{ request.user.profile.display_name }}</a>
+                    {% else %}
+                    <a class="lgmenu-box" href={% url 'profiles:dashboard' %}>Home</a>
+                    <a class="lgmenu-box" href={% url 'inspectors' %}>Inspectors</a>
+                    <!-- <a class="lgmenu-box" href={% url 'invoices:invoices' %}>Invoices</a> -->
+                    <a class="lgmenu-box" href={% url 'projects' %}>Projects</a>
+                    <a class="lgmenu-box" href={% url 'equipment' %}>Devices</a>
+                    <a class="lgmenu-box" href={% url 'logout' %}>Logout</a>
+                    {% endif %}
+            </nav>
+        </div>
             {% block content %}{% endblock %}
     
     <footer>
