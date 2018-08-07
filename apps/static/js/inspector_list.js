@@ -257,6 +257,9 @@ function clear_fields(array=[]) {
             if (name == "radius") {
                 document.querySelector(`[name="${name}"]`).value = 15;
             }
+            else if (name == "address") {
+                document.querySelector(`[name="${name}"]`).value = "Not Provided";
+            }
             else {
                 document.querySelector(`[name="${name}"]`).value = '';
             }
