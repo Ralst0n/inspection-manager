@@ -42,7 +42,6 @@
     </table>
     <ul>
         <li><a class="doc" href="{{ MEDIA_URL}}/{{ invoice.invoice_file }}" target="_blank">View invoice {{ invoice.name }}</a></li>
-        <li>Preparer: {{ invoice.creator.profile.display_name }}</li>
         <li>Last Modified: {{ invoice.last_modified }} by 
             {% if invoice.last_modified_by %}
             {{ invoice.last_modified_by.profile.display_name }}
