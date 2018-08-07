@@ -139,7 +139,7 @@ def find_inspectors(request):
     certs = certs["certs"].split(",")
 
     # if classification is not specified, filter all
-    if classification == "all":
+    if classification == "none" or classification == "any":
         filtered_inspectors = Inspector.objects.all()
     else:
         filtered_inspectors = Inspector.objects.filter(classification=classification)
