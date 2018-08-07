@@ -111,7 +111,7 @@ function create_inspector_form(){
         {"name":"radius","type":"number", "value": 15 },
         {"name":"address", "value":"Not Provided"},
         "city",
-        {"name":"state", "options": ['Pennsylvania', 'New Jersey', 'Maryland', 'Ohio', 'New York'] },
+        {"name":"state", "options": ['Pennsylvania', 'New Jersey', 'Delaware', 'Maryland', 'Ohio', 'New York'] },
         "zip",
         "email",
         {"name":"phone number", "type":"tel"}

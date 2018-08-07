@@ -34,6 +34,7 @@ class Inspector(models.Model):
     STATE = (
     ('Pennsylvania', 'PA'),
     ('New Jersey', 'NJ'),
+    ('Delaware', 'DE'),
     ('Maryland', 'MD'),
     ('Ohio', 'OH'),
     ('New York', 'NY'),
