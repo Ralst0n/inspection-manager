@@ -16,4 +16,5 @@ urlpatterns = [
     path('report', views.office_overview,),
     path('create_person', views.create_person),
     path('find', views.find_inspectors),
+    path('create_note', views.create_note),
 ]

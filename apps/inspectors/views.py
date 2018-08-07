@@ -66,31 +66,67 @@ class InspectorCreateView(generic.edit.CreateView):
     model = Inspector
     fields = '__all__'
 
+def create_note(request):
+    if request.user == False:
+        return JsonResponse({"error": "Must be logged in to leave a note"})
+    id = request.POST.get("id")
+    inspector = Inspector.objects.get(id=id)
+    note = Notes.objects.create(
+        inspector = inspector,
+        body = request.POST.get("body"),
+        creator = request.user
+    )
+    data = {}
+    data["date"] = note.created_at.strftime("%m/%d/%Y %I:%M%p")
+    data["commentor"] = note.creator.profile.display_name
+    data["comment"] = note.body
+    return JsonResponse(data)
+
 def create_person(request):
         print(f"get gives #{request.GET.get('first name')} post gives #{request.POST.get('first name')}")
         print(request.GET)
         print(f"THE POST IS #{request.POST}")
-        Inspector.objects.create(
+        
+        # if nullable fields are given default values, put None in the database
+        if request.POST.get("office") == "None":
+            office = "None"
+        else: 
+            office = request.POST.get("office")
+
+        if request.POST.get("classification") == "None" or request.POST.get("classification") == "all":
+            classification = ""
+        else:
+            classification = request.POST.get("classification")
+
+        if request.POST.get("address") == "Not Provided":
+            address = None
+        else:
+            address = request.POST.get("address")
+
+        if request.POST.get("phone number") == "":
+            phone_number = ""
+        else:
+            phone_number = request.POST.get("phone number")
+
+        inspector = Inspector.objects.create(
             first_name =request.POST.get("first name"),
             last_name = request.POST.get("last name"),
-            office = request.POST.get("office"),
-            classification =request.POST.get("classification"),
-            address = request.POST.get("address"),
-            home_city = request.POST.get("city"),
+            office = office,
+            classification = classification,
+            address = address,
+            home_city = request.POST.get("city").capitalize(),
             home_state = request.POST.get("state"),
             home_zip = request.POST.get("zip"),
             work_radius = request.POST.get("radius"),
             email = request.POST.get("email"),
-            phone_number = request.POST.get("phone number"),
+            phone_number = phone_number
         )
         if Inspector.objects.filter(first_name=request.POST.get("first name"), last_name = request.POST.get("last name")):
-            print("urray")
             data = {
-                "message": 
-                f"{request.POST.get('first name')} {request.POST.get('last name')} added to inspectors"
+                "name": f" {inspector.first_name} {inspector.last_name}",
+                "id": inspector.id
             }
             return JsonResponse(data)
-        print("Oh me oh my!")   
         data = {
                 "message": "Inspector not added something went oopsy"
             } 
