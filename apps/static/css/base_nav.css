@@ -198,7 +198,8 @@ a, href{
     background-color: #e0e0e0;
     font-size: 2em;
     color: #000;
-    border-radius: 5%;        
+    border-radius: 5%; 
+    max-height: 75px;       
 }
 .reject{
     background-color: red;
