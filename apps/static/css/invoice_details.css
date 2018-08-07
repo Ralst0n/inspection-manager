@@ -29,10 +29,10 @@ a, href{
 
 #comments-section h2 {
     font-size: 1.5em;
-    margin-left: 10%
+    text-align: center;
+    color: #1269A8;
 }
 #comments {
-    border: black 1px solid;
     width: 80%;
     margin: 0 auto;
     height: 300px;
@@ -43,9 +43,7 @@ a, href{
 
 
 .comment{
-   /*  background-color: rgba(255, 255, 255, 0.959);  */
-    border: 1px solid gray;
-    
+    border-bottom: 1px solid #aaa;
     padding: 1% 0;
 }
 
@@ -124,6 +122,3 @@ td{
 
 }
 
-.edittable {
-    font-size: 1em;
-}
