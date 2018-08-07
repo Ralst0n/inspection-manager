@@ -1,0 +1,141 @@
+.container {
+    width: 90%;
+  }
+h5{
+    font-size: 20px;
+}
+#information {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#information div {
+    margin: 0 auto;
+    width: 50%;
+    min-width: 200px;
+    text-align: center;
+}
+
+.table-container{
+    width: 100%;
+}
+
+.table-container *{
+    margin: 10px auto;
+    text-align: center;
+}
+#certs-table{
+ margin: 50px auto;
+}
+
+#certs-table table, #certs-table th, #certs-table td {
+    border-collapse: collapse;
+    border: 1px solid #F1F1F1;
+    padding: 5px;
+}
+
+#work-history {
+    margin: 20px auto;
+    width: 70%;
+}
+#history-table td{
+    text-align: center;
+    color: blue;
+}
+#work-history h2 {
+    text-align:center;
+}
+.options {
+    width: 100%;
+}
+
+
+/* THAT COMMENT NEW NEW */
+#comments-section {
+    width: 100%;
+    margin-top: 20px;
+}
+
+#comments-section h2 {
+    font-size: 1.5em;
+    margin-left: 10%
+}
+#comments {
+    /* border: black 1px solid; */
+    width: 80%;
+    margin: 0 auto;
+    height: 215px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+.commentor {
+    font-weight: bold;
+}
+.comment{
+   /*  background-color: rgba(255, 255, 255, 0.959);  */
+    border-bottom: 1px solid #aaa;
+    
+    padding: 1% 0;
+}
+
+.comment>p {
+    margin-left: 10px;
+}
+
+.comment-body{
+    padding-left: 1.75%;
+    font-size: 85%;
+    font-family: Arial, Helvetica, sans-serif;
+    margin: 5px 0;
+}
+
+.date{
+    font-size: 55%;
+    color: #aaa;
+}
+
+@keyframes flash {
+    0% { opacity: .1; }
+    100% { opacity: 1; }
+}
+
+.flash {
+    animation-name: flash;
+    animation-duration: 1s;
+}
+
+#edit-inspector {
+    display: inline-block;
+}
+
+#add-comment-div {
+    height: 100px;
+    width: 80%;
+    margin: 0 auto;
+    background-color: #ddd;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+#note-textarea{
+    height: 50px;
+    width: 99%;
+    overflow-y: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+    resize: none;
+    border: none;
+}
+
+#add-note {
+ color: white;
+ width: 100px;
+ margin-left: auto;
+ margin-top: 10px;
+ background-color: #1269A8;
+}
