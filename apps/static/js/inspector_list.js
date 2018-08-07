@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
         let certs = selected_certs();
 
         // Don't run if there are no filters applied
-        if (certs.length === 0 && document.querySelector("select[name='classification']").value === "all"){
+        if (certs.length === 0 && document.querySelector("select[name='classification']").value === "none"){
             document.querySelector("#blank-form").innerHTML = "Enter criteria to use search";
             return false;
         }
@@ -68,8 +68,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 div.append(header);
                 // Create classification paragraph
                 const p = document.createElement("p");
-                p.innerHTML = inspector.classification;
-                div.append(p);
+                if (inspector.classification){
+                    p.innerHTML = inspector.classification;
+                }
+                else {
+                    p.innerHTML = "Unknown"
+                }
+                    div.append(p);
                 div.append(document.createElement("hr"));
                 const p2 = document.createElement("p");
                 p2.innerHTML = inspector.location;
