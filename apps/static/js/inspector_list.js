@@ -240,6 +240,7 @@ function create_inspector_form(){
             document.querySelector("#modal-message").style.color = "green";
             let href = `/inspectors/${response.id}`;
             document.querySelector("#modal-message").innerHTML = `<a href=${href}> ${response.name}</a> added to inspectors`;
+            document.querySelector("[name='first name']").focus();
         }
         request.send(formData);
         return false;
