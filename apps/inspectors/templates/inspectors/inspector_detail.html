@@ -1,87 +1,24 @@
 {% extends 'base_nav.html' %}
+{% load static %}
 
 {% block headers %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.css">
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    <script src="{% static '/js/inspector_detail.js'%}"></script>
+    <link rel="stylesheet" href="{% static '/css/inspector_detail.css' %}">
 {% endblock %}
 
 {% block title %} {{ inspector.first_name }} {{ inspector.last_name }} {% endblock %}
-{% block styles %}
-  .container {
-    width: 90%;
-  }
-  h5{
-    font-size: 20px;
-  }
-  #information {
-    width: 100%;
-    display: flex;
-    flex-wrap: wrap;
-  }
-  #information div {
-    margin: 0 auto;
-    width: 50%;
-    min-width: 200px;
-    text-align: center;
-  }
-  .table-container{
-    width: 100%;
-  }
-  .table-container *{
-    margin: 10px auto;
-    text-align: center;
-  }
-  #certs-table{
-    margin: 50px auto;
-  }
-  #certs-table table, #certs-table th, #certs-table td {
-    border-collapse: collapse;
-    border: 1px solid #F1F1F1;
-    padding: 5px;
-  }
-
-  #work-history {
-    margin: 20px auto;
-    width: 70%;
-  }
-  #history-table td{
-    text-align: center;
-    color: blue;
-  }
-  #work-history h2 {
-    text-align:center;
-  }
-  .options {
-    width: 100%;
-  }
-  #notes-section {
-    border: black 1px solid;
-    width: 100%;
-    margin: 10%;
-    height: 300px;
-    overflow: hidden;
-    overflow-y: auto;
-}
-
-.comment{
-   /*  background-color: rgba(255, 255, 255, 0.959);  */
-    border: 1px solid gray;
-    
-    padding: 1% 0;
-    margin: 0;
-}
-
-.comment-body{
-    padding-left: 1.75%;
-    margin-top: 30px;
-    font-size: 85%;
-    font-family: Arial, Helvetica, sans-serif
-}
-{% endblock %}
 
 {% block content %}
-<h1 class="text-center"> {{ inspector.first_name }} {{inspector.last_name}} ({{inspector.classification}})</h1>
+<h1 data-id="{{ inspector.id }}"> {{ inspector.first_name }} {{inspector.last_name}} 
+  {% if inspector.classification == '' %}
+    (unknown)
+  {% else %}
+    ({{inspector.classification}})
+  {% endif %}
+</h1>
 
 
 <div id="information">
@@ -102,7 +39,7 @@
     <p><a class="doc" href="{{ MEDIA_URL}}/{{ inspector.resume }}" target="_blank">View resume {{ inspector.first_name }}</a></p>
     {% endif %}
   </div>
-
+{% if inspector.is_employee %}
   <div>
     <h5>Project information</h5>
     <p><strong>Current Project: </strong>
@@ -130,6 +67,7 @@
         None
       {% endif %}
   </div>
+{% endif %}
 </div>
 
 
@@ -181,28 +119,41 @@
   </table>
 </div>
 {% else %}
-<div id="notes-section">
-<h2> Notes on {{ inspector.first_name }}: </h2>
-  {% for note in notes %}
-  <div class="comment">
-      <p class="commentor"><strong>{{ note.creator.profile.display_name }}</strong> <span class="date">({{note.created_at|date:"m/d/Y h:iA"}}) :</span></p>
 
-      <p><span class="comment-body"> {{note.body}}</span></p>
-      
+<!-- THIS THE COMMENT SECTION AHOY -->
+
+<div id="comments-section">
+  <div id="add-comment-div">
+    <form action="">
+        {% csrf_token %}
+      <textarea name="text" id="note-textarea" cols="30" rows="10" placeholder="Add a note on {{ inspector.first_name}}..."></textarea>
+      <input type="button" id="add-note" value="Add Note">
+    </form>
   </div>
-  {% endfor %}
-    </tbody>
-  </table>
+  
+  <div id="comments">
+    {% for note in notes %}
+    <div class="comment">
+        <p class="commentor">{{ note.creator.profile.display_name }} </p>
+
+        <p class="comment-body"> {{note.body}}</p>
+
+        <p class="date">{{note.created_at|date:"m/d/Y h:iA"}}</p>
+        
+    </div>
+    {% endfor %}
+  </div>
 </div>
 {% endif %}
 
 <div class="options">
     {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
-    <a class="button submit" href="{% url 'inspector-update' pk=inspector.id %}">Edit Inspector</a>
+    <a class="button submit" id="edit-inspector" href="{% url 'inspector-update' pk=inspector.id %}">Edit Inspector</a>
 
     {% endif %}
 </div>
 {% endblock %}
+
 {% block script %}
   $(document).ready(function() {
     $('.datatable').DataTable({
