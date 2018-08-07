@@ -6,13 +6,13 @@ document.addEventListener("DOMContentLoaded", () => {
         let certs = selected_certs();
 
         // Don't run if there are no filters applied
-        if (certs.length === 0 && document.querySelector("select[name='classification']").value === "none"){
+        if (certs.length === 0 && document.querySelector("select[name='classification_search']").value === "none"){
             document.querySelector("#blank-form").innerHTML = "Enter criteria to use search";
             return false;
         }
         document.querySelector("#blank-form").innerHTML = "";
         let formData = new FormData();
-        formData.append("classification", document.querySelector("select[name='classification']").value);
+        formData.append("classification", document.querySelector("select[name='classification_search']").value);
         formData.append("certs", certs);
         
         
@@ -107,6 +107,7 @@ function create_inspector_form(){
         "last name",
         {"name":"office", "options": ['None', 'King of Prussia', 'Pittsburgh'] },
         {"name":"classification", "options":['TA-1', 'TA-2', 'TCI-1', 'TCI-2', 'TCI-3', 'TCIS-1', 'TCIS-2', 'None']},
+        // 15 miles is what PennDot considers standard commute
         {"name":"radius","type":"number", "value": 15 },
         {"name":"address", "value":"Not Provided"},
         "city",
@@ -201,9 +202,17 @@ function create_inspector_form(){
                     abort = true;
                     break;
                 }
+                formData.append(name, document.querySelector(`[name="${name}"]`).value);
+                console.log(name);
             }
-            formData.append(name, document.querySelector(`[name="${name}"]`).value);
-            console.log(name);
+            else {
+                // set the select formdata value equal to the value of the selected index
+                let select = document.querySelector(`[name="${name}"]`);
+                console.log(select.options[select.selectedIndex].value);
+                v = select.options[select.selectedIndex].value;
+                console.log(`${name} is a select field with value ${v}`)
+                formData.append(name, select.options[select.selectedIndex].value);
+            }
         };
 
         // Check that Phone number is either 10 digits or blank
@@ -244,7 +253,12 @@ function clear_fields(array=[]) {
         field.name ? name = field.name : name = field;
         // for all non-select fields set value to blank
         if (document.querySelector(`[name="${name}"]`).type != "select-one" ) {
-            document.querySelector(`[name="${name}"]`).value = '';
+            if (name == "radius") {
+                document.querySelector(`[name="${name}"]`).value = 15;
+            }
+            else {
+                document.querySelector(`[name="${name}"]`).value = '';
+            }
         }
         // for select fields change to default value
         else {
