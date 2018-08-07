@@ -1,3 +1,7 @@
+:root {
+    --prudent-orange: #F37224;
+    --prudent-blue: #1269A8;
+}
 *, html, body {
     box-sizing: border-box;
     margin: 0;
@@ -56,7 +60,7 @@ nav {
 }
 
 .menu {
-    background-color: gold;
+    background-color: var(--prudent-orange);
     width: 100%;
     height: auto;
     padding: 0 14px;
@@ -102,7 +106,7 @@ h1{
       min-height:150px;
       height:100%;
       width: 100%;
-      background-color: #F37224;
+      background-color: var(--prudent-orange);
   }
   #info{
       height: 25px;
@@ -123,7 +127,7 @@ h1{
         margin: 0;
     }
     #site-nav{
-        border-bottom: gold 1px solid;
+        border-bottom: var(--prudent-orange) 1px solid;
         height: 15%;
     }
     .container {
@@ -146,15 +150,17 @@ h1{
         color: #1269A8;
     }
     footer {
-        border-top: gold 1px solid;
+        border-top: var(--prudent-orange) 1px solid;
         width: 100%;
         max-height: 450px;
     }
     .hamburger-container .burger1, .burger2, .burger3, .menu, .change, .menu-box{
         display: none;
     }
-    div .menu {
+    .menu {
         display: none;
+        border: none;
+        background-color: #FFF;
     }
 
 
@@ -177,12 +183,23 @@ h1{
 /* SCREEN SIZE >= 1024px */
 @media screen and (min-width: 1024px) {
     .container{
-        border: 1px solid gold;
+        border-left: 1px solid var(--prudent-orange);
+        border-right: 1px solid var(--prudent-orange);
+        border-bottom: 1px solid var(--prudent-orange);
         max-width: 1000px;
         margin: 0 auto;
         height: auto;
         background-color: #FFF;
         min-height: 1366px;
+    }
+
+    .hamburger-container .burger1, .burger2, .burger3, .menu, .change, .menu-box{
+        display: none;
+    }
+    .menu {
+        display: none;
+        border: none;
+        background-color: #FFF;
     }
 }
 
@@ -208,3 +225,7 @@ a, href{
     background-color: rgb(82, 151, 68);
     color: #fff;
 } 
+
+.automatic-comment{
+    color: var(--prudent-orange);
+}
