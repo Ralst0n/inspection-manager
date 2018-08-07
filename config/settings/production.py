@@ -7,7 +7,7 @@ import django_heroku
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-DEBUG = config('DJANGO_DEBUG', default=False)
+DEBUG = False
 
 DATABASES = {
     'default': dj_database_url.config(
