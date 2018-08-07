@@ -42,7 +42,7 @@ class Inspector(models.Model):
     first_name = models.CharField(max_length=60)
     last_name = models.CharField(max_length=60)
     office = models.CharField(max_length=30, choices=OFFICE,
-        default='King of Prussia')
+        default='None')
     classification = models.CharField(max_length=6, choices=CI_TYPE, blank=True,
         default='TA-1', help_text='inspector classification i.e. TCI-2')
     address = models.CharField(max_length=100, help_text="i.e. '321 Atwood St'",
@@ -102,7 +102,7 @@ class Notes(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return f"{datetime.strftime(self.created_at, '%m/%d/%Y')} {self.inspector.first_name} {self.inspector.last_name}"
+        return f"{self.inspector.first_name} {self.inspector.last_name}: {self.body[:30]}"
 
 
 class History(models.Model):
