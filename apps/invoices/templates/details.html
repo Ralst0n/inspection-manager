@@ -94,6 +94,7 @@
 
 
 <div id="comments-section">
+    {% if comments %}
     <h2>COMMENTS</h2>
     <div id="comments">
         {% for comment in comments %}
@@ -106,6 +107,8 @@
             
         </div>
         {% endfor %}
-    </div>  
+    </div> 
+    {% else %}
+    {% endif %} 
 </div>
 {% endblock %}
