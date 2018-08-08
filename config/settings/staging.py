@@ -21,7 +21,7 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
 SECRET_KEY = config('DJANGO_SECRET_KEY')
-ALLOWED_HOSTS = ['rlawson-cimanager.herokuapp.com',]
+ALLOWED_HOSTS = ['rlawson-cimanager.herokuapp.com', 'prudentstaging.herokuapp.com']
 
 
 
