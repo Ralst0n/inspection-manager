@@ -53,5 +53,5 @@ class DashboardView(LoginRequiredMixin, ListView):
 def guest_log(request):
     user = User.objects.get(username="Guest")
     login(request, user)
-    redirect('')
+    return redirect('/')
 
