@@ -1,6 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.views.generic.list import ListView
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 # Create your views here.
 
 from apps.invoices.models import Invoice
@@ -48,4 +50,8 @@ class DashboardView(LoginRequiredMixin, ListView):
                 'last_modified')[:7]
         return context
 
-    
+def guest_log(request):
+    user = User.objects.get(username="Guest")
+    login(request, user)
+    redirect('')
+
