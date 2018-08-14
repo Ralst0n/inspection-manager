@@ -37,7 +37,7 @@ class LetProject(models.Model):
     third_place = models.ForeignKey('partners.BusinessPartner',
                                     related_name='thirds', null=True,
                                     on_delete=models.CASCADE)
-    scrapped_date = models.DateField(auto_now_add=True)
+    scrapped_date = models.DateField(auto_now_add=True, null=True)
 
     def __str__(self):
         return self.agreement_number
