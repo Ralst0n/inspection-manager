@@ -4,6 +4,7 @@ from .models import Equipment, Checkout
 class CheckoutInline(admin.TabularInline):
     model = Checkout
 
+    
 @admin.register(Equipment)
 class EquipmentAdmin(admin.ModelAdmin):
     def get_queryset(self, request):
@@ -19,6 +20,4 @@ class EquipmentAdmin(admin.ModelAdmin):
             return Equipment.objects.all().filter(office__in=groups)
     list_display = ('name', 'device', 'serial_number')
     inlines = [CheckoutInline]
-@admin.register(Checkout)
-class CheckoutAdmin(admin.ModelAdmin):
-    pass
+    
