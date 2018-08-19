@@ -6,5 +6,6 @@ from . import views
 app_name = 'profiles'
 urlpatterns = [
     path('', views.DashboardView.as_view(), name='dashboard'),
-    path('guest', views.guest_log, name="guest")
+    path('guest', views.guest_log, name="guest"),
+    path('revenue', views.chart_revenues, name='revenue')
 ]
