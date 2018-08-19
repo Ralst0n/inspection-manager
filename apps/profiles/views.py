@@ -3,10 +3,25 @@ from django.shortcuts import redirect, render
 from django.views.generic.list import ListView
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-# Create your views here.
 
+from datetime import datetime
+
+# Create your views here.
+from django.http import JsonResponse
 from apps.invoices.models import Invoice
 from apps.projects.models import Project
+from apps.utils.helpers import monthly_invoices
+
+def monthly_invoices(year=datetime.now().year):
+    # create list of revenue for each month
+    revenue_list = [0]*12
+    # for each month grab all invoices with end dates with that month
+    for month in range(1,13):
+        for invoice in Invoice.objects.filter(end_date__year=year, end_date__month=month):
+            # add invoice total to revenue index corresponding to its month
+            revenue_list[month-1] += invoice.total_cost
+    return revenue_list
+
 
 class DashboardView(LoginRequiredMixin, ListView):
     template_name = "dashboard.html"
@@ -18,7 +33,7 @@ class DashboardView(LoginRequiredMixin, ListView):
         # If the user is a creator, the data wil be invoices they created that aren't finalized
         # if the user is a manager or reviewer, the data will be their queue of invoices to chcek
         user_role = self.request.user.profile.role
-
+ 
         if user_role == "Preparer":
             qs = Invoice.objects.filter(creator=self.request.user).filter(status__lte=0)
         elif user_role == "Manager":
@@ -55,3 +70,11 @@ def guest_log(request):
     login(request, user)
     return redirect('/')
 
+def chart_revenues(request):
+    revenue_list = monthly_invoices()
+    previous_list = monthly_invoices(datetime.now().year-1)
+    data = {
+        "revenue": revenue_list,
+        "previous": previous_list
+    }
+    return JsonResponse(data)
