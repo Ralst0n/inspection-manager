@@ -5,6 +5,7 @@
 {% block title %}{{request.user}}- Dashboard{% endblock %}
 {% block headers %}
 <link rel="stylesheet" href="{% static '/css/dashboard.css' %}">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
 <script src="{% static '/js/dashboard.js' %}"></script>
 {% endblock %}
 
@@ -13,6 +14,11 @@
     
     <h1>{{ request.user.first_name }} {{ request.user.last_name }} - {{ request.user.profile.role}}: {{ request.user.profile.office }}</h1>
     {% if request.user.profile.role == 'Preparer' or request.user.profile.role == 'Manager' %}
+    <div id="revenue-section" style="background-color: white">
+    <canvas id="monthChart">
+
+    </canvas>
+    </div>
     <div id="progress-section">
         <h3>Invoiced to Date: ${{ revenue|intcomma}}</h3>
         <div id="progress-bar">
