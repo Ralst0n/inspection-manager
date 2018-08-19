@@ -118,7 +118,15 @@ def last_last_sunday():
                             "%m/%d/%Y")
 
 
-
+def monthly_invoices(year=datetime.now().year):
+    """Takes a year and returns a list of invoice revenues for each month"""
+    revenue_list = [0]*12
+    # for each month grab all invoices with end dates with that month
+    for month in range(1,13):
+        for invoice in Invoice.objects.filter(end_date__year=year, end_date__month=month):
+            # add invoice total to revenue index corresponding to its month
+            revenue_list[month-1] += invoice.total_cost
+    return revenue_list
 
 def months_last_sunday(month, year):
     """ 
