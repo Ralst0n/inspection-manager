@@ -80,8 +80,11 @@ def get_info(request):
     project = Project.objects.get(prudent_number=prudent_number)
     # if there are no previous invoices, tell js there's no previous data.
     if project.invoice_set.count() == 0:
+        start_date = project.start_date.strftime("%Y-%m-%d")
         data = {
-            "previous": ""
+            "estimate_number": 1,
+            "start_date": start_date
+
         }
     else:
         latest_invoice = project.invoice_set.latest('end_date')
