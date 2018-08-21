@@ -9,15 +9,19 @@ document.addEventListener("DOMContentLoaded", () => {
             let project_id = document.querySelector("#project_number").dataset.id;
             formData.append("prudent_number", project_id);
             request.open("POST", "/projects/get_info");
-            request.setRequestHeader("X-CSRFToken", document.cookie.substr(10));
+            let csrftoken = find_csrf_token();
+            console.log(`THE CSRFTOKEN WE DISCOVERED IS ${csrftoken}`)
+            request.setRequestHeader("X-CSRFToken", csrftoken);
+
             request.onload = () => {
                 let response = JSON.parse(request.responseText);
-                document.querySelector("input[name='Estimate number']").value = response['estimate_number']
+                document.querySelector("input[name='Estimate number']").value = response['estimate_number'];
                 document.querySelector("input[name='Start date']").value = response['start_date'];
                 // start and end dates must be after end date of previous invoice
                 document.querySelector("input[name='Start date']").setAttribute("min", response['start_date']);
                 document.querySelector("input[name='End date']").setAttribute("min", response['start_date']);
             }
+
             request.send(formData);
             create_invoice_form();
             invoice_form = true;
@@ -81,7 +85,7 @@ function create_invoice_form(){
     })
     const button = document.createElement("button");
     button.type = "submit";
-    button.innerHTML = "submit";
+    button.innerHTML = "Submit";
     button.classList.add("submit", "button");
     document.querySelector("#invoice-form").append(button);
 
@@ -143,7 +147,7 @@ function create_invoice_form(){
         formData.append("project_id", project_id);
         request = new XMLHttpRequest();
         request.open("POST", "/invoices/create");
-        request.setRequestHeader("X-CSRFToken", document.cookie.substr(10))
+        request.setRequestHeader("X-CSRFToken", find_csrf_token())
         request.onload = () => {
             let response = JSON.parse(request.responseText);
             document.querySelector("#modal-message").innerHTML = response['message'];
@@ -157,4 +161,35 @@ function create_invoice_form(){
         request.send(formData);
         return false;
     }
+}
+
+function find_csrf_token() {
+    let csrftoken = ""
+    let cookie_book = []
+    let cookies = document.cookie;
+    // Split the cookies by the space between them
+    let split_cookies = cookies.split(" ");
+    // separate the split_cookies into name and value
+    split_cookies.forEach( cookie=>{
+        let values = cookie.split("=");
+        if (values.length === 2) {
+            let name = values[0];
+            let cookie = values[1];
+
+            // if the cookie ends in a ";" substring it by 1 char
+            if (cookie[cookie.length -1 ] == ";"){
+                cookie = cookie.substring(0, cookie.length - 1)
+            }
+            cookie_book.push({name:name, value:cookie})
+        }
+    })
+
+    cookie_book.forEach( cookie =>{
+        // if csrftoken is found, return the value
+        if (cookie.name === "csrftoken") {
+            csrftoken = cookie.value;
+        }
+    })
+
+    return csrftoken;
 }
