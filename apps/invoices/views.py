@@ -213,20 +213,18 @@ def create_invoice(request):
         project = Project.objects.get(prudent_number=request.POST.get("project_id"))
         estimate_number = request.POST.get("Estimate number")
 
-        # If estimate number already exist, increment until we find first available estimate number
-        while project.invoice_set.filter(estimate_number=estimate_number).count() > 0:
-            estimate_int = int(estimate_number) + 1
-            estimate_number = str(estimate_int)
 
         # verify start date is after latest end date
         start_date = request.POST.get("Start date")
         # convert the date to a datetime.date
         start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
         
-        if start_date < project.invoice_set.latest("end_date").end_date:
-            data["valid"] = False
-            data['message'] += f"<p>Start date must be after end date for invoice {int(estimate_number) - 1}</p>"
-            return JsonResponse
+        # verify start date is after latest end date if there are any previous invoices
+        if project.invoice_set.count() > 0:
+            if start_date < project.invoice_set.latest("end_date").end_date:
+                data["valid"] = False
+                data['message'] += f"<p>Start date must be after end date for invoice {int(estimate_number) - 1}</p>"
+                return JsonResponse
 
         # Verify end date is after start date
         end_date = request.POST.get("End date")
@@ -237,7 +235,6 @@ def create_invoice(request):
 
         # If the data is valid create an invoice object, otherwise tell why it's not created
         if data["valid"]:
-            project.invoice_set.latest("end_date")
             invoice = Invoice.objects.create(
                 project=project,
                 estimate_number = estimate_number ,
