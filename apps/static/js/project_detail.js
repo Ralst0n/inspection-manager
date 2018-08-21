@@ -13,14 +13,10 @@ document.addEventListener("DOMContentLoaded", () => {
             request.onload = () => {
                 let response = JSON.parse(request.responseText);
                 document.querySelector("input[name='Estimate number']").value = response['estimate_number']
-                if (response['previous']) {
-                    console.log(response['start_date'])
-                    console.log('07/12/2018')
-                    document.querySelector("input[name='Start date']").value = response['start_date'];
-                    // start and end dates must be after end date of previous invoice
-                    document.querySelector("input[name='Start date']").setAttribute("min", response['start_date']);
-                    document.querySelector("input[name='End date']").setAttribute("min", response['start_date']);
-                }
+                document.querySelector("input[name='Start date']").value = response['start_date'];
+                // start and end dates must be after end date of previous invoice
+                document.querySelector("input[name='Start date']").setAttribute("min", response['start_date']);
+                document.querySelector("input[name='End date']").setAttribute("min", response['start_date']);
             }
             request.send(formData);
             create_invoice_form();
