@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 from apps.partners.models import (LetProject, ProjectTeam, BusinessPartner )
-from apps.utils.helpers import list_blend, none_project, before_cutoff_date
+from apps.utils.helpers import list_blend, none_project, before_cutoff_date, formatted_date, dateField_format
 
 class LetProjectScrapper:
 
@@ -96,6 +96,7 @@ class LetProjectScrapper:
                     winner = BusinessPartner.objects.get(name=teams[0].get('p')),
                     second_place = BusinessPartner.objects.get(name=teams[1].get('p')),
                     third_place = BusinessPartner.objects.get(name=teams[2].get('p')),
+                    date = project['let_date']
                 )
             elif len(teams) == 2:
                 LetProject.objects.create(
@@ -103,12 +104,14 @@ class LetProjectScrapper:
                     district = district,
                     winner = BusinessPartner.objects.get(name=teams[0].get('p')),
                     second_place = BusinessPartner.objects.get(name=teams[1].get('p')),
+                    date = project['let_date']
                 )
             elif len(teams) == 1:
                 LetProject.objects.create(
                     agreement_number = project['prono'],
                     district = district,
                     winner = BusinessPartner.objects.get(name=teams[0].get('p')),
+                    date = project['let_date']
                 )
 
             # Add each team combination to `Project_Team` by iterating through the team rosters
@@ -162,13 +165,19 @@ class LetProjectScrapper:
             results_rows = list_blend(results_even_rows, results_odd_rows)
 
             for row in results_rows:
-                cutoff_date = '01/01/2018'
+                if LetProject.objects.count() == 0:
+                    cutoff_date = '01/01/2018'
+                else:
+                    cutoff_date = formatted_date(LetProject.object.latest("let_date").let_date)
+
                 date = row.find('td').find('a').contents[0].strip()
 
                 if before_cutoff_date(date, cutoff_date):
                     print(f"{date} is before {cutoff_date}")
                     continue
 
+                # convert date to yyy-mm-dd to match django formating
+                date = dateField_format(date)
                 tiny_results_table = row.find('tbody').find_all('tr')
                 for organization in tiny_results_table:
                     district = organization.find('td').contents[0].strip()
@@ -180,7 +189,7 @@ class LetProjectScrapper:
                         for proj_info in project_data:
                             # for each project number in a valid district:
                             # put the project number as the dict 'prono' and the link as the 'proj_info'
-                            project_dict = {'district': district, 'prono': proj_info.contents[0].strip(), 'href': proj_info.get('href')}
+                            project_dict = {'district': district, 'prono': proj_info.contents[0].strip(), 'href': proj_info.get('href'), 'let_date':date}
                             projects.append(project_dict)
 
 
