@@ -61,6 +61,7 @@ def dateField_format(dater):
     return datetime.strptime(dater, '%m/%d/%Y').strftime('%Y-%m-%d')
 
 def formatted_date(dater):
+    '''Return date in string formate mm-dd-yyyy'''
     return dater.strftime('%m/%d/%Y')
 
 def last_scrape_date():
