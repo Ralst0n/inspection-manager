@@ -2,7 +2,6 @@ from datetime import datetime
 
 import string
 
-from django.contrib.auth.models import User
 from django.core import mail
 from django.utils.crypto import get_random_string
 
@@ -10,7 +9,6 @@ from .newsletters import (
     check_inspector_certs, check_invoice_created, check_invoice_reviewed,
     check_project_burnrate, check_planned_projects
 )
-from apps.partners.models import LetProject, PlannedProject
 from apps.utils.planned_project_scraper import PlannedProjectScraper
 from apps.utils.let_project_scraper import LetProjectScrapper
 
