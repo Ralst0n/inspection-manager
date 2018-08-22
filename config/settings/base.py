@@ -58,6 +58,7 @@ LOCAL_APPS = (
     'apps.partners',
     'apps.profiles',
     'apps.projects',
+    'apps.utils',
     )
 
 THIRD_PARTY_APPS = (
