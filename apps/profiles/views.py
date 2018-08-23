@@ -21,7 +21,10 @@ def monthly_invoices(year=datetime.now().year):
     for month in range(1,13):
         for invoice in Invoice.objects.filter(end_date__year=year, end_date__month=month):
             # add invoice total to revenue index corresponding to its month
-            revenue_list[month-1] += invoice.total_cost
+            try:
+                revenue_list[month-1] += invoice.total_cost
+            except:
+                pass
     return revenue_list
 
 
