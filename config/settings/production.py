@@ -39,4 +39,4 @@ AWS_LOCATION = 'static'
 
 DEFAULT_FILE_STORAGE = 'config.settings.storage_backends.MediaStorage' 
 
-MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media/"
+MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/media"
