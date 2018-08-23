@@ -39,4 +39,5 @@ def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
  
 
-
+class Scrape(models.Model):
+    date = models.DateField(auto_now=True)
