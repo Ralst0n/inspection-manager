@@ -1,16 +1,18 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.views.generic.list import ListView
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
 
-from datetime import datetime
+from datetime import date, datetime
+from rq import Queue
+from worker import conn
 
-# Create your views here.
-from django.http import JsonResponse
+from .models import Scrape
+from apps.inspectors.tasks import scrape_let_projects, scrape_planned_projects
 from apps.invoices.models import Invoice
 from apps.projects.models import Project
-from apps.utils.helpers import monthly_invoices
 
 def monthly_invoices(year=datetime.now().year):
     # create list of revenue for each month
@@ -42,7 +44,17 @@ class DashboardView(LoginRequiredMixin, ListView):
             qs = Invoice.objects.filter(status=2)
         else:
             qs = []
-        
+
+        if self.request.user.is_superuser:
+            # Don't run if it's already run that day
+            if Scrape.objects.count() >= 1  and Scrape.objects.last().date >= date.today():
+                pass
+            else: 
+                q = Queue(connection=conn)
+                q.enqueue(scrape_let_projects)
+                q.enqueue(scrape_planned_projects)
+                Scrape.objects.create()
+
         return qs
 
     def get_context_data(self, **kwargs):
