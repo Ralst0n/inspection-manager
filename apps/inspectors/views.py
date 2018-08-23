@@ -236,7 +236,6 @@ class InspectorDetailView(
 
 @user_passes_test(lambda u: u.is_superuser)
 def ScrapeProjects(request):
-    result = q.enqueue(scrape_planned_projects)
     resp = "Projects should scrape..."
     return HttpResponse(resp)
 
