@@ -96,7 +96,7 @@ class LetProjectScrapper:
                     winner = BusinessPartner.objects.get(name=teams[0].get('p')),
                     second_place = BusinessPartner.objects.get(name=teams[1].get('p')),
                     third_place = BusinessPartner.objects.get(name=teams[2].get('p')),
-                    date = project['let_date']
+                    let_date = project['let_date']
                 )
             elif len(teams) == 2:
                 LetProject.objects.create(
@@ -104,14 +104,14 @@ class LetProjectScrapper:
                     district = district,
                     winner = BusinessPartner.objects.get(name=teams[0].get('p')),
                     second_place = BusinessPartner.objects.get(name=teams[1].get('p')),
-                    date = project['let_date']
+                    let_date = project['let_date']
                 )
             elif len(teams) == 1:
                 LetProject.objects.create(
                     agreement_number = project['prono'],
                     district = district,
                     winner = BusinessPartner.objects.get(name=teams[0].get('p')),
-                    date = project['let_date']
+                    let_date = project['let_date']
                 )
 
             # Add each team combination to `Project_Team` by iterating through the team rosters
