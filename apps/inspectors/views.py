@@ -9,8 +9,7 @@ from django.views import generic
 
 from datetime import date, datetime, timedelta
 from decimal import Decimal
-from rq import Queue
-from worker import conn
+
 
 from .models import History, Inspector, Notes
 from .newsletters import check_project_burnrate, check_inspector_certs
@@ -22,7 +21,6 @@ from apps.utils.helpers import certified, formatted_date
 import json
 
 # Create your views here.
-q = Queue(connection=conn)
 @login_required
 def index(request):
     groups = []
