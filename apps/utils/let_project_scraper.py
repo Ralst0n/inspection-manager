@@ -168,7 +168,7 @@ class LetProjectScrapper:
                 if LetProject.objects.count() == 0:
                     cutoff_date = '01/01/2018'
                 else:
-                    cutoff_date = formatted_date(LetProject.object.latest("let_date").let_date)
+                    cutoff_date = formatted_date(LetProject.objects.latest("let_date").let_date)
 
                 date = row.find('td').find('a').contents[0].strip()
 
