@@ -12,6 +12,7 @@ from .newsletters import (
 from apps.utils.planned_project_scraper import PlannedProjectScraper
 from apps.utils.let_project_scraper import LetProjectScrapper
 
+from apps.partners.models import PlannedProject
 
 def scrape_let_projects():
     p = LetProjectScrapper()
