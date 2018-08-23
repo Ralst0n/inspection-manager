@@ -236,7 +236,7 @@ class InspectorDetailView(
 
 @user_passes_test(lambda u: u.is_superuser)
 def ScrapeProjects(request):
-    resp = "Projects should scrape..."
+    resp = scrape_planned_projects()
     return HttpResponse(resp)
 
 @user_passes_test(lambda u: u.is_superuser)
