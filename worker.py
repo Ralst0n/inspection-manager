@@ -2,7 +2,9 @@ import os
 
 import redis
 from rq import Worker, Queue, Connection
+import django
 
+django.setup()
 listen = ['high', 'default', 'low']
 
 redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
