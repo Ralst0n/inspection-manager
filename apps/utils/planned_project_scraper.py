@@ -100,10 +100,9 @@ class PlannedProjectScraper:
         services = ['inspection', 'ci']
         for row in table:
             project_name = row.find_all('td')[3].string.lower()
-            print(f"[SCRAPER]: Project_name is {project_name} and published date is {row.find_all('td')[4].contents[0].strip()}")
             for service in services:
-                print(f"[SCRAPER]: TEST 1-- {service} in {project_name} IS {service in project_name}")
-                print(f"[SCRAPER]: TEST 2-- {row.find_all('td')[4].contents[0].strip()} AFTER {last_run_date} is {after_last_scrape(row.find_all('td')[4].contents[0].strip(),last_run_date)}")
+                # print(f"[SCRAPER]: TEST 1-- {service} in {project_name} IS {service in project_name}")
+                # print(f"[SCRAPER]: TEST 2-- {row.find_all('td')[4].contents[0].strip()} AFTER {last_run_date} is {after_last_scrape(row.find_all('td')[4].contents[0].strip(),last_run_date)}")
                 if service in project_name and after_last_scrape(row.find_all('td')[4].contents[0].strip(),last_run_date):
                     project_links.append(row.find('td').find('a').get('href'))
                 
@@ -115,7 +114,6 @@ class PlannedProjectScraper:
         # GET INFORMATION FROM EACH PLANNED PROJECT DETAIL PAGE
         for project in project_links:
             self.driver.get(self.base_url + project)
-            print(f"ADDING PROJECT {project}")
             project_html = self.driver.page_source
             soup = BeautifulSoup(project_html, "html.parser")
 
@@ -124,7 +122,6 @@ class PlannedProjectScraper:
 
             service_requested = soup.find_all('table', class_='Section1')[1].find('tbody').find('tr').find('td').find_all('table')[1].find('tbody').find('tr').find_all('tr', class_='body')[4].find_all('td')[1].string
             if "inspection" not in service_requested.lower():
-                print(f"{service_requested} not covered by Prudent PA")
                 continue
             district = soup.find_all('table', class_='Section1')[1].find('table', class_="Section1Body").find('label').string
 
