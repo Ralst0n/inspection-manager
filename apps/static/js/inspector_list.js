@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // make ajax request to inspector list route
         request = new XMLHttpRequest();
         request.open("POST", "/inspectors/find");
-        request.setRequestHeader("X-CSRFToken", document.cookie.substr(10))
+        request.setRequestHeader("X-CSRFToken", find_csrf_token())
         request.send(formData);
         // When the request returns, populate the inspectors fields with inspector cards
         request.onload = () => {
@@ -277,4 +277,35 @@ function selected_certs() {
     certs = document.querySelectorAll("input[type='checkbox']");
     certs.forEach(box=> box.checked ? checked.push(box.value) : "");
     return checked;
+}
+
+function find_csrf_token() {
+    let csrftoken = ""
+    let cookie_book = []
+    let cookies = document.cookie;
+    // Split the cookies by the space between them
+    let split_cookies = cookies.split(" ");
+    // separate the split_cookies into name and value
+    split_cookies.forEach( cookie=>{
+        let values = cookie.split("=");
+        if (values.length === 2) {
+            let name = values[0];
+            let cookie = values[1];
+
+            // if the cookie ends in a ";" substring it by 1 char
+            if (cookie[cookie.length -1 ] == ";"){
+                cookie = cookie.substring(0, cookie.length - 1)
+            }
+            cookie_book.push({name:name, value:cookie})
+        }
+    })
+
+    cookie_book.forEach( cookie =>{
+        // if csrftoken is found, return the value
+        if (cookie.name === "csrftoken") {
+            csrftoken = cookie.value;
+        }
+    })
+
+    return csrftoken;
 }
