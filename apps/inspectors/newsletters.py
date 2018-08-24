@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from decimal import Decimal
 
@@ -10,23 +11,26 @@ from apps.utils.helpers import formatted_date, last_sunday, next_sunday, last_la
 
 def check_planned_projects(office):
     planned_projects = '''<h2> Coming Soon to a City Near You</h2>'''
-    # Get last successful scrapped date
-    latest_scrape = PlannedProject.objects.latest("scrapped_date").scrapped_date
-    # Add data for each project found since the last successful scrape
-    for project in PlannedProject.objects.filter(office=office).filter(scrapped_date__gt=latest_scrape):
-        planned_projects += f'''<strong><p>
-        {project.name}(<a href={project.url}>{project.agreement_number}</a>):</p></strong>
+    try:
+        # Try to get last successful scrapped date
+        latest_scrape = PlannedProject.objects.latest("scrapped_date").scrapped_date
+        # Add data for each project found since the last successful scrape
+        for project in PlannedProject.objects.filter(office=office).filter(scrapped_date__gt=latest_scrape):
+            planned_projects += f'''<strong><p>
+            {project.name}(<a href={project.url}>{project.agreement_number}</a>):</p></strong>
 
-        <p>District: {project.district}</p>
+            <p>District: {project.district}</p>
 
-        <p>Cost: {project.cost}</p>
-        <p>Anticipated Advance: {project.advance_date}</p>
+            <p>Cost: {project.cost}</p>
+            <p>Anticipated Advance: {project.advance_date}</p>
 
-        <p>{project.description}</p>'''
+            <p>{project.description}</p>'''
 
-    if len(planned_projects) > 65:
-        return planned_projects
-    return ''
+        if len(planned_projects) > 65:
+            return planned_projects
+    except ObjectDoesNotExist as e:
+        print(e)
+        return ''
 
 def check_inspector_certs(office):
     ''' For each inspector, if they have a certain certification, make suer the expiration date isn't within the next 90 days '''
@@ -72,7 +76,7 @@ def check_invoice_created(office):
     new_invoice_html += '''<p font-size:8px>
     Invoice data can be added at <a href='https://prudentoffice.herokuapp.com/invoices'>here</a>.
     <br/> 
-    Projects can be set to inactive <a href='https://prudentoffice.herokuapp.com/projects'>here</a>.
+    Project and invoice information can be updated <a href='https://prudentoffice.herokuapp.com/projects'>here</a>.
     </p>'''
     return new_invoice_html
 
