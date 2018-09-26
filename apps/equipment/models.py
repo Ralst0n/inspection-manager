@@ -21,6 +21,7 @@ class Equipment(models.Model):
     device = models.CharField(max_length= 35, choices=DEVICE_TYPE)
     serial_number = models.CharField(max_length=40)
     phone_number = models.CharField(max_length=18, blank=True)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
