@@ -11,7 +11,7 @@ class EquipmentListView(LoginRequiredMixin, generic.ListView):
         """
         filter which projects show in list view
         """
-        return Equipment.objects.filter(office=self.request.user.profile.office)
+        return Equipment.objects.filter(office=self.request.user.profile.office, active=True)
 
 class EquipmentDetailView(LoginRequiredMixin, generic.DetailView):
     model = Equipment
