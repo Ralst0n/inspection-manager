@@ -16,7 +16,16 @@ def after_last_scrape(test_date, cutoff_date):
     return new_date > cut_date
 
 def before_cutoff_date(test_date, cutoff_date):
-    '''Returns true if date1 is before date2, false otherwise'''
+    '''Function to test if the date of one string is before the date of the second
+    
+    Args:
+        test_date: The date to be tested.
+        cutoff_date: The date to be tested against.
+        
+    Returns:
+        True if test_date is before cutoff_date
+        False otherwise
+     '''
     new_date = datetime.strptime(str(test_date), '%m/%d/%Y')
     cut_date = datetime.strptime(str(cutoff_date), '%m/%d/%Y')
 
