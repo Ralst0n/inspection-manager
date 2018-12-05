@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 
 from apps.partners.models import PlannedProject
-from apps.utils.helpers import after_last_scrape, dateField_format, formatted_date, list_blend
+from apps.utils.helpers import before_cutoff_date, dateField_format, formatted_date, list_blend
 
 class PlannedProjectScraper:
     def __init__(self):
@@ -101,9 +101,7 @@ class PlannedProjectScraper:
         for row in table:
             project_name = row.find_all('td')[3].string.lower()
             for service in services:
-                # print(f"[SCRAPER]: TEST 1-- {service} in {project_name} IS {service in project_name}")
-                # print(f"[SCRAPER]: TEST 2-- {row.find_all('td')[4].contents[0].strip()} AFTER {last_run_date} is {after_last_scrape(row.find_all('td')[4].contents[0].strip(),last_run_date)}")
-                if service in project_name and after_last_scrape(row.find_all('td')[4].contents[0].strip(),last_run_date):
+                if service in project_name and not before_cutoff_date(row.find_all('td')[4].contents[0].strip(),last_run_date):
                     project_links.append(row.find('td').find('a').get('href'))
                 
         # We will keep a list of the necessary attributes for each project inside

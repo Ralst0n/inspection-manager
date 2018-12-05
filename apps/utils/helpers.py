@@ -2,26 +2,13 @@ from calendar import monthcalendar, monthrange
 from datetime import date, datetime, timedelta
 
 
-def after_last_scrape(test_date, cutoff_date):
-    '''
-    Takes two date strings, converts them into datetime.date objects
-    returns True if date1 is more recent than date2
-    '''
-    new_date = datetime.strptime(str(test_date), '%m/%d/%Y')
-    cut_date = datetime.strptime(str(cutoff_date), '%m/%d/%Y')
-    if new_date > cut_date:
-        print (f"{test_date} is after {cutoff_date}")
-    else:
-        print (f"{test_date} is before {cutoff_date}")
-    return new_date > cut_date
-
 def before_cutoff_date(test_date, cutoff_date):
     '''Function to test if the date of one string is before the date of the second
-    
+
     Args:
-        test_date: The date to be tested.
-        cutoff_date: The date to be tested against.
-        
+        test_date:  mm/dd/yyyy String rep of the date to be tested.
+        cutoff_date: mm/dd/yyyy String rep of the date to be tested against.
+
     Returns:
         True if test_date is before cutoff_date
         False otherwise
@@ -31,19 +18,28 @@ def before_cutoff_date(test_date, cutoff_date):
 
     return new_date < cut_date
 
+
 def certified(inspector, cert):
-    ''' does the inspector have a given cert and is it up to date? '''
+    ''' Function to verify inspectors given cert is up to date
+
+        Args:
+            inspector (inspector): The inspector object to use
+            cert (str): The _ name of a cert. i.e. nicet_expiration
+
+        Returns:
+            bool: True if cert exists and expires later than today, False otherwise
+     '''
     d = datetime.now().date()
     if cert == "nicet_expiration":
-        if inspector.nicet_expiration is not None: 
+        if inspector.nicet_expiration is not None:
             if inspector.nicet_expiration > d:
-                 return True
+                return True
         return False
 
     if cert == "penndot_bituminous":
         if inspector.penndot_bituminous is not None:
             if inspector.penndot_bituminous > d:
-                 return True
+                return True
         return False
 
     if cert == "necept_bituminous":
@@ -58,7 +54,7 @@ def certified(inspector, cert):
                 return True
         return False
 
-    if cert  == "aci_concrete":
+    if cert == "aci_concrete":
         if inspector.aci_concrete is not None:
             if inspector.aci_concrete > d:
                 return True
@@ -66,17 +62,26 @@ def certified(inspector, cert):
 
 
 def dateField_format(dater):
-    '''converts datestring to YYYY-MM-DD format expected by datefield'''
+    '''converts mm/dd/yyyy date-string to YYYY-MM-DD format datetime object
+
+    Args:
+        dater(str): mm/dd/yyyy formatted string.
+
+    Returns: YYYY-mm-dd formatted datetime object.
+    '''
     return datetime.strptime(dater, '%m/%d/%Y').strftime('%Y-%m-%d')
+
 
 def formatted_date(dater):
     '''Return date in string formate mm-dd-yyyy'''
     return dater.strftime('%m/%d/%Y')
 
+
 def last_scrape_date():
     td = last_sunday()
     td -= timedelta(days=6)
     return td
+
 
 def last_sunday():
     d = date.today()
@@ -85,6 +90,7 @@ def last_sunday():
     while d.weekday() is not 6:
         d -= timedelta(days=1)
     return d
+
 
 def list_blend(list1, list2):
     '''when table scrape broken into odds and evens classes
@@ -105,6 +111,7 @@ def list_blend(list1, list2):
         x += 1
     return new_list
 
+
 def last_last_sunday():
     """
     Find and return the date of last sunday of this month, if it 
@@ -113,7 +120,7 @@ def last_last_sunday():
     Use calendar, timedelta, and date libraries
     """
     today = date.today()
-    year, month, = today.year, today.month 
+    year, month, = today.year, today.month
     # if we aren't in the last week of the month, use last month
     if monthrange(year, month)[1] - 6 > today.day:
         if today.month == 1:
@@ -125,18 +132,19 @@ def last_last_sunday():
     print(datetime.strptime(f"{month}/{last_sunday}/{year}",
                             "%m/%d/%Y"))
     return datetime.strptime(f"{month}/{last_sunday}/{year}",
-                            "%m/%d/%Y")
+                             "%m/%d/%Y")
 
 
 def monthly_invoices(year=datetime.now().year):
     """Takes a year and returns a list of invoice revenues for each month"""
     revenue_list = [0]*12
     # for each month grab all invoices with end dates with that month
-    for month in range(1,13):
+    for month in range(1, 13):
         for invoice in Invoice.objects.filter(end_date__year=year, end_date__month=month):
             # add invoice total to revenue index corresponding to its month
             revenue_list[month-1] += invoice.total_cost
     return revenue_list
+
 
 def months_last_sunday(month, year):
     """ 
@@ -149,12 +157,14 @@ def months_last_sunday(month, year):
         if week[-1] != 0:
             return week[-1]
 
+
 def next_sunday():
     ''' increment one day until reaching the first Sunday in the future '''
     d = date.today() + timedelta(days=1)
     while d.weekday() is not 6:
         d += timedelta(days=1)
     return d
+
 
 def none_project(project):
     for value in project.values():
