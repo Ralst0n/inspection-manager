@@ -73,14 +73,8 @@ def dateField_format(dater):
 
 
 def formatted_date(dater):
-    '''Return date in string formate mm-dd-yyyy'''
+    '''Takes a date object. Returns String rep of date formatted mm/dd/yyyy'''
     return dater.strftime('%m/%d/%Y')
-
-
-def last_scrape_date():
-    td = last_sunday()
-    td -= timedelta(days=6)
-    return td
 
 
 def last_sunday():
@@ -93,23 +87,26 @@ def last_sunday():
 
 
 def list_blend(list1, list2):
-    '''when table scrape broken into odds and evens classes
-    blends the odds and evens into one list'''
-    # list 1 is always equal or greater than length of list2
-    if len(list2) > len(list1):
-        list1, list2 = list2, list1
+    '''Merges two list into one new list in order of indexes. Starting with index 0 of list1
+       Does not modify original lists.
 
-    new_list = []
-    x = 0
-    while list1 or list2:
+    Args:
+        list1(list): a list of items i.e. [1,3,5]
+        list2(list): a second list of items i.e. [2,4,6,8]
 
-        # therefore if it's list 2s turn and it doesn't exist we don't get an error
-        if x % 2 != 0 and list2:
-            new_list.append(list2.pop(0))
-        else:
-            new_list.append(list1.pop(0))
-        x += 1
-    return new_list
+    Returns(list): A new list with the indexes blended. i.e. [1,2,3,4,5,6,8]
+    '''
+    blended_list = []
+    min_list = min(list1, list2)
+    max_list = max(list1, list2)
+
+    for i in range(len(min_list)):
+        blended_list.append(list1[i])
+        blended_list.append(list2[i])
+
+    # Length already 1 more than index so no need to do min_length +1
+    blended_list += max_list[len(min_list):]
+    return blended_list
 
 
 def last_last_sunday():
@@ -136,7 +133,12 @@ def last_last_sunday():
 
 
 def monthly_invoices(year=datetime.now().year):
-    """Takes a year and returns a list of invoice revenues for each month"""
+    """Takes a year and returns a list of invoice revenues for each month in the given year.
+
+    Args(str): year to get list of monthly revenue for
+
+    Returns(list): 12 item list with revenue for months starting with January
+    """
     revenue_list = [0]*12
     # for each month grab all invoices with end dates with that month
     for month in range(1, 13):
