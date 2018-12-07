@@ -135,7 +135,8 @@ def last_last_sunday():
 def monthly_invoices(year=datetime.now().year):
     """Takes a year and returns a list of invoice revenues for each month in the given year.
 
-    Args(str): year to get list of monthly revenue for
+    Args:
+        year (str): year to get list of monthly revenue. Defaults to current year.
 
     Returns(list): 12 item list with revenue for months starting with January
     """
@@ -150,8 +151,16 @@ def monthly_invoices(year=datetime.now().year):
 
 def months_last_sunday(month, year):
     """ 
-    Takes a number 1 - 12 to represent the month and returns
-    the date of the final sunday in that month
+    Takes a month and year then returns a representation of the date for the last sunday of the given mm/yy
+
+    Args:
+        month(int): number(1-12) representing the month
+        year(int): the year to get the selected month
+
+    Returns(int): day from date of the final sunday
+
+    i.e. months_last_sunday(11,1990) == 25 
+
     """
     weeks = monthcalendar(year, month)
     weeks.reverse()

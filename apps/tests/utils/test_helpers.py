@@ -1,4 +1,6 @@
-from apps.utils.helpers import before_cutoff_date, dateField_format, formatted_date, list_blend
+from apps.utils.helpers import (before_cutoff_date, dateField_format,
+                                formatted_date, list_blend, months_last_sunday)
+#from calendar import monthcalendar
 from datetime import datetime
 
 
@@ -17,6 +19,9 @@ class TestDate():
     def test_formatted_date(self):
         date_object = datetime(2018, 11, 26)
         assert formatted_date(date_object) == '11/26/2018'
+
+    def test_months_last_sunday(self):
+        assert months_last_sunday(11, 1990) == 25
 
 
 class TestList():
